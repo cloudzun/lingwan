@@ -142,7 +142,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <p><strong>技术方案不变</strong>（来自实验一选型）：</p>
 <ul>
 <li><strong>RAG</strong>（不是微调、不是纯关键词搜索）——知识文档会更新、答案必须可溯源、不能凭模型记忆瞎答。</li>
-<li>技术栈：opencode + gstack 工程流程 + DeepSeek+ 向量库 + Streamlit。</li>
+<li>技术栈：opencode + gstack 工程流程 + DeepSeek + 向量库 + Streamlit。</li>
 </ul>
 <blockquote>
 <p><strong>本实验的能力定位：</strong> 它解决"<strong>依据是什么</strong>"——从知识库检索证据，生成可追溯回答。在实验五 · 综合系统 Agent（进阶）中，这一能力会被封装为 <strong><code>search_policy</code> 工具</strong>，只有任务确实需要业务依据时才调用。实验五 复用的是<strong>数据、证据纪律和工具契约</strong>，不要求复用本实验的项目代码或向量库实现——它甚至可能用更轻量的检索方案（见本实验第 4 节复盘说明）。本实验的重点，是守住"没有证据不回答、来源可以核对"这条底线。</p>
@@ -810,7 +810,7 @@ python 验收\evaluate.py --task qa --impl api      # 在线模型（需 DEEPSEE
 （document/article/excerpt）+ evidence_sufficient + status；字段明细交 SPEC。
 
 【技术选型】RAG，不用微调（知识文档常更新、需溯源、易幻觉）、不用纯关键词搜索
-（自然语言和文件表述有语义鸿沟）。技术栈：Python + DeepSeek+ 向量库 + Streamlit。
+（自然语言和文件表述有语义鸿沟）。技术栈：Python + DeepSeek + 向量库 + Streamlit。
 
 【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
 电价与电费 6 章 25 条、业扩报装 7 章 26 条、供电服务规范（.docx）6 章 26 条、分布式光伏并网（.pdf）6 章 21 条。

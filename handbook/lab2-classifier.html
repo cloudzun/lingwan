@@ -140,7 +140,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <p><strong>目标</strong>：用 AI（opencode）在 2 小时内，做出一个<strong>客户诉求五分类系统</strong>——输入一句客户诉求，输出它该转给哪个类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他），按约定的验收口径达标，并带一个最小网页验证面板。</p>
 <p><strong>技术方案不变</strong>（来自实验一选型）：<br />
 - <strong>文本分类</strong>（不是 RAG、不是 Agent）——输入一句诉求、输出一个类别，一次调用搞定。<br />
-- 技术栈：opencode + gstack 工程流程 + DeepSeek+ 最小验证面板（如 Streamlit）。</p>
+- 技术栈：opencode + gstack 工程流程 + DeepSeek + 最小验证面板（如 Streamlit）。</p>
 <blockquote>
 <p><strong>本实验的能力定位：</strong> 它只解决"<strong>这是什么</strong>"——输入一条诉求，输出业务类别和不确定性判断（是否建议转人工）。在后续的实验五 · 综合系统 Agent（进阶）中，分类会被视为<strong>可选辅助能力</strong>，而不是每条请求的强制第一步——明确政策问题可以直接查政策（<code>search_policy</code>），明确部门问题可以直接查职责（<code>query_department</code>），只有类别本身有助于后续判断时才值得调用分类。实验五 不会强制复用本实验的代码，本实验的重点是把"分类"这块能力积木做小、做清楚、做可验证。</p>
 </blockquote>
