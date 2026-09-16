@@ -371,7 +371,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <p><strong>这不是让 AI 干的活，是你（Delta）的活。</strong> 你要把实验一的方案框架（场景 B 部分），翻译成一段能让 Agent 开跑的 office-hours 启动信息。流程和场景 A 一样，但这次你有了场景 A 的经验——<strong>该写什么，你心里应该有数了。</strong></p>
 </blockquote>
 <h3 id="step-1-agent">Step 1：先理清"要交给 Agent 哪些信息"</h3>
-<p>和场景 A 一样，一份好的启动信息要包含 7 项。但<strong>场景 B 的内容不同</strong>，对照实验一方案框架场景 B 填：</p>
+<p>和场景 A 一样，一份好的启动信息要包含 7 项，另有 4 个固定块（政策文档、Q&amp;A 验证集、库外问题集、环境与网络，由向导自动拼装，不占填写步数）。<strong>场景 B 的内容不同</strong>，对照实验一方案框架场景 B 填；提示词正文合计 11 个固定块，块序为：背景 → 要做什么 → 输入输出 → 技术选型 → 数据现状 → 政策文档 → Q&amp;A 验证集 → 库外问题集 → 验收口径 → 约束 → 环境与网络。</p>
 <table>
 <thead>
 <tr>
@@ -386,7 +386,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <td>1</td>
 <td><strong>背景与角色</strong></td>
 <td>你是谁、在给谁做</td>
-<td>"我是 FDE 团队的 Delta，施工场景 B：供电业务知识问答"</td>
+<td>"我是 FDE 团队的 Delta，施工场景 B：供电业务知识问答"；场景 B 的定位与选型来自实验一《解决方案框架》，上一轮（实验二）交付场景 A 并留下 AGENTS.md 与 retro.md</td>
 </tr>
 <tr>
 <td>2</td>
@@ -398,7 +398,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <td>3</td>
 <td><strong>输入输出</strong></td>
 <td>场景 B 的"解决什么"</td>
-<td>"输入一个业务问题，输出：回答 + 来源引用（哪份文件、哪一条）"</td>
+<td>"输入一个业务问题，输出：答案文本 + evidence[] 来源链（文件名、条款号）；检索不到时 not_found"</td>
 </tr>
 <tr>
 <td>4</td>
@@ -410,7 +410,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <td>5</td>
 <td><strong>数据现状 + 测试样本</strong></td>
 <td>场景 B 的数据风险</td>
-<td>"有 5 份知识文档（见下，各多少章多少条）+ Q&amp;A 验证集 6 条 + 库外问题 2 条；知识文档会更新，需重建索引。测试样本外部给定、<strong>数据整段写进提示词</strong>（含表头），原样使用、严禁重造"</td>
+<td>"有 5 份知识文档（见下，各多少章多少条）+ Q&amp;A 验证集 6 条 + 库外问题 2 条；知识文档会更新，需重建索引。测试样本外部给定、<strong>数据块整段写进提示词</strong>（含表头），原样使用、严禁重造"</td>
 </tr>
 <tr>
 <td>6</td>
@@ -422,7 +422,19 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <td>7</td>
 <td><strong>约束与边界</strong></td>
 <td>场景 B 的风险与应对</td>
-<td>"答案必须带来源引用，不能凭模型记忆瞎答；检索不到应答'知识库中未找到，建议咨询人工'；API key 走环境变量"</td>
+<td>"数据不出内网，只用 知识文档/ 与 评测集/；API key 走环境变量，不硬编码"</td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>固定块（不占填写步数）</strong></td>
+<td>由向导与数据包给定</td>
+<td>【政策文档】5 份清单 / 【Q&amp;A 验证集】6 条 / 【库外问题集】2 条 / 【环境与网络】pip 清华镜像源 + GitHub 走 ghfast.top 代理</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>流程要求</strong></td>
+<td>场景 B 的推进节奏</td>
+<td>见本节 Step 3 代码块末尾一句："按 gstack 八环节流程执行 + 每环节产出文件 + 需要拍板时停下问我"</td>
 </tr>
 </tbody>
 </table>
@@ -447,7 +459,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <blockquote>
 <p><strong>不要急着看参考答案。</strong> 写启动提示词的本质，是"<strong>如果换一个人接手这个项目，他需要知道什么，才能不重开讨论、直接开干？</strong>"</p>
 </blockquote>
-<p><strong>先尝试自己组装。写的时候，用这 7 个问题自我审查：</strong></p>
+<p><strong>先尝试自己组装。写的时候，用这 8 个问题自我审查：</strong></p>
 <table>
 <thead>
 <tr>
@@ -464,31 +476,36 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 </tr>
 <tr>
 <td>2</td>
-<td>他能不能知道<strong>输入是什么、输出是什么</strong>？</td>
-<td>缺了 I/O，Agent 会发明错误接口</td>
+<td>他能不能知道<strong>选型从哪来</strong>（场景 B 的定位与 RAG 选型出自实验一《解决方案框架》）？</td>
+<td>缺了来源，Agent 会重开一轮选型讨论</td>
 </tr>
 <tr>
 <td>3</td>
+<td>他能不能知道<strong>输入是什么、输出是什么</strong>（含来源链与 not_found）？</td>
+<td>缺了 I/O，Agent 会发明错误接口</td>
+</tr>
+<tr>
+<td>4</td>
 <td>他能不能知道<strong>"为什么选 RAG 而不是微调/关键词搜索"</strong>？</td>
 <td>缺了选型理由，Agent 可能问你"要不要微调"</td>
 </tr>
 <tr>
-<td>4</td>
+<td>5</td>
 <td>他能不能知道<strong>数据是什么情况</strong>（文档在哪、多少份、验证集在哪）？</td>
 <td>缺了数据现状，Agent 可能凭记忆回答或找不到测试集</td>
 </tr>
 <tr>
-<td>5</td>
+<td>6</td>
 <td>他能不能知道<strong>"做出来怎么算成功"</strong>？</td>
 <td>缺了验收口径（尤其"来源可追溯"），Agent 会自己发明一套</td>
 </tr>
 <tr>
-<td>6</td>
+<td>7</td>
 <td>他能不能知道<strong>有什么红线</strong>？</td>
 <td>缺了约束，Agent 可能不重视来源引用</td>
 </tr>
 <tr>
-<td>7</td>
+<td>8</td>
 <td>他能不能知道<strong>"按什么流程跑、产出什么"</strong>？</td>
 <td>缺了流程要求，Agent 不会主动走 gstack 八环节</td>
 </tr>
@@ -500,26 +517,30 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <p><strong>✅ 自查通过后，检查点：</strong></p>
 <ul>
 <li>[ ] 你自己独立写出了启动提示词（先别翻附录 D）</li>
-<li>[ ] 7 个自查问题你都能回答"能"</li>
+<li>[ ] 8 个自查问题你都能回答"能"</li>
+<li>[ ] 背景块点明了"场景 B 的定位与选型来自实验一《解决方案框架》"，并承接上一轮（实验二）的 AGENTS.md 与 retro.md</li>
+<li>[ ] 【输入输出】单独成块（输入一个业务问题；输出答案文本 + evidence[] 来源链；检索不到时 not_found）</li>
 <li>[ ] 数据现状写进去了（5 份知识文档在数据包 <code>知识文档/</code>，各多少章多少条；Q&amp;A 6 条＋库外 2 条）</li>
 <li>[ ] 测试样本写明了"外部给定、原样照抄"，并把 <strong>6 条 Q&amp;A ＋ 2 条库外问题（含表头）连数据一起写进提示词</strong>（Agent 施工前落盘为 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>）</li>
 <li>[ ] 验收口径（答案 ≥80% + 来源可追溯 ≥90%，库外问题必须拒答）写进去了</li>
+<li>[ ] 【环境与网络】固定块带上了（pip 清华镜像源 ＋ GitHub 走 ghfast.top 代理；这两个块不用你填，核对没漏即可）</li>
 <li>[ ] 明确写了"按 gstack 八环节流程执行 + 每环节产出文件 + 需要拍板时停下问我"</li>
 <li>[ ] 你和组内对齐了这份提示词（Delta 主导，Echo 队友审查）</li>
 </ul>
 <blockquote>
 <p>写完、组内对齐后，可以对照<strong>附录 D：启动提示词参考答案</strong>——看你自己写的，相比参考答案漏了什么、多了什么。</p>
 </blockquote>
-<h3 id="step-3">Step 3：把数据连数据一起写进提示词</h3>
-<p>在启动信息里写清<strong>来源目录、文件名与数量</strong>，并把外部给定的测试数据<strong>整段写进提示词</strong>——知识文档只写清单，验证集与库外问题集连数据一起给：</p>
-<pre><code>【数据现状】知识库在数据包 知识文档/ 目录下，共 5 份文档（混合格式）：
-  岭湾电力供电营业规则实施细则（教学合成版）.md
-  岭湾电力电价与电费计收说明（教学合成版）.md
-  岭湾电力业扩报装办理指南（教学合成版）.md
-  岭湾电力供电服务规范与服务承诺（教学合成版）.docx
-  岭湾电力分布式光伏并网服务指引（教学合成版）.pdf
-其中 .docx 与 .pdf 需要先解析成可检索文本再入库；知识文档会更新，更新后需要重建索引。
+<h3 id="step-3">Step 3：把固定块按序拼进提示词（含政策文档、两套测试数据与环境与网络）</h3>
+<p>提示词正文合计 11 个固定块，块序固定为：<strong>背景 → 要做什么 → 输入输出 → 技术选型 → 数据现状 → 政策文档 → Q&amp;A 验证集 → 库外问题集 → 验收口径 → 约束 → 环境与网络</strong>，末尾再补一句流程要求。</p>
+<p>其中【数据现状】由你填（写清来源目录、文件名与数量）；<strong>【政策文档】【Q&amp;A 验证集】【库外问题集】【环境与网络】是固定块</strong>——政策文档只写清单、测试数据连数据一起给、环境与网络照抄下面的网络配置，都不占你的填写步数（向导里自动拼装）：</p>
+<pre><code>【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
+电价与电费 6 章 25 条、业扩报装 7 章 26 条、供电服务规范（.docx）6 章 26 条、分布式光伏并网（.pdf）6 章 21 条。
 样本外部给定：评测集/qa_pairs.csv 6 条、评测集/qa_pairs_out_of_scope.csv 2 条，原样使用、不得重造或改写。
+
+【政策文档】知识库在 知识文档/ 目录下，共 5 份（混合格式）：供电营业规则（.md，8 章 32 条）、
+电价与电费（.md，6 章 25 条）、业扩报装（.md，7 章 26 条）、供电服务规范（.docx，6 章 26 条）、
+分布式光伏并网（.pdf，6 章 21 条）。.docx 与 .pdf 需先解析成可检索文本再入库；
+正文由你从数据包原位读取，不得自行改动或编造。
 
 【Q&amp;A 验证集】请把以下测试数据写入 tests/qa_pairs.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
 question,expected_answer,expected_source
@@ -534,12 +555,21 @@ question,expected_answer,expected_source
 question,expected_answer,expected_source
 我家燃气灶点不着火了该找谁修,知识库中未找到，建议咨询人工,不在知识库范围内
 小区物业把水费涨了有没有依据,知识库中未找到，建议咨询人工,不在知识库范围内
+
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+
+请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship →
+retro）执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。
 </code></pre>
 <blockquote>
-<p><strong>为什么数据要整段写进提示词</strong>：一是<strong>防编数据</strong>（不写，Agent 就会自己编一份"好做的"数据来跑，验收口径当场散掉）；二是<strong>固定验收基准</strong>（数据由数据包外部给定，写进去它才能在施工前落盘为 <code>tests/qa_pairs.csv</code>，与 qa 环节验收工具读的是同一份口径）；三是<strong>原样照抄</strong>（数据是验收口径的一部分，一个字都不能改；改了样本＝换了考卷，结论作废）。<br />
+<p><strong>样本纪律（改一条结论就作废）</strong>：数据由数据包外部给定，必须<strong>原样照抄、严禁重造</strong>——不改写、不删减、不扩写、不"挑好做的跑"、不让 Agent 另造一份；数据块整段原样写进提示词，让 Agent 施工前落盘为 <code>tests/qa_pairs.csv</code>（6 条）与 <code>tests/qa_pairs_out_of_scope.csv</code>（2 条）。字段与数据包实物一致（表头 <code>question,expected_answer,expected_source</code>）；改一个字＝换了考卷，结论作废。<br />
+<strong>为什么数据要整段写进提示词</strong>：一是<strong>防编数据</strong>（不写，Agent 就会自己编一份"好做的"数据来跑，验收口径当场散掉）；二是<strong>固定验收基准</strong>（数据由数据包外部给定，写进去它才能在施工前落盘，与 qa 环节验收工具读的是同一份口径）；三是<strong>原样照抄</strong>（数据是验收口径的一部分）。<br />
 <strong>知识文档只写清单</strong>：知识库是"知识来源"、不是"验收样本"；提示词里按章条清单写清 5 份文档与各多少章多少条即可，正文由 Agent 从数据包 <code>知识文档/</code> 原位读取。<br />
 <strong>落盘与来源 metadata 属于 spec 环节</strong>：要让 Agent 把解析后的文本落盘、要它按 <code>source_file</code>／<code>normalized_file</code> 锚定来源，这些写进 SPEC 的"数据与样本"一节（见 <code>脚手架/SPEC模板.md</code>），不必挤进启动提示词。<br />
-<strong>验证集问题不要设计得太宽</strong>：一个宽问题会覆盖多个条款（如"停电通知有什么要求"会同时涉及计划停电与紧急停电），单条款锚定必然歧义；数据包里的 6 条已按单条款拆细，直接照用。</p>
+<strong>验证集问题不要设计得太宽</strong>：一个宽问题会覆盖多个条款（如"停电通知有什么要求"会同时涉及计划停电与紧急停电），单条款锚定必然歧义；数据包里的 6 条已按单条款拆细，直接照用。<br />
+<strong>环境与网络为什么是固定块</strong>：课堂环境统一配好 pip 清华镜像源与 GitHub 代理（ghfast.top），照抄即可，不必自己判断——它是环境的既定配置，不是你要设计的方案。</p>
 </blockquote>
 <hr />
 <h2 id="2-75">2. 注入并跟进八环节（75 分钟）</h2>
@@ -840,12 +870,15 @@ python 验收\evaluate.py --task qa --impl api      # 在线模型（需 DEEPSEE
 </blockquote>
 <pre><code>请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 B 的施工。
 
-【背景】我们上一轮完成了场景 A（诉求分类），周主任催着推进下一个子场景。场景 B
-（供电业务知识问答）已选型为 RAG，现在由 Delta 施工。
+【背景】实验一《解决方案框架》把场景 B（供电业务知识问答）定为第二个快赢场景、
+选型 RAG；上一轮（实验二）已交付场景 A（诉求分类），并留下 AGENTS.md 与 retro.md 作为
+交接经验。本轮由 Delta 施工场景 B。
 
 【要做什么】做一个供电业务知识问答系统：用电客户或坐席输入业务问题，系统从知识文档
-检索证据再生成回答，并标注来源（哪份文件、哪一条）。输出字段固定为 answer + evidence[]
-（document/article/excerpt）+ evidence_sufficient + status；字段明细交 SPEC。
+检索证据再生成回答，并标注来源（哪份文件、哪一条）。
+
+【输入输出】输入：一个客户业务问题（如&quot;居民阶梯电价的第二档如何划分并加价&quot;）。
+输出：答案文本 ＋ evidence[] 来源链（文件名 ＋ 条款号）；检索不到时 not_found。
 
 【技术选型】RAG，不用微调（知识文档常更新、需溯源、易幻觉）、不用纯关键词搜索
 （自然语言和文件表述有语义鸿沟）。技术栈：Python + DeepSeek + 向量库 + Streamlit。
@@ -853,6 +886,11 @@ python 验收\evaluate.py --task qa --impl api      # 在线模型（需 DEEPSEE
 【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
 电价与电费 6 章 25 条、业扩报装 7 章 26 条、供电服务规范（.docx）6 章 26 条、分布式光伏并网（.pdf）6 章 21 条。
 样本外部给定：评测集/qa_pairs.csv 6 条、评测集/qa_pairs_out_of_scope.csv 2 条，原样使用、不得重造或改写。
+
+【政策文档】知识库在 知识文档/ 目录下，共 5 份（混合格式）：供电营业规则（.md，8 章 32 条）、
+电价与电费（.md，6 章 25 条）、业扩报装（.md，7 章 26 条）、供电服务规范（.docx，6 章 26 条）、
+分布式光伏并网（.pdf，6 章 21 条）。.docx 与 .pdf 需先解析成可检索文本再入库；
+正文由你从数据包原位读取，不得自行改动或编造。
 
 【Q&amp;A 验证集】请把以下测试数据写入 tests/qa_pairs.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
 question,expected_answer,expected_source
@@ -875,16 +913,22 @@ question,expected_answer,expected_source
 【约束】数据不出内网，只用 知识文档/ 与 评测集/ 内的材料；API key 走环境变量
 （DEEPSEEK_API_KEY），不硬编码、不入库、不回显。
 
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+
 请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship →
 retro）执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。
 </code></pre>
 <p><strong>对照要点：</strong></p>
 <ul>
-<li><strong>八个信息块</strong>：背景与角色、要做什么（含输入输出与字段契约）、技术选型（含理由）、数据现状、Q&amp;A 验证集（<strong>数据整段写进提示词</strong>）、库外问题集（<strong>数据整段写进提示词</strong>）、验收口径（双指标 + 拒答）、约束。缺哪一块，回到本节 Step 1 的清单补。</li>
+<li><strong>十一个块</strong>：背景与角色（承接实验一《解决方案框架》）、要做什么、<strong>输入输出</strong>（输入什么／输出什么字段）、技术选型（含理由）、数据现状、政策文档（5 份清单）、Q&amp;A 验证集（<strong>数据整段写进提示词</strong>）、库外问题集（<strong>数据整段写进提示词</strong>）、验收口径（双指标 ＋ 拒答）、约束与边界（红线一句话）、<strong>环境与网络</strong>（pip 清华镜像源 ＋ GitHub ghfast 代理）。</li>
 <li><strong>两处"防翻车"信息</strong>：1）无证据必须返回 <code>not_found</code>，不得编造条款号或数值（防编造，底线）；2）回答中的数值一律标注"（教学示意值）"（防把教学数字当真实标准）。</li>
 <li><strong>测试数据连数据一起给了</strong>：【Q&amp;A 验证集】的 6 条与【库外问题集】的 2 条（含表头 <code>question,expected_answer,expected_source</code>）<strong>原样写进提示词</strong>，并注明"外部给定、原样使用、严禁重造"——Agent 施工前落盘为 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>，不必自己编数据。</li>
-<li><strong>知识文档只写清单</strong>：<code>知识文档/</code> 5 份按章条清单写进【数据现状】，正文由 Agent 从数据包原位读取。</li>
+<li><strong>知识文档只写清单</strong>：<code>知识文档/</code> 5 份按章条清单写进【政策文档】，正文由 Agent 从数据包原位读取。</li>
+<li><strong>输入输出独立成块</strong>：出了【要做什么】就说清"输入什么、输出什么、检索不到返回什么"；字段口径固定为 answer + evidence[]（document/article/excerpt）+ evidence_sufficient + status，字段明细交 SPEC。</li>
 <li><strong>边界一句话说清不做什么即可；完整 No-Go 交给 spec 环节</strong>。</li>
+<li><strong>环境与网络是固定块</strong>：pip 清华镜像源 ＋ GitHub 走 ghfast.top 代理，照抄即可，不是要设计的方案。</li>
 <li><strong>流程要求</strong>：末尾提"按流程执行"，真正焊死靠驱动指令（5 条，每条一行）。</li>
 </ul>
 <hr />
@@ -1033,7 +1077,7 @@ retro）执行这次开发，每一环节产出文件，并在我需要拍板的
 <li><a href="#1-20">1. 写启动提示词（20 分钟）★本轮核心</a><ul>
 <li><a href="#step-1-agent">Step 1：先理清"要交给 Agent 哪些信息"</a></li>
 <li><a href="#step-2">Step 2：组装启动提示词——先自己想，再看提示</a></li>
-<li><a href="#step-3">Step 3：把数据连数据一起写进提示词</a></li>
+<li><a href="#step-3">Step 3：把固定块按序拼进提示词（含政策文档、两套测试数据与环境与网络）</a></li>
 </ul>
 </li>
 <li><a href="#2-75">2. 注入并跟进八环节（75 分钟）</a><ul>

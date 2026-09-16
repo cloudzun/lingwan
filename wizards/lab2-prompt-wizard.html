@@ -62,7 +62,7 @@
   .install-box>b{color:var(--navy);font-size:14px;margin-bottom:8px;display:block}
   .gen-box.small{max-height:none;font-size:12px}
 
-  /* 七项信息块表 */
+  /* 九个块表 */
   .blk-tbl{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 4px}
   .blk-tbl th{background:var(--navy);color:#fff;padding:9px 11px;text-align:left;font-weight:600}
   .blk-tbl td{padding:9px 11px;border-bottom:1px solid #eef2f6;line-height:1.55;vertical-align:top}
@@ -206,25 +206,27 @@ cd ~/gstack && ./setup --host opencode</div>
 
     <div class="foot">
       <button class="btn ghost" onclick="go('s0a')">← 返回</button>
-      <button class="btn" onclick="go('s0b')">下一步：七项信息块 →</button>
+      <button class="btn" onclick="go('s0b')">下一步：九个块 →</button>
     </div>
   </div>
 
-  <!-- STAGE 0B: 七项信息块 -->
+  <!-- STAGE 0B: 九个块 -->
   <div class="stage" id="s0b">
     <div class="brand"><span class="dot"></span><span>实验二 · 启动提示词怎么组装</span></div>
-    <h1>七项信息块：缺一项，Agent 就会自己脑补</h1>
-    <p class="sub">数据包 <code>脚手架/启动提示词-模板.md</code> 把一份好的启动信息拆成 <b>7 项信息块</b>，一项都不许留白。每一步都给出确定的内容，不是留白让 Agent 猜。</p>
+    <h1>九个块：缺一块，Agent 就会自己脑补</h1>
+    <p class="sub">数据包 <code>脚手架/启动提示词-模板.md</code> 把一份好的启动信息拆成 <b>9 个块</b>，一块都不许留白（其中 3 块有现成写法，自动带入）。每一步都给出确定的内容，不是留白让 Agent 猜。</p>
     <table class="blk-tbl">
-      <thead><tr><th>#</th><th>要包含的信息</th><th>在本向导里</th></tr></thead>
+      <thead><tr><th>#</th><th>要包含的块</th><th>在本向导里</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td><b>背景</b></td><td>步骤 1：你是谁、在给谁做、谁拍板</td></tr>
+        <tr><td>1</td><td><b>背景</b></td><td>步骤 1：你是谁、在给谁做、谁拍板（从实验一《解决方案框架》顺延）</td></tr>
         <tr><td>2</td><td><b>要做什么</b></td><td>步骤 2：一句可验收的话（边界一句话：本次不做什么）</td></tr>
-        <tr><td>3</td><td><b>技术选型</b></td><td>步骤 3：选什么、为什么不用更复杂的（含理由）</td></tr>
-        <tr><td>4</td><td><b>数据现状</b></td><td>步骤 4：无历史标注 → 零样本</td></tr>
-        <tr><td>5</td><td><b>测试集</b></td><td>步骤 5：把数据整段写进提示词（25 条 ＋ 表头），Agent 施工前落盘为 CSV</td></tr>
-        <tr><td>6</td><td><b>验收口径</b></td><td>步骤 6：三组门槛数字写死</td></tr>
-        <tr><td>7</td><td><b>约束</b></td><td>步骤 7：红线一句话 ＋ 边界一句话</td></tr>
+        <tr><td>3</td><td><b>输入输出</b></td><td>步骤 3：输入什么、输出什么（类别 ＋ 字段）</td></tr>
+        <tr><td>4</td><td><b>技术选型</b></td><td>步骤 4：选什么、为什么不用更复杂的（含理由）</td></tr>
+        <tr><td>5</td><td><b>数据现状</b></td><td>步骤 5：无历史标注 → 零样本（含样本纪律）</td></tr>
+        <tr><td>6</td><td><b>测试集</b></td><td><b>自动带入</b>：25 条 ＋ 表头整段写进提示词，Agent 施工前落盘为 CSV</td></tr>
+        <tr><td>7</td><td><b>验收口径</b></td><td>步骤 6：三组门槛数字写死</td></tr>
+        <tr><td>8</td><td><b>约束</b></td><td>步骤 7：红线一句话 ＋ 边界一句话</td></tr>
+        <tr><td>9</td><td><b>环境与网络</b></td><td><b>自动带入</b>：pip 清华镜像源 ＋ GitHub ghfast 代理</td></tr>
       </tbody>
     </table>
     <div class="gstack-tip" style="margin-top:14px">
@@ -383,16 +385,20 @@ python 验收\evaluate.py --task all --impl api</div>
 // ===== 提示词正文：可整段复制的固定部分（逐字采用权威文件） =====
 const P_LEAD = `请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台（岭湾项目）启动场景 A 的施工。`;
 
-const P_BLOCK_1 = `【背景】实验一已作为 Echo 完成需求诊断，方案框架中场景 A 定为零样本文本分类
-（客户诉求 → 专业条线类别），属快赢场景，本次由 Delta 施工。
+const P_BLOCK_1 = `【背景】实验一《解决方案框架》把场景 A（客户诉求智能分类）定为快赢第一站、选型零样本
+文本分类（客户诉求 → 专业条线类别）；本轮由 Delta 施工场景 A。
 客户方决策人周主任、坐席班长小林、数字化部陈工，合规由省公司数字化与网络安全部把关。`;
 
-const P_BLOCK_2 = `【要做什么】客户诉求五分类系统：一条客户诉求全文进来，输出类别（业务办理／电费与计量／
-故障报修与停电／投诉举报与用电安全／其他）＋ confidence ＋ reason ＋ needs_human_review。
-拿不准走转人工、不硬归"其他"；只做五分类，不做全业务细分派单（完整 No-Go 交给 spec 环节产出）。`;
+const P_BLOCK_2 = `【要做什么】做一个客户诉求五分类系统：把坐席每天要人工判断的「这条诉求该转到哪个专业
+条线」自动化。拿不准走转人工、不硬归"其他"；只做五分类，不做全业务细分派单（完整 No-Go 交给
+spec 环节产出）。`;
+
+const P_BLOCK_IO = `【输入输出】输入：一条客户诉求全文（如"我家车位想装个给电动车充电的表怎么申请"）。
+输出：类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他）＋ confidence
+＋ reason ＋ needs_human_review ＋ status。`;
 
 const P_BLOCK_3 = `【技术选型】一次大模型调用做零样本分类，配一条确定性兜底规则；不用 RAG/Agent
-（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ 最小验证面板。`;
+（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ Streamlit 验证面板。`;
 
 const P_BLOCK_4 = `【数据现状】无历史标注数据 → 必须走零样本分类，不能用传统机器学习
 （TF-IDF ＋ 分类器需要上千条标注，这条路走不通）。`;
@@ -432,20 +438,28 @@ const P_BLOCK_6 = `【验收口径】自信区准确率 ≥85%（≥21/25）；�
 
 const P_BLOCK_7 = `【约束】数据不出内网，不把客户诉求原文发到外部服务；API key 走环境变量。`;
 
+const P_ENV = `【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）`;
+
 const P_FLOW = `请按 gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）执行，
 每一环产出文件，走完一环停下来等我确认，需要拍板的地方列出选项和利弊问我。`;
 
-// ===== 七项信息块（1:1 对应提示词正文的 7 个块） =====
-// 7 个块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
+// ===== 九个块（1:1 对应提示词正文的 9 个块；3 块有现成写法，自动带入） =====
+// 9 个块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
 // 因此 label 一律留空，拼装时只把块体按序接起来——保证"我的提示词/参考提示词"结构与权威一致。
+// 块序照训练营实验素材：背景 → 要做什么 → 输入输出 → 技术选型 → 数据现状 → 测试集 → 验收口径 → 约束 → 环境与网络
+// custom:true 的块由学员填写（n = 对应第几步，1 起）；custom:false 的块直接采用固定写法
 const BLOCKS = [
   { n:1, label:"", custom:true },
   { n:2, label:"", custom:true },
-  { n:3, label:"", custom:false, fixed:P_BLOCK_3 },
-  { n:4, label:"", custom:false, fixed:P_BLOCK_4 },
-  { n:5, label:"", custom:false, fixed:P_BLOCK_5 },
+  { n:3, label:"", custom:true },
+  { n:0, label:"", custom:false, fixed:P_BLOCK_3 },
+  { n:0, label:"", custom:false, fixed:P_BLOCK_4 },
+  { n:0, label:"", custom:false, fixed:P_BLOCK_5 },
   { n:6, label:"", custom:true },
-  { n:7, label:"", custom:true }
+  { n:7, label:"", custom:true },
+  { n:0, label:"", custom:false, fixed:P_ENV }
 ];
 
 // ===== 5 条驱动指令（逐字采用权威文件） =====
@@ -455,7 +469,7 @@ const DRIVERS = `1. 依次走完 8 个环节：office-hours → spec → autopla
 4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
 5. 现在从 office-hours 开始。`;
 
-// ===== 7 步定义（场景 A：客户诉求智能分类） =====
+// ===== 7 步定义（场景 A：客户诉求智能分类）：背景 / 要做什么 / 输入输出 / 技术选型 / 数据现状 / 验收口径 / 约束 =====
 const STEPS = [
   {
     q:"背景：你是谁，在给谁做？",
@@ -480,6 +494,17 @@ const STEPS = [
     get(){ return document.getElementById('v2').value; }
   },
   {
+    q:"输入输出：系统收到什么，吐出什么？",
+    help:"这一步训练你「定义接口」的能力。输入是什么（一条诉求全文？）；输出是什么（哪个类别？带哪些字段？）。类别与字段一定要写全——Agent 靠它才知道要做到什么程度。写的时候问自己：五个类别我列全了吗？输出里有没有把「拿不准怎么办」这条路径表达出来？",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">输入输出描述（思考后填写）</label>
+      <textarea id="v3" rows="4" placeholder="输入是……（一条客户诉求全文）；输出是……（类别标签 ＋ 哪些字段）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：五个类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他）是实验一 Echo 和坐席确认好的，填的时候对照一遍有没有漏；输出字段至少要能表达「拿不准怎么办」（needs_human_review）。</label>`; },
+    ref:P_BLOCK_IO,
+    note:"输入一条诉求、输出类别 ＋ confidence／reason／needs_human_review／status；字段级明细（阈值、数据结构）交给 SPEC 环节。",
+    get(){ return document.getElementById('v3').value; }
+  },
+  {
     q:"技术选型：用什么技术，为什么？",
     help:"这一步是本向导最考功力的一步——不是选对了就行，是要说清「为什么不用更复杂的」。想三个问题：1. 这个任务需要查知识库/文档吗？（需要→RAG）2. 需要自己做决策、调工具、多步流转吗？（需要→Agent）3. 有历史标注数据能训练或微调吗？（没有→别碰微调）。写的时候问自己：我能不能说清为什么不上 RAG、不上 Agent？",
     render(ctr){ ctr.innerHTML = `
@@ -495,21 +520,11 @@ const STEPS = [
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">数据现状描述（思考后填写）</label>
       <textarea id="v5" rows="4" placeholder="我们有没有历史标注数据？这对技术路线意味着什么？（提示：没有 → 必须走零样本，不能用传统机器学习）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：这一步是 Agent 走死路的头号陷阱——不写清楚"没有历史标注数据"，它可能去搭传统机器学习（TF-IDF ＋ 分类器需要上千条标注）。</label>`; },
+      <label class="lbl" style="margin-top:10px">🧭 提示：这一步是 Agent 走死路的头号陷阱——不写清楚"没有历史标注数据"，它可能去搭传统机器学习（TF-IDF ＋ 分类器需要上千条标注）。</label>
+      <label class="lbl" style="margin-top:10px">🔒 样本纪律：测试样本由数据包外部给定（25 条，含表头），会<b>连数据一起写进提示词</b>，由 Agent 施工前落盘为 <code>tests/classify_cases.csv</code>；原样使用，不得改动、不得重造——改一条，验收口径就变了。</label>`; },
     ref:P_BLOCK_4,
     note:"数据现状只写「无历史标注 → 必须走零样本」这一条判断，且写成「必须走、不能用」，不给 Agent 留反悔空间。",
     get(){ return document.getElementById('v5').value; }
-  },
-  {
-    q:"测试集：样本在哪、多少条、什么字段？",
-    help:"这一步训练你的「样本纪律」。想三个问题：1. 测试样本从哪来、多少条、什么字段？2. 数据要不要写进提示词？3. 越界会怎样？标准答案：样本由数据包外部给定，<b>数据整段写进提示词</b>（含表头，25 条），让 Agent 施工前落盘成 CSV——这样它不用自己编数据；但数据必须原样复制，一个字都不许改。",
-    render(ctr){ ctr.innerHTML = `
-      <label class="lbl">测试集说明（思考后填写：数据从哪来、多少条、什么字段、要不要原样落盘）</label>
-      <textarea id="v6s" rows="4" placeholder="数据从哪来、多少条、什么字段？（提示：数据由数据包外部给定，会连数据一起写进提示词，你不用手抄；这里说清来源、条数与字段即可）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：数据写进提示词是为了让 Agent 不用自己编数据（它写进 <code>tests/classify_cases.csv</code> 再自测）；但外部给定的数据是验收口径的一部分，<b>原样复制、不得改动</b>——改一条，验收结论就作废。</label>`; },
-    ref:P_BLOCK_5,
-    note:"这一块写清数据来源与字段；数据本身（25 条 ＋ 表头）会整段写进提示词，由 Agent 施工前落盘为 tests/classify_cases.csv，原样使用、不得改动或重造。",
-    get(){ return document.getElementById('v6s').value; }
   },
   {
     q:"验收口径：做出来怎么算成功？",
@@ -593,7 +608,7 @@ function back(){
 }
 
 // 块标题（用于"我的提示词"补块名；各步参考答案里已自带，故不叠加）
-const BLOCK_LABELS = ["【背景】","【要做什么】","【技术选型】","【数据现状】","【测试集】","【验收口径】","【约束】"];
+const BLOCK_LABELS = ["【背景】","【要做什么】","【输入输出】","【技术选型】","【数据现状】","【验收口径】","【约束】"];
 
 // 拼装提示词正文：7 个短块按序拼接 ＋ 末尾一句流程要求
 function assemble(getBlock){
@@ -606,7 +621,7 @@ function assemble(getBlock){
   return out.join(`\n`);
 }
 
-// 参考提示词：7 个块逐字采用权威文件（块名已在块体内）
+// 参考提示词：9 个块逐字采用权威文件（块名已在块体内）
 function buildRefPrompt(){
   return assemble(b=> STEPS[b.n-1].ref);
 }

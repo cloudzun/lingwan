@@ -140,7 +140,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <p><strong>目标</strong>：用 AI（opencode）在 2 小时内，做出一个<strong>客户诉求五分类系统</strong>——输入一句客户诉求，输出它该转给哪个类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他），按约定的验收口径达标，并带一个最小网页验证面板。</p>
 <p><strong>技术方案不变</strong>（来自实验一选型）：<br />
 - <strong>文本分类</strong>（不是 RAG、不是 Agent）——输入一句诉求、输出一个类别，一次调用搞定。<br />
-- 技术栈：opencode + gstack 工程流程 + DeepSeek + 最小验证面板（如 Streamlit）。</p>
+- 技术栈：opencode + gstack 工程流程 + DeepSeek + Streamlit 验证面板。</p>
 <blockquote>
 <p><strong>本实验的能力定位：</strong> 它只解决"<strong>这是什么</strong>"——输入一条诉求，输出业务类别和不确定性判断（是否建议转人工）。在后续的实验五 · 综合系统 Agent（进阶）中，分类会被视为<strong>可选辅助能力</strong>，而不是每条请求的强制第一步——明确政策问题可以直接查政策（<code>search_policy</code>），明确部门问题可以直接查职责（<code>query_department</code>），只有类别本身有助于后续判断时才值得调用分类。实验五 不会强制复用本实验的代码，本实验的重点是把"分类"这块能力积木做小、做清楚、做可验证。</p>
 </blockquote>
@@ -308,12 +308,12 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 <p><strong>这不是让 AI 干的活，是你（Delta）的活。</strong> 你要把实验一的方案框架，翻译成一段能让 Agent 开跑的 office-hours 启动信息。写得好不好，直接决定 AI 能不能按标准流程跑对。</p>
 </blockquote>
 <h3 id="agent_1">先理清"要交给 Agent 哪些信息"</h3>
-<p>对照实验一的方案框架，把场景 A 的相关结论摘出来，组装成一份完整的启动信息。数据包里的 <code>脚手架/启动提示词-模板.md</code> 已经把这份启动信息拆成 <strong>7 项信息块</strong>，一项都不许留白。<strong>每项都给出确定的内容，不是留白让 Agent 猜</strong>：</p>
+<p>对照实验一的方案框架，把场景 A 的相关结论摘出来，组装成一份完整的启动信息。数据包里的 <code>脚手架/启动提示词-模板.md</code> 已经把这份启动信息拆成 <strong>9 个块</strong>（其中【技术选型】【数据现状】【测试集】【环境与网络】有可直接采用的写法），一块都不许留白。<strong>每块都给出确定的内容，不是留白让 Agent 猜</strong>：</p>
 <table>
 <thead>
 <tr>
 <th>#</th>
-<th>要包含的信息</th>
+<th>要包含的块</th>
 <th>从方案框架哪里找</th>
 <th>启动信息里怎么写</th>
 </tr>
@@ -322,8 +322,8 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 <tr>
 <td>1</td>
 <td><strong>背景与角色</strong></td>
-<td>你是谁、在给谁做</td>
-<td>"我是 FDE 团队的 Delta，为岭湾电力客户服务平台（岭湾项目）施工场景 A"；写明 Agent 扮工程实现方、你负责判断与拍板；写明决策人、一线代表、数据归口</td>
+<td>实验一《解决方案框架》场景 A</td>
+<td>"实验一《解决方案框架》把场景 A（客户诉求智能分类）定为快赢第一站"；写明 Agent 扮工程实现方、你负责判断与拍板；写明决策人、一线代表、数据归口</td>
 </tr>
 <tr>
 <td>2</td>
@@ -333,7 +333,7 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 </tr>
 <tr>
 <td>3</td>
-<td><strong>输入输出</strong>（并入【要做什么】块）</td>
+<td><strong>输入输出</strong></td>
 <td>场景 A 的"解决什么"</td>
 <td>"输入一句客户诉求全文，输出类别：业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他"，并写死 <code>confidence</code>／<code>reason</code>／<code>needs_human_review</code>／<code>status</code> 与落盘文件</td>
 </tr>
@@ -360,6 +360,12 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 <td><strong>约束与边界</strong></td>
 <td>场景 A 的风险与应对</td>
 <td>"API key 走环境变量不硬编码；拿不准转人工、不硬归'其他'；不做全部电力业务的细分派单（只做五类 ＋ 6 条线职责）"</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>环境与网络</strong>（自动带入）</td>
+<td>固定的两条国内网络配置</td>
+<td>"pip 用清华镜像源；GitHub 访问走 ghfast.top 代理"——照抄即可，不用自己写</td>
 </tr>
 </tbody>
 </table>
@@ -438,7 +444,9 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 <li>[ ] 你自己独立写出了启动提示词（先别翻附录）</li>
 <li>[ ] 7 个自查问题你都能回答"能"</li>
 <li>[ ] 数据现状（无历史标注 → 零样本）写进去了</li>
+<li>[ ] <strong>输入输出写清了</strong>（输入是什么、输出哪些字段：类别 ＋ <code>confidence</code>／<code>reason</code>／<code>needs_human_review</code>／<code>status</code>）</li>
 <li>[ ] 测试样本写明了"外部给定、原样照抄"，并把 <strong>25 条数据（含表头）连数据一起写进提示词</strong>（Agent 施工前落盘为 <code>tests/classify_cases.csv</code>）</li>
+<li>[ ] <strong>环境与网络那两条配置带上了</strong>（pip 清华镜像源 ＋ GitHub ghfast 代理）</li>
 <li>[ ] 验收口径（自信区 ≥85%（≥21/25）＋ 转人工 ≤30%，转人工不算错）写进去了</li>
 <li>[ ] 明确写了"按 gstack 八环节流程执行 ＋ 每环节产出文件 ＋ 需要拍板时停下问我"</li>
 <li>[ ] 你和组内对齐了这份提示词（Delta 主导，Echo 队友审查是否忠实于方案框架）</li>
@@ -496,7 +504,7 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 <tr>
 <td><strong>autoplan</strong></td>
 <td>暴露两可决策，等你拍板</td>
-<td><strong>真的拍板</strong>（转人工阈值、兜底策略、要不要做验证面板及其滑块），写回 SPEC</td>
+<td><strong>真的拍板</strong>（转人工阈值、兜底策略、要不要做面板滑块），写回 SPEC</td>
 </tr>
 <tr>
 <td><strong>施工</strong></td>
@@ -556,7 +564,7 @@ cd ~/gstack &amp;&amp; ./setup --host opencode
 ├── SPEC.md                   # 含失败模式 + No-Go + 数据模型 + 验收口径
 ├── autoplan-decisions.md     # autoplan 拍板记录
 ├── src/handler.py            # 交付入口 handle_request（含分类调用与人工确认点）
-├── app.py                    # 最小验证面板（如 Streamlit）
+├── app.py                    # Streamlit 验证面板
 ├── review.md                 # 两遍审查 + P0-P3
 ├── qa-report.md              # 测试报告（含边界输入）
 ├── VERSION / CHANGELOG.md / README.md
@@ -740,16 +748,20 @@ python 验收\evaluate.py --task classify --impl api      # 在线模型直连�
 </blockquote>
 <pre><code>请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台（岭湾项目）启动场景 A 的施工。
 
-【背景】实验一已作为 Echo 完成需求诊断，方案框架中场景 A 定为零样本文本分类
-（客户诉求 → 专业条线类别），属快赢场景，本次由 Delta 施工。
+【背景】实验一《解决方案框架》把场景 A（客户诉求智能分类）定为快赢第一站、选型零样本
+文本分类（客户诉求 → 专业条线类别）；本轮由 Delta 施工场景 A。
 客户方决策人周主任、坐席班长小林、数字化部陈工，合规由省公司数字化与网络安全部把关。
 
-【要做什么】客户诉求五分类系统：一条客户诉求全文进来，输出类别（业务办理／电费与计量／
-故障报修与停电／投诉举报与用电安全／其他）＋ confidence ＋ reason ＋ needs_human_review。
-拿不准走转人工、不硬归&quot;其他&quot;；只做五分类，不做全业务细分派单（完整 No-Go 交给 spec 环节产出）。
+【要做什么】做一个客户诉求五分类系统：把坐席每天要人工判断的「这条诉求该转到哪个专业
+条线」自动化。拿不准走转人工、不硬归&quot;其他&quot;；只做五分类，不做全业务细分派单（完整 No-Go 交给
+spec 环节产出）。
+
+【输入输出】输入：一条客户诉求全文（如&quot;我家车位想装个给电动车充电的表怎么申请&quot;）。
+输出：类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他）＋ confidence
+＋ reason ＋ needs_human_review ＋ status。
 
 【技术选型】一次大模型调用做零样本分类，配一条确定性兜底规则；不用 RAG/Agent
-（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ 最小验证面板。
+（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ Streamlit 验证面板。
 
 【数据现状】无历史标注数据 → 必须走零样本分类，不能用传统机器学习
 （TF-IDF ＋ 分类器需要上千条标注，这条路走不通）。
@@ -786,12 +798,16 @@ C25,我换手机号了想改一下当初留的号码,其他
 
 【约束】数据不出内网，不把客户诉求原文发到外部服务；API key 走环境变量。
 
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+
 请按 gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）执行，
 每一环产出文件，走完一环停下来等我确认，需要拍板的地方列出选项和利弊问我。
 </code></pre>
 <p><strong>对照要点：</strong></p>
 <ul>
-<li><strong>必备的信息块</strong>：背景 / 要做什么（含输入输出一句）/ 技术选型 / 数据现状 / 测试样本（<strong>数据整段写进提示词</strong>，含表头 25 条）/ 验收口径 / 约束（边界一句话即可，<strong>完整 No-Go 交给 spec 环节</strong>）。你漏了哪块，对照前面 7 项清单想——那是你写的时候没想到的。</li>
+<li><strong>必备的块</strong>：背景 / 要做什么 / <strong>输入输出</strong> / 技术选型 / 数据现状 / 测试样本（<strong>数据整段写进提示词</strong>，含表头 25 条）/ 验收口径 / 约束（边界一句话即可，<strong>完整 No-Go 交给 spec 环节</strong>）/ <strong>环境与网络</strong>（两条国内网络配置，照抄）。你漏了哪块，对照前面 9 块清单想——那是你写的时候没想到的。</li>
 <li><strong>参考答案里有三处"防翻车"信息</strong>：1）"必须走零样本，不能用传统机器学习"（防 Agent 走死路）；2）"转人工不算错"（防验收口径自相矛盾）；3）"数据原样写进提示词、不得改动重造"（防 Agent 自己编数据）。</li>
 <li><strong>测试样本数据</strong>：把 25 条样本（含表头 <code>id,text,label</code>）<strong>原样写进提示词</strong>，并明确"外部给定、原样使用、严禁重造"——这样 Agent 施工前会落盘成 <code>tests/classify_cases.csv</code>，不必自己编数据。</li>
 <li><strong>流程要求</strong>：参考答案末尾只轻提一句流程要求；真正把流程"焊死"靠的是<strong>注入时粘贴的 5 条驱动指令</strong>，其中"一环一停"最关键。</li>

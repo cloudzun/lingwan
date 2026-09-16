@@ -350,7 +350,7 @@ python 验收\evaluate.py --task all --impl api</div>
   <div class="stage" id="s8">
     <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验三</span></div>
     <h1 style="font-size:22px">✅ 你的启动提示词</h1>
-    <p class="sub">先切换到「参考提示词」对照检查一遍，确认没有遗漏关键信息，再复制。参考提示词正文为 8 个短块（含两个测试数据块）＋ 末尾一句流程要求。</p>
+    <p class="sub">先切换到「参考提示词」对照检查一遍，确认没有遗漏关键信息，再复制。参考提示词正文为 11 个固定块（含政策文档、两套测试数据与末尾的环境与网络）＋ 末尾一句流程要求。</p>
     <div class="gen-card">
       <div class="gen-tabs">
         <span class="gen-tab on" data-t="prompt" onclick="switchTab(this)">我的提示词</span>
@@ -383,8 +383,8 @@ python 验收\evaluate.py --task all --impl api</div>
 
 我是一名 FDE 团队（Delta 角色），需要启动岭湾电力客户服务平台场景 B 的施工。
 
-【在这里粘贴你写好的启动提示词，包括 8 个短块：背景 / 要做什么 / 技术选型 /
-数据现状 / Q&amp;A 验证集 / 库外问题集 / 验收口径 / 约束】
+【在这里粘贴你写好的启动提示词，包括 11 个固定块：背景 / 要做什么 / 输入输出 / 技术选型 /
+数据现状 / 政策文档 / Q&amp;A 验证集 / 库外问题集 / 验收口径 / 约束 / 环境与网络】
 
 请以 gstack 标准开发流程执行本次开发，严格遵守以下要求：
 1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
@@ -414,25 +414,36 @@ python 验收\evaluate.py --task all --impl api</div>
 <script>
 // ==========================================================================
 // 权威来源：02_实验手册/lab3-policy-rag/references/参考-启动提示词.md
-// 本向导内嵌的"参考提示词正文"与 5 条驱动指令 = 该文件提示词正文，逐字一致（8 个短块 ＋ 末尾一句流程要求）。
+// 本向导内嵌的"参考提示词正文"与 5 条驱动指令 = 该文件提示词正文，逐字一致（11 个固定块 ＋ 末尾一句流程要求）。
+// 块序（与训练营素材一致）：【背景】→【要做什么】→【输入输出】→【技术选型】→【数据现状】→
+// 【政策文档】→【Q&A 验证集】→【验收口径】→【约束】→【环境与网络】
 // ==========================================================================
 
 // ===== 提示词正文：可整段复制的固定部分（逐字采用权威文件） =====
 const P_LEAD = `请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 B 的施工。`;
 
-const P_BLOCK_1 = `【背景】我们上一轮完成了场景 A（诉求分类），周主任催着推进下一个子场景。场景 B
-（供电业务知识问答）已选型为 RAG，现在由 Delta 施工。`;
+const P_BLOCK_1 = `【背景】实验一《解决方案框架》把场景 B（供电业务知识问答）定为第二个快赢场景、
+选型 RAG；上一轮（实验二）已交付场景 A（诉求分类），并留下 AGENTS.md 与 retro.md 作为
+交接经验。本轮由 Delta 施工场景 B。`;
 
 const P_BLOCK_2 = `【要做什么】做一个供电业务知识问答系统：用电客户或坐席输入业务问题，系统从知识文档
-检索证据再生成回答，并标注来源（哪份文件、哪一条）。输出字段固定为 answer + evidence[]
-（document/article/excerpt）+ evidence_sufficient + status；字段明细交 SPEC。`;
+检索证据再生成回答，并标注来源（哪份文件、哪一条）。`;
+
+const P_BLOCK_IO = `【输入输出】输入：一个客户业务问题（如"居民阶梯电价的第二档如何划分并加价"）。
+输出：答案文本 ＋ evidence[] 来源链（文件名 ＋ 条款号）；检索不到时 not_found。`;
 
 const P_BLOCK_3 = `【技术选型】RAG，不用微调（知识文档常更新、需溯源、易幻觉）、不用纯关键词搜索
 （自然语言和文件表述有语义鸿沟）。技术栈：Python + DeepSeek + 向量库 + Streamlit。`;
 
-const P_BLOCK_4 = `【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
+const P_BLOCK_DATA = `【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
 电价与电费 6 章 25 条、业扩报装 7 章 26 条、供电服务规范（.docx）6 章 26 条、分布式光伏并网（.pdf）6 章 21 条。
 样本外部给定：评测集/qa_pairs.csv 6 条、评测集/qa_pairs_out_of_scope.csv 2 条，原样使用、不得重造或改写。`;
+
+// 固定块：【政策文档】——知识库清单（数据包原位读取，正文由 Agent 自己读）
+const P_BLOCK_POLICY = `【政策文档】知识库在 知识文档/ 目录下，共 5 份（混合格式）：供电营业规则（.md，8 章 32 条）、
+电价与电费（.md，6 章 25 条）、业扩报装（.md，7 章 26 条）、供电服务规范（.docx，6 章 26 条）、
+分布式光伏并网（.pdf，6 章 21 条）。.docx 与 .pdf 需先解析成可检索文本再入库；
+正文由你从数据包原位读取，不得自行改动或编造。`;
 
 // ===== 测试数据（数据包外部给定；提示词里连数据一起给，Agent 施工前落盘） =====
 const QA_DATA = `question,expected_answer,expected_source
@@ -447,39 +458,49 @@ const QA_OUT_DATA = `question,expected_answer,expected_source
 我家燃气灶点不着火了该找谁修,知识库中未找到，建议咨询人工,不在知识库范围内
 小区物业把水费涨了有没有依据,知识库中未找到，建议咨询人工,不在知识库范围内`;
 
-const P_BLOCK_5 = `【Q&A 验证集】请把以下测试数据写入 tests/qa_pairs.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
+const P_BLOCK_QA = `【Q&A 验证集】请把以下测试数据写入 tests/qa_pairs.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
 ${QA_DATA}`;
 
-const P_BLOCK_6 = `【库外问题集】请把以下测试数据写入 tests/qa_pairs_out_of_scope.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
+const P_BLOCK_OOS = `【库外问题集】请把以下测试数据写入 tests/qa_pairs_out_of_scope.csv（含表头 question,expected_answer,expected_source），施工时用它作为自测集；数据不得自行改动或重新生成：
 ${QA_OUT_DATA}`;
 
-const P_BLOCK_7 = `【验收口径】答案准确率 ≥80% + 来源可追溯率 ≥90%（引用须对到文件名 + 条款号，
+const P_BLOCK_ACCEPT = `【验收口径】答案准确率 ≥80% + 来源可追溯率 ≥90%（引用须对到文件名 + 条款号，
 对不上不算达标）；库外问题必须拒答，应答"知识库中未找到，建议咨询人工"。
 无证据时必须返回 not_found，不得编造条款号或数值；回答中的数值一律标注"（教学示意值）"。`;
 
-const P_BLOCK_8 = `【约束】数据不出内网，只用 知识文档/ 与 评测集/ 内的材料；API key 走环境变量
+const P_BLOCK_CONSTRAINT = `【约束】数据不出内网，只用 知识文档/ 与 评测集/ 内的材料；API key 走环境变量
 （DEEPSEEK_API_KEY），不硬编码、不入库、不回显。`;
+
+const P_BLOCK_ENV = `【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）`;
 
 const P_FLOW = `请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship →
 retro）执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。`;
 
-// ===== 八个信息块（1:1 对应提示词正文的 8 个块） =====
-// 8 个块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
+// ===== 11 个固定块（1:1 对应提示词正文的 11 个块） =====
+// 块序照训练营素材：【背景】→【要做什么】→【输入输出】→【技术选型】→【数据现状】→
+// 【政策文档】→【Q&A 验证集】→【库外问题集】→【验收口径】→【约束】→【环境与网络】。
+// 固定块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
 // 因此拼装时只把块体按序接起来——保证"我的提示词/参考提示词"结构与权威一致。
-// 第 5、6 块是测试数据块：数据包外部给定，连数据一起写进提示词，Agent 施工前落盘为 tests/*.csv。
+// 【输入输出】【技术选型】【政策文档】【Q&A 验证集】【库外问题集】【验收口径】【约束】【环境与网络】
+// 都是固定块（不占学员填写步数）；学员只填 7 步，其中 3 步各自对应一个块。
 const BLOCKS = [
-  { n:1, custom:true },
-  { n:2, custom:true },
-  { n:3, custom:false, fixed:P_BLOCK_3 },
-  { n:4, custom:false, fixed:P_BLOCK_4 },
-  { n:5, custom:false, fixed:P_BLOCK_5 },
-  { n:6, custom:false, fixed:P_BLOCK_6 },
-  { n:7, custom:true },
-  { n:8, custom:true }
+  { n:1, custom:true, step:1 },
+  { n:2, custom:true, step:2 },
+  { n:3, custom:false, fixed:P_BLOCK_IO },
+  { n:4, custom:false, fixed:P_BLOCK_3 },
+  { n:5, custom:true, step:5 },
+  { n:6, custom:false, fixed:P_BLOCK_POLICY },
+  { n:7, custom:false, fixed:P_BLOCK_QA },
+  { n:8, custom:false, fixed:P_BLOCK_OOS },
+  { n:9, custom:false, fixed:P_BLOCK_ACCEPT },
+  { n:10, custom:false, fixed:P_BLOCK_CONSTRAINT },
+  { n:11, custom:false, fixed:P_BLOCK_ENV }
 ];
 
 // 块标题（用于"我的提示词"补块名；各步参考答案里已自带，故不叠加）
-const BLOCK_LABELS = ["【背景】","【要做什么】","【技术选型】","【数据现状】","【Q&A 验证集】","【库外问题集】","【验收口径】","【约束】"];
+const BLOCK_LABELS = ["【背景】","【要做什么】","【输入输出】","【技术选型】","【数据现状】","【政策文档】","【Q&A 验证集】","【库外问题集】","【验收口径】","【约束】","【环境与网络】"];
 
 // ===== 5 条驱动指令（逐字采用权威文件；编号按 wizard 统一体例，正文逐字一致） =====
 const DRIVERS = `1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
@@ -488,29 +509,42 @@ const DRIVERS = `1. 依次走完 8 个环节：office-hours → spec → autopla
 4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
 5. 现在从 office-hours 开始。`;
 
-// ===== 8 步定义（场景 B：供电业务知识问答 / RAG） =====
+// ===== 7 步定义（场景 B：供电业务知识问答 / RAG） =====
+// 步序：1 背景 → 2 要做什么 → 3 输入输出 → 4 技术选型 → 5 数据现状 → 6 验收口径 → 7 约束
+// 数据块（政策文档/Q&A 验证集/库外问题集）与【环境与网络】是固定块，不占填写步数。
 const STEPS = [
   {
     q:"背景：你是谁，在给谁做？",
-    help:"第一步，让 Agent 知道项目上下文。想清楚：上一轮交付了什么、现在施工的是哪个子场景、已选型为什么技术、谁来施工？写好后问自己：如果换个人读，他能看懂我在给谁做吗？",
+    help:"第一步，让 Agent 知道项目上下文。想清楚：场景 B 的选型从哪儿来（实验一《解决方案框架》）、上一轮交付了什么、留下了什么交接经验、这一轮施工哪个子场景、谁来施工？写好后问自己：如果换个人读，他能看懂我在给谁做吗？",
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">你的回答（思考后填写）</label>
-      <textarea id="v1" rows="4" placeholder="在这里写下项目背景……（我是谁 / 上一轮做了什么 / 现在施工哪个场景 / 已选型为什么技术）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：从实验一《解决方案框架》里找"场景 B"部分，用自己的话转述；场景 A（诉求分类）已交付。背景块只写两句话，不铺开写。</label>`; },
+      <textarea id="v1" rows="4" placeholder="在这里写下项目背景……（我是谁 / 选型从哪来 / 上一轮交付了什么 / 留下了什么交接经验 / 这一轮施工哪个场景）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：从实验一《解决方案框架》里找"场景 B"部分，点明它的选型来自实验一；再承接上一轮（实验二）的产出与交接经验。背景块只写三句话，不铺开写。</label>`; },
     ref:P_BLOCK_1,
-    note:"背景块只说清「上一轮交付了什么、这一轮做什么、已选型为什么」；客户方人员清单已在上一轮交代，不重复抄。",
+    note:"背景块要说清三件事：场景 B 的定位与选型来自实验一《解决方案框架》；上一轮（实验二）已完成场景 A、留下 AGENTS.md 与 retro.md 作交接；本轮由 Delta 施工场景 B。客户方人员清单已在上一轮交代，不重复抄。",
     get(){ return document.getElementById('v1').value; }
   },
   {
-    q:"要做什么：一句话说清这个子场景 ＋ 字段契约",
-    help:"这一步训练你把「客户需求」压缩成「一句可验收的施工指令」的能力。别写「做一个问答系统」这种空话——要具体到「给谁解决什么问题、基于什么回答、输出哪些字段」。字段明细不用在这里写全，交给 SPEC。",
+    q:"要做什么：一句话说清这个子场景",
+    help:"这一步训练你把「客户需求」压缩成「一句可验收的施工指令」的能力。别写「做一个问答系统」这种空话——要具体到「给谁解决什么问题、基于什么回答」。输出契约与 I/O 留到下一步单独说。",
     render(ctr){ ctr.innerHTML = `
-      <label class="lbl">你的回答（一句话 ＋ 输出字段，思考后填写）</label>
-      <textarea id="v2" rows="4" placeholder="用一句话说清：要交付什么系统、帮谁解决什么问题、基于什么回答；输出字段固定为哪些（明细交 SPEC）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：这一块要把"来源引用"写进输出里——答案必须带"哪份文件、哪一条"；字段明细写"交 SPEC"，提示词里不展开。</label>`; },
+      <label class="lbl">你的回答（一句话，思考后填写）</label>
+      <textarea id="v2" rows="4" placeholder="用一句话说清：要交付什么系统、帮谁解决什么问题、基于什么回答"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：一句话里要有「谁用」「解决什么问题」「基于什么回答」；输出哪些字段、检索不到怎么答，都在下一步【输入输出】里说，别挤在这一块。</label>`; },
     ref:P_BLOCK_2,
-    note:"字段写死为 answer + evidence[] + evidence_sufficient + status，并注明「字段明细交 SPEC」——细节留给 spec 环节，不在提示词里展开。",
+    note:"这一块只写「做什么、帮谁、基于什么回答」一句话；输出字段与来源引用交下一步【输入输出】，字段明细交 SPEC。",
     get(){ return document.getElementById('v2').value; }
+  },
+  {
+    q:"输入输出：系统收到什么，吐出什么？",
+    help:"这一步训练你「定义接口」的能力。输入是一个业务问题；输出是什么？——不只是答案，还要带来源链（哪份文件、哪一条），这是 RAG 和分类器的本质区别；检索不到时还要返回 not_found。想清楚：输出字段固定为哪些？写的时候问自己：来源引用写清楚了吗？",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">输入输出描述（思考后填写）</label>
+      <textarea id="v3" rows="4" placeholder="输入是……（一个客户业务问题）；输出是……（答案文本 ＋ evidence[] 来源链：文件名 ＋ 条款号；检索不到时 return 什么）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：来源链是这类系统的命门——"答案可追溯"，坐席才不会背锅。输出里必须体现「文件名 ＋ 条款号」，并说清检索不到时的返回值（not_found）。</label>`; },
+    ref:P_BLOCK_IO,
+    note:"这一步独立成块，训的是「定义接口」：输入一个客户业务问题，输出答案文本 ＋ evidence[] 来源链（文件名 ＋ 条款号），检索不到时返回 not_found。输出字段固定为 answer + evidence[]（document/article/excerpt）+ evidence_sufficient + status，字段明细交 SPEC——细节留给 spec 环节，不在提示词里展开。",
+    get(){ return document.getElementById('v3').value; }
   },
   {
     q:"技术选型：用什么技术，为什么？",
@@ -524,36 +558,14 @@ const STEPS = [
   },
   {
     q:"数据现状：知识文档与样本什么情况？",
-    help:"这一步训练你对「数据约束」的判断力——RAG 的数据是知识文档，不是训练样本。想三个问题：1. 知识库有几份文档、什么格式、在哪个目录、各多少章多少条？2. 验证集与库外问题集各多少条、落在哪？3. 数据要不要写进提示词？标准答案：知识文档只写清单（文件名 ＋ 各多少章多少条，正文由 Agent 从数据包读取）；测试数据由数据包外部给定，<b>数据整段写进提示词</b>（含表头），让 Agent 施工前落盘——但必须原样复制，一个字都不许改。",
+    help:"这一步训练你对「数据约束」的判断力——RAG 的数据是知识文档，不是训练样本。想三个问题：1. 知识库有几份文档、什么格式、在哪个目录、各多少章多少条？2. 验证集与库外问题集各多少条、落在哪？3. 这两类数据怎么交？标准答案：知识文档只写清单（文件名 ＋ 各多少章多少条，正文由 Agent 从数据包原位读取）；测试样本由数据包外部给定、原样使用、不得改写重造，并由 Agent 施工前落盘成 tests/qa_pairs.csv 与 tests/qa_pairs_out_of_scope.csv。",
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">数据现状描述（思考后填写）</label>
-      <textarea id="v5" rows="5" placeholder="知识库有几份文档、什么格式、在哪个目录、各多少章多少条？验证集与库外问题集各多少条、落在哪？数据要不要连同数据本身一起写进提示词？"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：知识库在数据包 <code>知识文档/</code>，5 份文档混合格式（3 md ＋ docx ＋ pdf）；验证集 6 条、库外问题 2 条在 <code>评测集/</code>。<b>测试数据连数据一起写进提示词</b>——接下来两步就是那两个数据块，你不用手抄，但必须核对一个字都没改。</label>`; },
-    ref:P_BLOCK_4,
-    note:"数据现状写「知识文档/（5 份，各多少章多少条）＋ 评测集/qa_pairs.csv 6 条 ＋ 评测集/qa_pairs_out_of_scope.csv 2 条」并注明「原样使用、不得重造或改写」；知识文档只写清单（正文由 Agent 从数据包原位读取），测试数据则连数据一起写进提示词（后面两块给出）。",
+      <textarea id="v5" rows="5" placeholder="知识库有几份文档、什么格式、在哪个目录、各多少章多少条？验证集与库外问题集各多少条、落在哪？这两类数据分别怎么交（知识文档只写清单／测试样本原样落盘）？"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：知识库在数据包 <code>知识文档/</code>，5 份文档混合格式（3 md ＋ docx ＋ pdf）；验证集 6 条、库外问题 2 条在 <code>评测集/</code>。<b>样本纪律</b>：数据由数据包外部给定，<b>原样使用、不得改写或重造</b>，由 Agent 施工前原样落盘成 <code>tests/qa_pairs.csv</code>（6 条）与 <code>tests/qa_pairs_out_of_scope.csv</code>（2 条）——改一条，验收结论就作废。数据块本身是固定块（不占填写步数），你不用手抄，但要核对一个字都没改。</label>`; },
+    ref:P_BLOCK_DATA,
+    note:"数据现状写「知识文档/（5 份，各多少章多少条）＋ 评测集/qa_pairs.csv 6 条 ＋ 评测集/qa_pairs_out_of_scope.csv 2 条」并注明「原样使用、不得重造或改写」；知识文档只写清单（正文由 Agent 从数据包原位读取），测试数据由 Agent 原样落盘为 tests/*.csv（数据块作为固定块整段写进提示词，不占填写步数）。",
     get(){ return document.getElementById('v5').value; }
-  },
-  {
-    q:"测试数据：Q&A 验证集怎么给？",
-    help:"这一步训练你的「样本纪律」。想三个问题：1. 验证集从哪来、多少条、什么字段？2. 数据要不要写进提示词？3. 越界会怎样？标准答案：验证集由数据包外部给定，<b>数据整段写进提示词</b>（含表头，6 条），让 Agent 施工前落盘成 <code>tests/qa_pairs.csv</code>——这样它不用自己编数据；但数据必须原样复制，一个字都不许改。",
-    render(ctr){ ctr.innerHTML = `
-      <label class="lbl">Q&amp;A 验证集说明（思考后填写：数据从哪来、多少条、什么字段、要不要原样落盘）</label>
-      <textarea id="v6qa" rows="4" placeholder="数据从哪来、多少条、什么字段？（提示：数据由数据包外部给定，会连数据一起写进提示词，你不用手抄；这里说清来源、条数与字段即可）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：数据写进提示词是为了让 Agent 不用自己编数据（它写进 <code>tests/qa_pairs.csv</code> 再自测）；但外部给定的数据是验收口径的一部分，<b>原样复制、不得改动</b>——改一条，验收结论就作废。</label>`; },
-    ref:P_BLOCK_5,
-    note:"这一块写清数据来源与字段；数据本身（6 条 ＋ 表头）会整段写进提示词，由 Agent 施工前落盘为 tests/qa_pairs.csv，原样使用、不得改动或重造。",
-    get(){ return document.getElementById('v6qa').value; }
-  },
-  {
-    q:"测试数据：库外问题集怎么给？",
-    help:"这一步继续练「样本纪律」，考的是拒答能不能被测。想两个问题：1. 库外问题集从哪来、多少条？2. 它的 expected_answer 是什么？标准答案：同样由数据包外部给定、<b>数据整段写进提示词</b>（含表头，2 条），让 Agent 施工前落盘成 <code>tests/qa_pairs_out_of_scope.csv</code>——qa 环节要用它实测「库里没有就拒答」，不能编。",
-    render(ctr){ ctr.innerHTML = `
-      <label class="lbl">库外问题集说明（思考后填写：数据从哪来、多少条、期望答案是什么）</label>
-      <textarea id="v6oos" rows="4" placeholder="库外问题集从哪来、多少条？期望答案是什么？（提示：数据由数据包外部给定，同样连数据一起写进提示词；这里说清来源、条数与拒答口径即可）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：库外问题的 expected_answer 是"知识库中未找到，建议咨询人工"——它是<b>拒答</b>的验收基准，同样原样复制、不得改动；落盘位置是 <code>tests/qa_pairs_out_of_scope.csv</code>。</label>`; },
-    ref:P_BLOCK_6,
-    note:"这一块写清库外问题集的来源、条数与拒答口径；数据本身（2 条 ＋ 表头）会整段写进提示词，由 Agent 施工前落盘为 tests/qa_pairs_out_of_scope.csv，原样使用、不得改动或重造。",
-    get(){ return document.getElementById('v6oos').value; }
   },
   {
     q:"验收口径：做出来怎么算成功？",
@@ -562,19 +574,19 @@ const STEPS = [
       <label class="lbl">验收口径描述（思考后填写）</label>
       <textarea id="v6" rows="5" placeholder="答案准确率怎么算？来源可追溯怎么算？库外问题怎么答？无证据时返回什么？数值要不要标注「教学示意值」？"></textarea>
       <label class="lbl" style="margin-top:10px">🧭 提示：双指标——答案准确率 ≥80% ＋ 来源可追溯率 ≥90%（引用须对到文件名 + 条款号）；库外问题必须拒答；无证据必须返回 not_found；数值一律标注「（教学示意值）」。验收命令属于手册与 qa 环节，不写进提示词。</label>`; },
-    ref:P_BLOCK_7,
+    ref:P_BLOCK_ACCEPT,
     note:"提示词里只写指标、拒答口径与 not_found 底线；验收命令（python 验收/evaluate.py …）、6/6 全对的小样本口径提示、演示级验收声明属于手册与 spec 环节，见前面「数据准备与验收」页。",
     get(){ return document.getElementById('v6').value; }
   },
   {
     q:"约束：有什么红线？边界一句话是什么？",
-    help:"最后一步，训练你「给 Agent 划边界」的能力。想两个问题：1. 数据能出内网吗、只用哪些材料？2. API key 怎么处理？红线写到能落地就行，一长串 No-Go 交给 spec 环节。",
+    help:"最后一步，训练你「给 Agent 划边界」的能力。想两个问题：1. 数据能出内网吗、只用哪些材料？2. API key 怎么处理？红线写到能落地就行，一长串 No-Go 交给 spec 环节。（【环境与网络】是固定块，拼装时自动带上，不用你填。）",
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">约束与边界（思考后填写，红线 ＋ 边界一句话）</label>
       <textarea id="v7" rows="4" placeholder="红线：数据能不能出内网？只用哪些材料？API key 怎么处理？边界一句话：本次不做什么（完整 No-Go 交给 spec 环节产出）……"></textarea>
       <label class="lbl" style="margin-top:10px">🧭 提示：提示词里的约束就写"数据不出内网、只用 知识文档/ 与 评测集/、API key 走环境变量"这类能落地的一句话红线；No-Go 清单与 AGENTS.md 十一条摘抄属于 spec 环节与数据包，留在原地由 Agent 按需读取，不塞进提示词。</label>`; },
-    ref:P_BLOCK_8,
-    note:"提示词只留红线一句话；完整 No-Go 由 spec 环节产出（硬约束原文留在数据包 脚手架/AGENTS.md）。",
+    ref:P_BLOCK_CONSTRAINT,
+    note:"提示词只留红线一句话；完整 No-Go 由 spec 环节产出（硬约束原文留在数据包 脚手架/AGENTS.md）。【环境与网络】固定块（pip 清华镜像源 ＋ GitHub 走 ghfast.top 代理）由向导自动拼在【约束】之后，不用填。",
     get(){ return document.getElementById('v7').value; }
   }
 ];
@@ -600,14 +612,14 @@ function backToSteps(){
 
 function renderStep(){
   const st = STEPS[idx];
-  document.getElementById('qmeta').textContent = `步骤 ${idx+1} / 8`;
+  document.getElementById('qmeta').textContent = `步骤 ${idx+1} / 7`;
   document.getElementById('qtext').textContent = st.q;
   document.getElementById('qhelp').textContent = st.help;
-  document.getElementById('bar').style.width = `${idx/8*100}%`;
+  document.getElementById('bar').style.width = `${idx/7*100}%`;
   const backBtn = document.getElementById('backBtn');
   backBtn.textContent = idx===0 ? '← 回准备页' : '← 上一步';
   backBtn.style.visibility = 'visible';
-  document.getElementById('nextBtn').textContent = idx===7 ? '生成启动提示词 →' : '下一步 →';
+  document.getElementById('nextBtn').textContent = idx===6 ? '生成启动提示词 →' : '下一步 →';
   st.render(document.getElementById('input'));
 
   // 每步可选"看参考答案"
@@ -630,7 +642,7 @@ function next(){
   // 保存当前值
   const st = STEPS[idx];
   values[idx] = st.get();
-  if(idx < 7){ idx++; renderStep(); }
+  if(idx < 6){ idx++; renderStep(); }
   else{ go('s8'); }
 }
 function back(){
@@ -638,7 +650,8 @@ function back(){
   else{ go('s0b'); }  // 第一步的上一步 → 回数据准备页
 }
 
-// 拼装提示词正文：8 个短块按序拼接 ＋ 末尾一句流程要求
+// 拼装提示词正文：10 个信息块按序拼接 ＋ 末尾一句流程要求
+// custom 块用 step 指定它取自第几步的填写内容（步序与块序不同：输入输出等固定块不占步数）
 function assemble(getBlock){
   const out = [`${P_LEAD}\n`];
   BLOCKS.forEach(b=>{
@@ -649,15 +662,15 @@ function assemble(getBlock){
   return out.join(`\n`);
 }
 
-// 参考提示词：8 个块逐字采用权威文件（块名已在块体内）
+// 参考提示词：10 个块逐字采用权威文件（块名已在块体内）
 function buildRefPrompt(){
-  return assemble(b=> STEPS[b.n-1].ref);
+  return assemble(b=> STEPS[b.step-1].ref);
 }
 
 // 我的提示词：块的顺序与块名同参考提示词，内容用学员填写的原话
 function buildPrompt(){
   return assemble(b=>{
-    const v = values[b.n-1] !== undefined ? values[b.n-1] : STEPS[b.n-1].get();
+    const v = values[b.step-1] !== undefined ? values[b.step-1] : STEPS[b.step-1].get();
     return `${BLOCK_LABELS[b.n-1]}${v}`;
   });
 }

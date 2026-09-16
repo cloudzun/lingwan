@@ -373,7 +373,7 @@ cd ~/gstack && ./setup --host opencode</div>
       <li>他能不能知道 <b>按什么流程跑、产出什么</b>？</li>
     </ul>
     <div class="gstack-tip" style="margin-top:16px">
-      <b>提交前检查单：</b>6 个信息块全部齐备（背景／要做什么／技术选型／数据现状／验收口径／约束）· 7 个自查问题全部能回答"能" · 数据现状写明"无历史标注数据 ＋ 外部给定、原样使用、不得重造" · <b>工单样本与专业职责库的数据整段（含表头）已连数据写进提示词</b>，一个字没改、落盘路径写在数据块里 · 敏感清单 8 条已点明为敏感档判定依据 · 验收口径写死"路由正确率 ≥90%（判档＋分支动作）＋敏感件零漏判 100%＋假暂停一票否决"，字段契约一句写清、明细交 SPEC · 约束不超过 2 行 · 5 条驱动指令已粘贴且"一环一停"明确写出。
+      <b>提交前检查单：</b>10 个信息块全部齐备（背景／要做什么／输入输出／技术选型／数据现状／部门职责库／工单样本／验收口径／约束／环境与网络）· 7 个自查问题全部能回答"能" · 数据现状写明"无历史标注数据 ＋ 外部给定、原样使用、不得重造" · <b>工单样本与专业职责库的数据整段（含表头）已连数据写进提示词</b>，一个字没改、落盘路径写在数据块里 · 敏感清单 8 条已点明为敏感档判定依据 · 验收口径写死"路由正确率 ≥90%（判档＋分支动作）＋敏感件零漏判 100%＋假暂停一票否决"，字段契约一句写清、明细交 SPEC · 约束不超过 2 行 ·【输入输出】独立成块、排在【要做什么】之后 ·【环境与网络】块已含 pip 清华源与 GitHub 代理两条 · 5 条驱动指令已粘贴且"一环一停"明确写出。
     </div>
     <div class="foot">
       <button class="btn ghost" onclick="go('s7')">← 回去改</button>
@@ -388,7 +388,7 @@ cd ~/gstack && ./setup --host opencode</div>
     <p class="sub">先切换到"参考提示词"对照检查一遍（该页与手册参考文件逐字一致），确认没有遗漏关键信息，再复制。</p>
     <div class="gen-card">
       <div class="gen-tabs">
-        <span class="gen-tab on" data-t="prompt" onclick="switchTab(this)">我的提示词（6 个信息块 ＋ 2 个数据块）</span>
+        <span class="gen-tab on" data-t="prompt" onclick="switchTab(this)">我的提示词（10 个信息块）</span>
         <span class="gen-tab" data-t="ref" onclick="switchTab(this)">参考提示词</span>
         <span class="gen-tab" data-t="driver" onclick="switchTab(this)">5 条驱动指令</span>
       </div>
@@ -410,18 +410,24 @@ cd ~/gstack && ./setup --host opencode</div>
 
 <!-- ===== 参考提示词原文（只读模板，页面原样展示与复制；勿在此处改写）=====
      来源：02_实验手册/lab4-routing-workflow/references/参考-启动提示词.md
-     说明：refPromptRaw = 可整段复制的启动提示词正文（含【部门职责库】【工单样本】两个数据块，
-           数据与数据包实物逐字一致；要改数据先改手册参考文件，再同步此处）；
+     说明：refPromptRaw = 可整段复制的启动提示词正文（10 块：【背景】【要做什么】【输入输出】【技术选型】
+           【数据现状】【部门职责库】【工单样本】【验收口径】【约束】【环境与网络】；【部门职责库】
+           【工单样本】两个数据块与数据包实物逐字一致，要改数据先改手册参考文件，再同步此处）；
            driverRaw = 5 条驱动指令；startHintRaw = office-hours 起手式。
            三者均与手册参考文件逐字一致。 -->
 <script type="text/plain" id="refPromptRaw">请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 C 的施工。
 
-【背景】场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成；场景 C（供电服务工单智能分级
-路由）已选型为固定路由工作流（Routing Workflow），现在由 Delta 施工。
+【背景】实验一《解决方案框架》把场景 C（供电服务工单智能分级路由）定位为第三站、选型为固定路由
+工作流（Routing Workflow）；场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成，其 AGENTS.md
+与 retro.md 作为交接经验。本轮由 Delta 施工场景 C。
 
 【要做什么】做一个工单分级路由工作流：收到一份客户工单，先判它是咨询/跨专业协同/敏感哪一档，
 再路由到对应分支（自动答复/深度处理/转人工）。三档按"动作"判、不按字面词判：
 咨询→自动答复；跨专业协同→查专业职责库；敏感→转人工真暂停。
+
+【输入输出】输入：一份客户工单文本。
+输出：分级结果 + 对应分支动作（咨询→自动答复；跨专业协同→查专业职责库；敏感→转人工真暂停）；
+字段契约（primary_department／collaborating_departments／submitted／interrupted）明细交 SPEC。
 
 【技术选型】固定路由工作流（Routing Workflow）+ LangGraph 的 State/Node/Conditional Edge；
 不用纯分类器（分类后还要执行动作：调工具/转人工），不用 RAG（无需查文档知识库）。
@@ -453,6 +459,10 @@ collaborating_departments 齐全、草稿 submitted 恒 false、敏感件 interr
 
 【约束】数据不出内网，样本外部给定、不得重造；API key 走环境变量不硬编码。
 
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+
 请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）
   执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。</script>
 
@@ -477,8 +487,8 @@ const STEPS = [
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">你的回答（思考后填写）</label>
       <textarea id="v1" rows="4" placeholder="在这里写下项目背景……（承接了哪两个场景 / 现在施工哪个场景 / 已选型成什么 / 由谁施工）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：从实验一的《解决方案框架》里找"场景 C"部分，用自己的话转述。只写"场景 A／B 已完成 ＋ 场景 C 已选型 ＋ 由 Delta 施工"这三件事。</label>`; },
-    ref:`场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成；场景 C（供电服务工单智能分级路由）已选型为固定路由工作流（Routing Workflow），现在由 Delta 施工。`,
+      <label class="lbl" style="margin-top:10px">🧭 提示：从实验一的《解决方案框架》里找"场景 C"部分，用自己的话转述。要写全三件事：场景 C 的定位与选型来自实验一《解决方案框架》、场景 A／B 已完成（其 AGENTS.md 与 retro.md 是交接经验）、本轮由 Delta 施工场景 C。</label>`; },
+    ref:`实验一《解决方案框架》把场景 C（供电服务工单智能分级路由）定位为第三站、选型固定路由工作流（Routing Workflow）；场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成，其 AGENTS.md 与 retro.md 作为交接经验；本轮由 Delta 施工场景 C。`,
     get(){ return document.getElementById('v1').value; }
   },
   {
@@ -492,11 +502,11 @@ const STEPS = [
   },
   {
     q:"输入输出：系统收到什么，吐出什么？",
-    help:"这一步训练你'定义接口'的能力。输入是一份客户工单；输出不只是分级结果，还要带对应分支的动作（答复文本／专业条线查询结果／转人工标记），这是工作流和分类器的本质区别。注意：不单独设【输入输出】块——你写的内容会并进【要做什么】。",
+    help:"这一步训练你'定义接口'的能力。输入是一份客户工单；输出不只是分级结果，还要带对应分支的动作（答复文本／专业条线查询结果／转人工标记），这是工作流和分类器的本质区别。注意：这一块会独立成【输入输出】块，排在【要做什么】之后、【技术选型】之前，不要并进【要做什么】。",
     render(ctr){ ctr.innerHTML = `
       <label class="lbl">输入输出描述（思考后填写）</label>
       <textarea id="v3" rows="4" placeholder="输入是……（一份客户工单文本）；输出是……（分级结果 + 对应分支的动作）"></textarea>
-      <label class="lbl" style="margin-top:10px">🧭 提示：把"输入一份工单、输出分级结果 ＋ 分支动作"写成两三句就好，生成时会并进【要做什么】。字段级明细（primary_department／collaborating_departments／submitted／interrupted）交给 SPEC，不写进提示词。</label>`; },
+      <label class="lbl" style="margin-top:10px">🧭 提示：把"输入一份工单、输出分级结果 ＋ 分支动作"写成两三句就好，会把这段独立成【输入输出】块（排在【要做什么】之后）。字段级明细（primary_department／collaborating_departments／submitted／interrupted）交给 SPEC，不写进提示词。</label>`; },
     ref:`输入：一份客户工单文本。\n输出：分级结果 + 对应分支动作（咨询→自动答复；跨专业协同→查专业职责库；敏感→转人工真暂停）。`,
     get(){ return document.getElementById('v3').value; }
   },
@@ -660,12 +670,14 @@ function buildPrompt(refMode){
   if(refMode) return REF_PROMPT;
   const v = STEPS.map((st,i)=> readStep(i));
   const cut = s => (s || '').trim();
-  const io = cut(v[2]);   // 【输入输出】并进【要做什么】，不单独成块
+  const io = cut(v[2]);   // 【输入输出】独立成块，排在【要做什么】之后、【技术选型】之前
   return `请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 C 的施工。
 
 【背景】${cut(v[0])}
 
-【要做什么】${cut(v[1])}${io ? '\n' + io : ''}
+【要做什么】${cut(v[1])}
+
+【输入输出】${io}
 
 【技术选型】${cut(v[3])}
 
@@ -678,6 +690,10 @@ ${P_BLOCK_WO}
 【验收口径】${cut(v[5])}
 
 【约束】${cut(v[6])}
+
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
 
 请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）
   执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。`;

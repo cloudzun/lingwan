@@ -144,7 +144,7 @@ aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-s
 <li><strong>跨专业协同档</strong> → 深度处理（调用专业职责库工具 <code>query_department</code>）</li>
 <li><strong>敏感档</strong> → 转人工升级（真暂停）</li>
 </ul>
-<p>带一个 Streamlit 界面，验收时三路都要走通，且<strong>敏感件零漏判</strong>。</p>
+<p>带一个 Streamlit 验证面板，验收时三路都要走通，且<strong>敏感件零漏判</strong>。</p>
 <p><strong>技术方案不变</strong>（来自实验一选型）：</p>
 <ul>
 <li><strong>路由工作流（Routing Workflow）</strong>（不是纯分类器、不是动态 Agent）——因为工单分级之后还要"执行动作"（自动答复/调工具/转人工）；但三档分支与动作都已知，路径可预先枚举，所以暂不需要动态 Agent。</li>
@@ -464,12 +464,12 @@ python run_offline_demo.py --list
 <p><strong>这不是让 AI 干的活，是你（Delta）的活。</strong> 你要把实验一的方案框架（场景 C 部分），翻译成一段能让 Agent 开跑的 office-hours 启动信息。流程和上一轮一样，但这次你经验更足了——<strong>该写什么，你应该很清楚了。</strong></p>
 </blockquote>
 <h3 id="step-1-agent">Step 1：先理清"要交给 Agent 哪些信息"</h3>
-<p>和上一轮一样，一份好的启动信息要包含 7 项。<strong>场景 C 的内容不同</strong>，对照实验一方案框架场景 C 填：</p>
+<p>一份好的启动信息由 <strong>10 个信息块</strong>组成，<strong>场景 C 的内容不同</strong>，对照实验一方案框架场景 C 逐块填。向导里是 7 个填写步（前 7 块由学员写），其余 3 块是固定块（两个数据块连数据自动带入、环境与网络照抄）：</p>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>要包含的信息</th>
+<th>步</th>
+<th>信息块</th>
 <th>从方案框架哪里找</th>
 <th>启动信息里怎么写</th>
 </tr>
@@ -479,7 +479,7 @@ python run_offline_demo.py --list
 <td>1</td>
 <td><strong>背景与角色</strong></td>
 <td>你是谁、在给谁做</td>
-<td>"我是 FDE 团队的 Delta，施工场景 C：供电服务工单智能分级路由"</td>
+<td>"实验一《解决方案框架》把场景 C 定为第三站、选型固定路由工作流；场景 A／B 已完成，其 AGENTS.md 与 retro.md 作为交接经验；本轮由 Delta 施工场景 C。"</td>
 </tr>
 <tr>
 <td>2</td>
@@ -489,7 +489,7 @@ python run_offline_demo.py --list
 </tr>
 <tr>
 <td>3</td>
-<td><strong>输入输出</strong></td>
+<td><strong>输入输出</strong>（独立成块）</td>
 <td>场景 C 的"解决什么"</td>
 <td>"输入一份客户工单，输出：分级 + 对应处理分支的动作"</td>
 </tr>
@@ -507,20 +507,40 @@ python run_offline_demo.py --list
 </tr>
 <tr>
 <td>6</td>
+<td><strong>部门职责库</strong>（固定块）</td>
+<td>数据包 <code>职责库/departments.csv</code></td>
+<td>连数据（含表头，6 行）整段照抄进提示词，指明落盘 <code>data/departments.csv</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>工单样本</strong>（固定块）</td>
+<td>数据包 <code>评测集/workorders.csv</code></td>
+<td>连数据（含表头 <code>id,text,label</code>，6 份）整段照抄进提示词，指明落盘 <code>tests/workorders.csv</code></td>
+</tr>
+<tr>
+<td>8</td>
 <td><strong>验收口径</strong></td>
 <td>场景 C 的成功衡量</td>
 <td>"路由正确率 ≥90% + 敏感件零漏判（见下）"</td>
 </tr>
 <tr>
-<td>7</td>
+<td>9</td>
 <td><strong>约束与边界</strong></td>
 <td>场景 C 的风险与应对</td>
 <td>"敏感诉求宁可多升级不可漏、命中必须真暂停；API key 走环境变量"</td>
 </tr>
+<tr>
+<td>10</td>
+<td><strong>环境与网络</strong>（固定块）</td>
+<td>课程环境约定</td>
+<td>照抄固定两条：pip 清华镜像源、GitHub 走 <code>https://ghfast.top</code> 代理</td>
+</tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong>第 5、6 项是最容易漏的，写不好 Agent 会卡住或走错路线：</strong></p>
+<p><strong>块序照素材固定，10 块一块不省：</strong> <code>【背景】→【要做什么】→【输入输出】→【技术选型】→【数据现状】→【部门职责库】→【工单样本】→【验收口径】→【约束】→【环境与网络】</code>。<br />
+<strong>两处与上一版不同，别写错位置：</strong> 1）<strong>【输入输出】独立成块</strong>，排在【要做什么】之后、【技术选型】之前，<strong>不再并进【要做什么】</strong>；2）<strong>【环境与网络】是固定块</strong>，排在【约束】之后、末尾流程句之前，照抄不改（装依赖的网络配置不在别处重复写）。</p>
+<p><strong>第 5、8 块是最容易漏的，写不好 Agent 会卡住或走错路线：</strong></p>
 <ul>
 <li><strong>数据现状</strong>：如果你不写"6 份工单样本 + 专业职责库 + 敏感清单"是什么、怎么用，Agent 可能自己编工单，或者不知道工具要查什么数据、敏感要按哪几条判。工单样本与专业职责库必须<strong>连数据一起</strong>（含表头）写进提示词——只给文件名，Agent 就会自己编一份"好做的"数据。</li>
 <li><strong>验收口径</strong>：如果你不写"敏感件零漏判"，Agent 可能为了"看起来准"把敏感诉求也自动处理了——那是涉电安全事故。</li>
@@ -576,8 +596,11 @@ python run_offline_demo.py --list
 <ul>
 <li>[ ] 你自己独立写出了启动提示词（先别翻附录）</li>
 <li>[ ] 7 个自查问题你都能回答"能"</li>
+<li>[ ] <strong>10 个信息块</strong>全部齐备（背景／要做什么／输入输出／技术选型／数据现状／部门职责库／工单样本／验收口径／约束／环境与网络）</li>
+<li>[ ] <strong>【输入输出】独立成块</strong>（排在【要做什么】之后、【技术选型】之前），<strong>没有并进【要做什么】</strong></li>
 <li>[ ] 数据现状写进去了，且<strong>工单样本与专业职责库连数据一起</strong>（含表头：工单 6 份／职责库 6 行）整段写进提示词，一个字没改；敏感清单 8 条点明为敏感档判定依据</li>
 <li>[ ] 验收口径（路由正确 ≥90% + 敏感件零漏判）写进去了</li>
+<li>[ ] <strong>【环境与网络】固定块照抄</strong>（pip 清华镜像源 ＋ GitHub 走 <code>https://ghfast.top</code> 两条），排在【约束】之后</li>
 <li>[ ] 明确写了"按 gstack 八环节流程执行 + 每环节产出文件 + 需要拍板时停下问我"</li>
 <li>[ ] 你和组内对齐了这份提示词（Delta 主导，Echo 队友审查）</li>
 </ul>
@@ -607,7 +630,12 @@ W06,反映小区配电房长期堆放杂物存在严重安全隐患,敏感
 <blockquote>
 <p><strong>为什么连数据一起写进提示词</strong>：一是<strong>防漂移</strong>（Agent 落盘的就是你给的那一份，不会自己编一份"好做的"数据）；二是<strong>固定验收口径</strong>（6 份工单、每档分布确定、答案确定，Agent 才能公平地被检验）；三是<strong>防改写</strong>（外部给定的数据原样照抄，一个字都不许改——改了样本＝换了考卷，验收结论作废）。<br />
 <strong>落盘路径写在数据块里</strong>：工单样本落 <code>tests/workorders.csv</code>、职责库落 <code>data/departments.csv</code>；敏感清单（<code>敏感清单/敏感与高风险事项.md</code>，8 条）在提示词里点明是敏感档的唯一判定依据；更细的字段明细写进 SPEC 的"数据与样本"一节。</p>
+<p><strong>剩下两块的归属说清楚：</strong>【输入输出】块由学员在向导第 3 步自己写（<strong>独立成块</strong>，不并进【要做什么】）；<strong>【环境与网络】是固定块</strong>——把下面两行照抄进提示词末尾（排在【约束】之后、流程句之前）即可，装依赖时按它执行：</p>
 </blockquote>
+<pre><code>【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+</code></pre>
 <hr />
 <h2 id="2-75">2. 注入并跟进八环节（75 分钟）</h2>
 <h3 id="step-1-office-hours">Step 1：把启动提示词灌进 office-hours</h3>
@@ -616,8 +644,8 @@ W06,反映小区配电房长期堆放杂物存在严重安全隐患,敏感
 
 我是一名 FDE 团队（Delta 角色），需要启动岭湾电力客户服务平台场景 C 的施工。
 
-【在这里粘贴你写好的启动提示词，包括：背景 / 要做什么 / 技术选型 /
-数据现状 / 验收口径 / 约束】
+【在这里粘贴你写好的启动提示词，包括：背景 / 要做什么 / 输入输出 /
+技术选型 / 数据现状 / 验收口径 / 约束 / 环境与网络】
 
 请以 gstack 标准开发流程执行本次开发，严格遵守以下要求：
 1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
@@ -812,7 +840,8 @@ python 验收\evaluate.py --task route --impl api      # 需 DEEPSEEK_API_KEY
 <h2 id="5-dod">5. 完成标准（DoD）</h2>
 <ul>
 <li>[ ] LangGraph 依赖已装好，验证可用</li>
-<li>[ ] 写了高质量的 office-hours 启动提示词（含数据现状 + 工单样本与专业职责库连数据 ＋ 双指标验收口径）</li>
+<li>[ ] 写了高质量的 office-hours 启动提示词（<strong>10 个信息块齐备且块序正确</strong>：背景／要做什么／输入输出／技术选型／数据现状／部门职责库／工单样本／验收口径／约束／环境与网络；含数据现状 + 工单样本与专业职责库连数据 ＋ 双指标验收口径）</li>
+<li>[ ] 【输入输出】<strong>独立成块</strong>（未并进【要做什么】）；【环境与网络】固定块照抄（pip 清华源 ＋ GitHub 代理）</li>
 <li>[ ] 路由工作流按 gstack 八环节自动跑完，每环节有产出文件</li>
 <li>[ ] 每次拍板都真的做了决策（分级判定标准、工具设计、敏感件兜底）</li>
 <li>[ ] 验收口径写进 SPEC：路由正确 ≥90% + 敏感件零漏判</li>
@@ -896,12 +925,17 @@ python 验收\evaluate.py --task route --impl api      # 需 DEEPSEEK_API_KEY
 </blockquote>
 <pre><code>请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 C 的施工。
 
-【背景】场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成；场景 C（供电服务工单智能分级
-路由）已选型为固定路由工作流（Routing Workflow），现在由 Delta 施工。
+【背景】实验一《解决方案框架》把场景 C（供电服务工单智能分级路由）定位为第三站、选型为固定路由
+工作流（Routing Workflow）；场景 A（客户诉求分类）与场景 B（知识库检索问答）已完成，其 AGENTS.md
+与 retro.md 作为交接经验。本轮由 Delta 施工场景 C。
 
 【要做什么】做一个工单分级路由工作流：收到一份客户工单，先判它是咨询/跨专业协同/敏感哪一档，
 再路由到对应分支（自动答复/深度处理/转人工）。三档按&quot;动作&quot;判、不按字面词判：
 咨询→自动答复；跨专业协同→查专业职责库；敏感→转人工真暂停。
+
+【输入输出】输入：一份客户工单文本。
+输出：分级结果 + 对应分支动作（咨询→自动答复；跨专业协同→查专业职责库；敏感→转人工真暂停）；
+字段契约（primary_department／collaborating_departments／submitted／interrupted）明细交 SPEC。
 
 【技术选型】固定路由工作流（Routing Workflow）+ LangGraph 的 State/Node/Conditional Edge；
 不用纯分类器（分类后还要执行动作：调工具/转人工），不用 RAG（无需查文档知识库）。
@@ -933,12 +967,17 @@ collaborating_departments 齐全、草稿 submitted 恒 false、敏感件 interr
 
 【约束】数据不出内网，样本外部给定、不得重造；API key 走环境变量不硬编码。
 
+【环境与网络】如需安装/克隆依赖，按以下配置执行：
+1. pip 使用清华镜像源：先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+
 请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）
   执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。
 </code></pre>
 <p><strong>对照要点：</strong></p>
 <ul>
-<li><strong>必备信息块</strong>：背景、要做什么、技术选型（含理由）、数据现状、验收口径、约束——共 6 块，每块不超过 3 行；数据块（【部门职责库】【工单样本】）另附在数据现状之后。</li>
+<li><strong>必备信息块</strong>：<strong>共 10 块</strong>——7 个短信息块（背景／要做什么／输入输出／技术选型（含理由）／数据现状／验收口径／约束，每块不超过 3 行）＋ 2 个数据块（【部门职责库】【工单样本】，连数据整段附在【数据现状】之后）＋ 1 个固定块（【环境与网络】，照抄两条网络配置，排在【约束】之后）。<strong>块序固定：</strong><code>【背景】→【要做什么】→【输入输出】→【技术选型】→【数据现状】→【部门职责库】→【工单样本】→【验收口径】→【约束】→【环境与网络】</code>。</li>
+<li><strong>【输入输出】是独立一块</strong>（不是并进【要做什么】的附注）：只写"输入一份客户工单；输出分级结果 ＋ 对应分支动作"，字段契约明细交 SPEC。</li>
 <li><strong>两处"防翻车"信息</strong>：1）三档按"动作"判（咨询→自动答复／跨专业协同→查职责库／敏感→转人工），不按字面词判；2）敏感件零漏判，宁可多转不可漏转。</li>
 <li><strong>数据连数据一起写进提示词</strong>：<code>评测集/workorders.csv</code> 6 份（含表头 <code>id,text,label</code>，含 2 敏感）与 <code>职责库/departments.csv</code> 6 行（含表头）<strong>原样整段抄进提示词</strong>，由 Agent 施工前落盘为 <code>tests/workorders.csv</code>／<code>data/departments.csv</code>；外部给定、原样使用、不得改动重造。敏感判定依据 <code>敏感清单/敏感与高风险事项.md</code>（8 条）在提示词里点明。</li>
 <li><strong>边界一句话说清不做什么即可；完整 No-Go 交给 spec 环节</strong>——验收命令、字段明细同理，提示词里点到为止，明细交 SPEC。</li>
