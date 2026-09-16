@@ -262,7 +262,7 @@ cd ~/gstack && ./setup --host opencode</div>
     <p class="sub">场景 B 的"数据"是知识文档（知识库来源）和 Q&amp;A 验证集（验收基准）。写提示词前，先确认它们就位、并看清验收命令。</p>
 
     <div class="gstack-tip" style="margin-bottom:16px">
-      <b>⚠️ 本页要分清两件事：验收命令、环境准备清单不要写进启动提示词；Q&amp;A 验证集则相反，要连数据一起整段写进提示词。</b>验收命令由手册和 qa 环节执行——那是"命令"，不是数据；知识文档正文由 Agent 从数据包 <code>知识文档/</code> 原位读取，提示词里只写清单（5 份 ＋ 各多少章多少条）；<b>测试数据由数据包外部给定</b>，提示词里连数据一起给（含表头），Agent 施工前落盘成 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>——它才不用自己编数据。启动提示词里写"数据现状（5 份文档 ＋ 各多少条样本）＋ 两个测试数据块 ＋ 验收口径数字"。
+      <b>⚠️ 本页要分清两件事：验收命令、环境准备清单不要写进启动提示词；Q&amp;A 验证集则相反，要连数据一起整段写进提示词。</b>验收命令由手册和 qa 环节执行——那是"命令"，不是数据；知识文档正文由 Agent 从数据包 <code>知识文档/</code> 原位读取，提示词里只写清单（5 份 ＋ 各多少章多少条）；<b>测试数据由数据包外部给定</b>，提示词里连数据一起给（含表头），Agent 施工前落盘成 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>——它才不用自己编数据。启动提示词里写"数据现状（5 份文档 ＋ 各多少条样本）＋ 政策文档块 ＋ 两个测试数据块 ＋ 验收口径数字 ＋ 环境与网络"。
     </div>
 
     <div class="install-box">
@@ -284,7 +284,7 @@ cd ~/gstack && ./setup --host opencode</div>
 
     <div class="install-box">
       <b>🧪 Q&amp;A 验证集（6 条）与库外问题集（2 条）—— 连数据一起写进提示词（含表头）</b>
-      <p style="font-size:13px;color:var(--muted);margin:8px 0">字段均为 <code>question,expected_answer,expected_source</code>，与数据包实物逐字一致，<b>外部给定、原样使用、严禁重造</b>。这两套数据要<b>连数据一起整段写进启动提示词</b>（含表头），由 Agent 施工前落盘为 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>，它才不用自己编数据。下面正文供你核对——<b>一个字都不能改</b>；向导生成的提示词里会带同样的数据块，直接用即可。</p>
+      <p style="font-size:13px;color:var(--muted);margin:8px 0">字段均为 <code>question,expected_answer,expected_source</code>，与数据包实物逐字一致，<b>外部给定、原样使用、严禁重造</b>。这两套数据要<b>连数据一起整段写进启动提示词</b>（含表头），由 Agent 施工前落盘为 <code>tests/qa_pairs.csv</code> 与 <code>tests/qa_pairs_out_of_scope.csv</code>，它才不用自己编数据。下面正文供你核对——<b>一个字都不能改</b>；向导生成的提示词里会带同样的数据块，直接用即可。<b>这两个数据块是固定块，不占你的填写步数（向导填写步共 7 步）。</b></p>
       <div class="gen-box" id="qaPreview">question,expected_answer,expected_source
 居民低压新装申请需要提交哪些材料,需要提交申请人身份证明、用电地址房屋权属证明（或租赁合同及出租方同意）、委托书、用电设备清单及容量说明等材料（教学示意值）；受理后按约定时限答复供电方案并安排装表接电,岭湾电力业扩报装办理指南（教学合成版）.md 第十二条
 居民阶梯电价的第二档如何划分并加价,居民阶梯电价按客户月用电量划分三档：第二档为月用电量超过 180 千瓦时、不超过 400 千瓦时的部分，在基础电价基础上每千瓦时加价 0.05 元（教学示意值），具体标准以现行规定为准,岭湾电力电价与电费计收说明（教学合成版）.md 第十一条
@@ -319,7 +319,8 @@ python 验收\evaluate.py --task all --impl api</div>
     </div>
 
     <div class="gstack-tip">
-      <b>环境准备：</b>RAG 比分类器多了两样东西——<b>向量库</b>和<b>embedding 模型</b>。在本目录建一个独立虚拟环境（不要复用之前的项目环境），装向量库（推荐 <code>chromadb</code>）与 embedding 服务（走 API，如 bge-m3，把 base_url 与模型名写进 <code>.env</code>）。<b>验证标准：</b>装完必须实际 import + 调用、打印出向量维度（如 1024）才算准备好——<code>pip list</code> 显示"已安装"可能是环境泄漏的假象。
+      <b>环境准备：</b>RAG 比分类器多了两样东西——<b>向量库</b>和<b>embedding 模型</b>。在本目录建一个独立虚拟环境（不要复用之前的项目环境），装向量库（推荐 <code>chromadb</code>）与 embedding 服务（走 API，如 bge-m3，把 base_url 与模型名写进 <code>.env</code>）。<b>验证标准：</b>装完必须实际 import + 调用、打印出向量维度（如 1024）才算准备好——<code>pip list</code> 显示"已安装"可能是环境泄漏的假象。<br>
+      <b>网络配置是固定块：</b>【环境与网络】（pip 清华镜像源 ＋ GitHub 走 <code>ghfast.top</code> 代理）由向导自动拼在【约束】之后——它是环境的既定配置，照抄即可，不占你的填写步数。
     </div>
 
     <div class="foot">
@@ -416,7 +417,7 @@ python 验收\evaluate.py --task all --impl api</div>
 // 权威来源：02_实验手册/lab3-policy-rag/references/参考-启动提示词.md
 // 本向导内嵌的"参考提示词正文"与 5 条驱动指令 = 该文件提示词正文，逐字一致（11 个固定块 ＋ 末尾一句流程要求）。
 // 块序（与训练营素材一致）：【背景】→【要做什么】→【输入输出】→【技术选型】→【数据现状】→
-// 【政策文档】→【Q&A 验证集】→【验收口径】→【约束】→【环境与网络】
+// 【政策文档】→【Q&A 验证集】→【库外问题集】→【验收口径】→【约束】→【环境与网络】
 // ==========================================================================
 
 // ===== 提示词正文：可整段复制的固定部分（逐字采用权威文件） =====
@@ -484,7 +485,7 @@ retro）执行这次开发，每一环节产出文件，并在我需要拍板的
 // 固定块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
 // 因此拼装时只把块体按序接起来——保证"我的提示词/参考提示词"结构与权威一致。
 // 【输入输出】【技术选型】【政策文档】【Q&A 验证集】【库外问题集】【验收口径】【约束】【环境与网络】
-// 都是固定块（不占学员填写步数）；学员只填 7 步，其中 3 步各自对应一个块。
+// 都是固定块（不占学员填写步数）；学员只填 7 步，其中 4 步各自对应一个块（背景/要做什么/数据现状/验收口径）。
 const BLOCKS = [
   { n:1, custom:true, step:1 },
   { n:2, custom:true, step:2 },
@@ -495,7 +496,7 @@ const BLOCKS = [
   { n:7, custom:false, fixed:P_BLOCK_QA },
   { n:8, custom:false, fixed:P_BLOCK_OOS },
   { n:9, custom:false, fixed:P_BLOCK_ACCEPT },
-  { n:10, custom:false, fixed:P_BLOCK_CONSTRAINT },
+  { n:10, custom:true, step:7 },
   { n:11, custom:false, fixed:P_BLOCK_ENV }
 ];
 

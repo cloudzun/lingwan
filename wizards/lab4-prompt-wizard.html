@@ -666,7 +666,7 @@ function back(){
 }
 
 function buildPrompt(refMode){
-  // 参考模式：直接给手册的参考提示词原文（与参考-启动提示词-B 逐字一致）
+  // 参考模式：直接给手册的参考提示词原文（与手册 references/参考-启动提示词.md 首个代码块逐字一致）
   if(refMode) return REF_PROMPT;
   const v = STEPS.map((st,i)=> readStep(i));
   const cut = s => (s || '').trim();
