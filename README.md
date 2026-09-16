@@ -67,14 +67,16 @@ Compress-Archive -Path "..\01_数据包\岭湾项目包\知识文档\*" -Destina
 
 本目录是**纯静态站点**：无后端、无构建期依赖、无 CDN 外链，整目录可直接托管对外服务。**本站点就是放在公网给客户访问的**——内容全部是教学合成的虚构材料（企业与人员均为化名、数值为教学示意值），不含任何客户内部数据或真实信息。
 
-**A. GitHub Pages（本仓库 `lingwan` 已按这条路配好）**
+**A. GitHub Pages（本仓库 `lingwan` 已按这条路配好并上线）**
 
 - 仓库：`https://github.com/cloudzun/lingwan`
-- 线上地址：**`https://cloudzun.github.io/lingwan/`**
-- 工作流：`.github/workflows/deploy.yml` —— 推送到 `main` 后自动 `pip install markdown` + `python scripts/build.py` + 发布到 Pages；
-- 仓库 **Settings → Pages → Source** 需为 **GitHub Actions**（首次创建仓库后设置一次）。
+- 线上地址（两个域名都可访问）：
+  - **`https://cloudzun.github.io/lingwan/`**
+  - **`https://www.cloudzun.com/lingwan/`**（账号自定义域名，`cloudzun.github.io` 会 301 到它）
+- 工作流：`.github/workflows/deploy.yml` —— 推送到 `main` 后自动 `pip install markdown` + `python scripts/build.py` + 发布到 Pages（实测 build 7s ＋ deploy 10s，约半分钟上线）；
+- 仓库 **Settings → Pages → Source** 已是 **GitHub Actions**（`build_type=workflow`）。
 
-日常改动只需：改 `_source/02_实验手册/` 里的分册 md（或向导/主页）→ `git add . && git commit -m "…" && git push`，一分钟后线上自动更新。
+日常改动只需：改 `_source/02_实验手册/` 里的分册 md（或向导/主页）→ `git add . && git commit -m "…" && git push`，半分钟后线上自动更新。
 
 **B. 客户侧静态托管（对象存储 ／ CDN ／ nginx，公网或内网都行）**
 
