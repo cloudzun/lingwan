@@ -30,6 +30,11 @@ HANDBOOK = os.path.join(ROOT, "handbook")
 POLICY_SRC = os.path.join(ROOT, "policy-docs")
 ZIP_NAME = "lab3-policy-rag-docs.zip"
 ZIP_PATH = os.path.join(POLICY_SRC, ZIP_NAME)
+# 素材页上的打包下载（顺序即展示顺序）
+ZIPS = [
+    ("lab2-classify-kit.zip", "实验二素材包（分类口径 ＋ 25 条样本 ＋ 开发任务 ＋ 脚手架模板）"),
+    ("lab3-policy-rag-docs.zip", "实验三语料包（5 份知识文档，一次打包）"),
+]
 
 # ---------- 页面样式与脚本（站点主题 / mermaid 渲染 / 代码一键复制） ----------
 THEME = r"""
@@ -366,12 +371,15 @@ def build_policy():
         else:
             items.append((stem, None, fn, ext[1:]))
     cards = []
-    if os.path.exists(ZIP_PATH):
-        zkb = round(os.path.getsize(ZIP_PATH) / 1024, 1)
-        cards.append(f'<a class="ov-card zip-card" href="../../policy-docs/{ZIP_NAME}" download>'
-                     f'<div class="no">ZIP</div><h3>一次打包下载全部（5 份）</h3>'
-                     f'<p>把 5 份知识文档一起下载到本地，离线实验与讲师备课用。共 {zkb} KB。</p>'
-                     f'<div class="meta"><span>打包下载</span><span>5 份文档</span></div></a>')
+    for zname, zdesc in ZIPS:
+        zpath = os.path.join(POLICY_SRC, zname)
+        if not os.path.exists(zpath):
+            continue
+        zkb = round(os.path.getsize(zpath) / 1024, 1)
+        cards.append(f'<a class="ov-card zip-card" href="../../policy-docs/{zname}" download>'
+                     f'<div class="no">ZIP</div><h3>{html_mod.escape(zdesc)}</h3>'
+                     f'<p>一次打包下载到本地，离线实验与讲师备课用。共 {zkb} KB。</p>'
+                     f'<div class="meta"><span>打包下载</span><span>{zname}</span></div></a>')
     for stem, pg, fn, ext in items:
         href = pg if pg else f"../../policy-docs/{fn}"
         dl = "" if pg else " download"
@@ -380,7 +388,7 @@ def build_policy():
     ov = (f'<div class="ov-hero"><div class="tag">素材 · RAG 语料</div><h1>岭湾电力业务知识文档（5 份）</h1>'
           f'<p>这些文档是"供电业务知识问答"实验的检索语料：答案必须能指到"文件名 + 第X条"，'
           f'检索不到时必须拒答。md 文档可在线阅读，docx 与 pdf 保留原样下载。'
-          f'需要整包离线使用，直接下载 <a href="../../policy-docs/{ZIP_NAME}" download>5 份文档打包（zip）</a>。</p></div>'
+          f'需要整包离线使用，直接下载</p><ul><li><a href="../../policy-docs/lab2-classify-kit.zip" download>实验二素材包（zip）</a></li><li><a href="../../policy-docs/lab3-policy-rag-docs.zip" download>实验三语料包（zip，5 份知识文档）</a></li></ul></div>'
           f'<div class="ov-cards">{"".join(cards)}</div>')
     open(os.path.join(out, "index.html"), "w", encoding="utf-8", newline="\n").write(
         page("知识文档目录", ov, "", "", "", "", "", ch_prefix="../", root_prefix="../../"))
