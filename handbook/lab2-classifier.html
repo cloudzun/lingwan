@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>实验二 · 诉求智能分类系统 · FDE 转型实战特训 岭湾实验站</title>
+<style>
+:root{
+  --indigo:#1a237e; --indigo2:#283593; --indigo3:#3949ab; --indigo-soft:#5c6bc0;
+  --amber:#ffb300; --amber-dark:#b28704; --amber-bg:rgba(255,179,0,.08);
+  --ink:#263238; --ink-soft:#546e7a; --muted:#78909c; --line:#e2e8f0;
+  --bg:#ffffff; --bg-soft:#fafbfc; --code-bg:#101f4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Roboto","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+a{color:var(--amber-dark);text-decoration:none}
+a:hover{color:var(--indigo);text-decoration:underline}
+.hb-top{background:linear-gradient(135deg,#1a237e 0%,#283593 55%,#3949ab 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb-top .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:15px}
+.hb-top .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);flex:none}
+.hb-top .brand small{font-weight:400;font-size:12px;opacity:.85;margin-left:6px}
+.hb-top a{color:#fff;font-size:13px;font-weight:500}
+.hb-top a:hover{color:var(--amber);text-decoration:none}
+.ch-nav{background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.ch-nav a{font-size:13px;font-weight:500;color:var(--muted);padding:6px 12px;border-radius:4px;white-space:nowrap;border-bottom:2px solid transparent}
+.ch-nav a:hover{color:var(--indigo);text-decoration:none;background:var(--bg-soft)}
+.ch-nav a.on{color:var(--indigo);font-weight:700;border-bottom-color:var(--amber)}
+.ch-nav a.home{margin-left:auto;color:var(--amber-dark)}
+.hb-wrap{max-width:none;margin:0;padding:28px 24px 60px;display:flex;gap:40px;align-items:flex-start;justify-content:space-between}
+.hb-main{flex:1;min-width:0;max-width:900px}
+aside.hb-toc{width:320px;flex:none;position:sticky;top:24px;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;border-left:3px solid var(--amber);padding:16px 18px;max-height:calc(100vh - 60px);overflow:auto}
+aside.hb-toc b{font-size:11.5px;color:var(--muted);display:block;margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase}
+aside.hb-toc ul{list-style:none;padding-left:0}
+aside.hb-toc a{display:block;font-size:13px;padding:5px 8px;border-radius:4px;color:var(--ink-soft);font-weight:500}
+aside.hb-toc a:hover{background:#fff;color:var(--indigo);text-decoration:none}
+aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-size:12.5px}
+.hb-main h1{color:var(--indigo);font-size:26px;line-height:1.4;margin:4px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.5px}
+.hb-main .ch-role{font-size:12px;color:var(--amber-dark);font-weight:700;letter-spacing:1.5px;margin-bottom:18px}
+.hb-main h2{color:var(--indigo);font-size:20px;margin:34px 0 12px;padding-left:12px;border-left:4px solid var(--amber);font-weight:600}
+.hb-main h3{color:var(--indigo2);font-size:17px;margin:24px 0 10px;font-weight:600}
+.hb-main h4{color:var(--indigo);font-size:15px;margin:18px 0 8px;font-weight:600}
+.hb-main p{margin:10px 0}
+.hb-main ul,.hb-main ol{margin:10px 0;padding-left:26px}
+.hb-main li{margin:5px 0}
+.hb-main strong{color:var(--indigo);font-weight:700}
+.hb-main blockquote{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--indigo-soft);border-radius:4px;padding:12px 16px;margin:14px 0;color:var(--ink-soft)}
+.hb-main blockquote p{margin:6px 0}
+.hb-main blockquote blockquote{background:#f1f3f6;border-left-color:var(--amber)}
+.hb-main code{background:var(--bg-soft);color:var(--amber-dark);padding:2px 6px;border-radius:4px;font-size:13px;font-family:"Cascadia Mono","Consolas",monospace}
+.hb-main pre{background:var(--code-bg);border-radius:6px;padding:16px;overflow:auto;margin:14px 0;line-height:1.65}
+.hb-main pre code{background:none;color:#e8eaf6;padding:0;font-size:12.8px;white-space:pre}
+.code-wrap{position:relative;margin:14px 0}
+.code-wrap pre{margin:0}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e8eaf6;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;opacity:.65;transition:opacity .15s,background .15s;font-family:"Roboto","PingFang SC",sans-serif;line-height:1.4}
+.code-copy:hover{opacity:1;background:var(--amber);border-color:var(--amber);color:#1a237e}
+.code-copy.copied{background:var(--amber);border-color:var(--amber);color:#1a237e;opacity:1}
+.hb-main table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff}
+.hb-main th{background:var(--indigo3);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.hb-main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.hb-main tr:nth-child(even) td{background:var(--bg-soft)}
+.hb-main tr:hover td{background:var(--amber-bg)}
+.hb-main hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+.hb-main img{max-width:100%;border-radius:4px}
+.hb-pager{display:flex;justify-content:space-between;gap:14px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
+.hb-pager a{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:14px 18px;color:var(--ink);font-weight:600;font-size:14px}
+.hb-pager a:hover{border-color:var(--amber);text-decoration:none}
+.hb-pager a small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hb-pager a.next{text-align:right}
+.hb-pager a .dir{color:var(--amber-dark);font-weight:700}
+.ov-hero{max-width:none;margin:0;padding:36px 28px 8px}
+.ov-hero h1{color:var(--indigo);font-size:26px;line-height:1.4;font-weight:700;letter-spacing:.5px}
+.ov-hero .tag{display:inline-block;color:var(--amber-dark);font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.ov-hero p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:900px}
+.ov-cards{max-width:none;margin:0;padding:16px 28px 46px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;display:block;color:var(--ink);transition:border-color .18s}
+.ov-card:hover{border-color:var(--amber);text-decoration:none}
+.ov-card .no{font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--amber-dark);margin-bottom:6px}
+.ov-card h3{color:var(--indigo);font-size:16px;margin-bottom:6px;line-height:1.4;font-weight:600}
+.ov-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.ov-card .meta{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.ov-card .meta span{background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-weight:500}
+.ov-card.zip-card{background:linear-gradient(180deg,#fff8e8,#fff);border-color:var(--amber)}
+.ov-card.zip-card .no{color:var(--amber-dark)}
+.ov-intro{max-width:none;margin:0;padding:6px 28px 0}
+.mermaid{text-align:center;margin:18px 0;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px}
+.mermaid svg{max-width:100%;height:auto}
+@media(max-width:760px){
+  .hb-wrap{flex-direction:column;gap:18px}
+  aside.hb-toc{width:100%;position:static;max-height:280px}
+  .hb-main h1{font-size:21px}
+}
+</style>
+<script src="../assets/vendor/mermaid.min.js"></script>
+
+<script>
+(function(){
+  function initMermaid(){
+    var blocks = document.querySelectorAll('pre code.language-mermaid');
+    if(!blocks.length || typeof mermaid === 'undefined') return;
+    blocks.forEach(function(code){
+      var div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      code.parentNode.replaceWith(div);
+    });
+    mermaid.initialize({startOnLoad:false, theme:'default', securityLevel:'loose', flowchart:{htmlLabels:true}});
+    mermaid.run({querySelector:'.mermaid'});
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+})();
+</script>
+
+</head><body>
+<header class="hb-top">
+  <div class="brand"><span class="dot"></span>FDE 转型实战特训 · 岭湾实验站<small>岭湾电力客户服务平台（教学合成案例）</small></div>
+  <a href="../index.html">实验站首页</a>
+</header>
+<div class="ch-nav"><a class="ch-nav-item" href="lab1-requirements-brainstorm.html">实验一 · 需求调研与解决方案框架</a><a class="ch-nav-item on" href="lab2-classifier.html">实验二 · 诉求智能分类系统</a><a class="ch-nav-item" href="lab3-policy-rag.html">实验三 · 供电业务知识问答</a><a class="ch-nav-item" href="lab4-routing-workflow.html">实验四 · 工单分级路由工作流</a><a class="ch-nav-item" href="lab5-cooperative-agent.html">实验五 · 综合系统 Agent（进阶）</a><a class="ch-nav-item" href="lab6-review-and-report.html">实验六 · 综合证据评审与决策层汇报</a><a class="ch-nav-item" href="lab7-migration-review.html">实验七 · 复盘真实项目（可选）</a><a class="home" href="../index.html">← 返回实验站</a></div>
+<div class="hb-wrap">
+  <main class="hb-main">
+    <div class="ch-role">🤖 Delta · 施工线 · 简单需求　|　跑通</div><h1>实验二 · 诉求智能分类系统</h1><blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。<br />
+<strong>对应课纲：</strong> FDE 综合实操 · 实验二（Delta 视角 · 场景 A）<br />
+<strong>时长：</strong> 约 120 分钟<br />
+<strong>角色：</strong> 你切换为 <strong>Delta（FDE/FDSE）</strong>——手上沾泥，把方案变成能跑的代码<br />
+<strong>工作流：</strong> gstack 八环节，一次注入启动，checkpoint 把关<br />
+<strong>前置：</strong> 已完成实验一，组内拥有《解决方案框架》<br />
+<strong>配套：</strong> <code>01_数据包/岭湾项目包/</code>（下称"数据包"）；全程只用数据包内的材料，不额外索取外部数据</p>
+</blockquote>
+<hr />
+<h2 id="_1">实验概述</h2>
+<p>上一轮，你的组作为 <strong>Echo</strong>，把岭湾电力客户服务平台的"整套智能化"拆成了三个子场景，并选好了技术路线——其中<strong>场景 A：客户诉求智能分类</strong>被定为快赢、第一个施工。</p>
+<p>现在你们<strong>切换成 Delta 角色</strong>，要把它真正做出来。</p>
+<blockquote>
+<p><strong>你的施工任务书</strong>就是实验一产出的《解决方案框架》。这一轮，你不再是"想清楚做什么"的人，而是"把它做出来"的人。</p>
+</blockquote>
+<p><strong>目标</strong>：用 AI（opencode）在 2 小时内，做出一个<strong>客户诉求五分类系统</strong>——输入一句客户诉求，输出它该转给哪个类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他），按约定的验收口径达标，并带一个最小网页验证面板。</p>
+<p><strong>技术方案不变</strong>（来自实验一选型）：<br />
+- <strong>文本分类</strong>（不是 RAG、不是 Agent）——输入一句诉求、输出一个类别，一次调用搞定。<br />
+- 技术栈：opencode + gstack 工程流程 + DeepSeek+ 最小验证面板（如 Streamlit）。</p>
+<blockquote>
+<p><strong>本实验的能力定位：</strong> 它只解决"<strong>这是什么</strong>"——输入一条诉求，输出业务类别和不确定性判断（是否建议转人工）。在后续的实验五 · 综合系统 Agent（进阶）中，分类会被视为<strong>可选辅助能力</strong>，而不是每条请求的强制第一步——明确政策问题可以直接查政策（<code>search_policy</code>），明确部门问题可以直接查职责（<code>query_department</code>），只有类别本身有助于后续判断时才值得调用分类。实验五 不会强制复用本实验的代码，本实验的重点是把"分类"这块能力积木做小、做清楚、做可验证。</p>
+</blockquote>
+<hr />
+<h2 id="agent">本轮的核心学习点：怎么让 Agent 替你跑流程</h2>
+<p>这一轮和上一轮（Echo 头脑风暴）最大的区别是——<strong>你不再手动驱动每一步，而是把"启动信息"一次交给 Agent，让它照着 gstack 标准流程自己跑，你在每个 checkpoint 把关。</strong></p>
+<p>这像极了真实 FDE 的工作方式：你不需要手把手教 AI 写每一行代码，<strong>你要做的是——把客户需求翻译成一段高质量的启动提示词，然后在 AI 干活的关键节点做判断和决策。</strong></p>
+<pre><code>Echo（上轮）：人脑挖需求 → 方案框架
+                ↓ 你来做这段&quot;翻译&quot;
+Delta（本轮）：把方案框架 → office-hours 启动提示词
+                ↓ Agent 自动跑 8 环节
+                ↓ 你在每个 checkpoint 把关
+          可运行的分类系统
+</code></pre>
+<blockquote>
+<p><strong>这就是 FDE 项目中"把用户需求细化、映射成实现思路"的过程。</strong> 方案框架是"客户的语言"，启动提示词是"AI 的语言"，你站在中间把它翻译好。</p>
+</blockquote>
+<hr />
+<h2 id="gstack">知识背景：gstack 是什么</h2>
+<p><strong>gstack</strong> 是 Garry Tan（YC CEO）开源的 AI 开发工作流框架，以 skill 形式安装在 opencode 中，用 <code>/命令</code> 调用。它把一次完整的 AI 开发迭代组织为<strong>八个环节的流水线</strong>，上一环的产出是下一环的输入，<strong>没有环节可以被跳过</strong>：</p>
+<pre><code class="language-mermaid">graph LR
+    OH[&quot;office-hours&lt;br/&gt;要不要做&quot;] --&gt; SP[&quot;spec&lt;br/&gt;死磕边界&quot;]
+    SP --&gt; AP[&quot;autoplan&lt;br/&gt;决策拍板&quot;]
+    AP --&gt; BL[&quot;施工&lt;br/&gt;做出来&quot;]
+    BL --&gt; RV[&quot;review&lt;br/&gt;找隐患&quot;]
+    RV --&gt; QA[&quot;qa&lt;br/&gt;测体验&quot;]
+    QA --&gt; SH[&quot;ship&lt;br/&gt;收尾&quot;]
+    SH --&gt; RT[&quot;retro&lt;br/&gt;复盘&quot;]
+
+    style OH fill:#4C78A8,color:#fff
+    style SP fill:#72B7B2,color:#fff
+    style AP fill:#F58518,color:#fff
+    style BL fill:#E45756,color:#fff
+    style RV fill:#B279A2,color:#fff
+    style QA fill:#54A24B,color:#fff
+    style SH fill:#B279A2,color:#fff
+    style RT fill:#FF9DA6,color:#333
+</code></pre>
+<p>文字版流水线：</p>
+<pre><code>office-hours → spec → autoplan → 施工 → review → qa → ship → retro
+（要不要做） （死磕边界） （决策拍板） （做出来） （找隐患） （测体验） （收尾） （复盘）
+</code></pre>
+<p><strong>八个环节各是什么：</strong></p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>命令</th>
+<th>干什么</th>
+<th>你的角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>office-hours</strong></td>
+<td><code>/office-hours</code></td>
+<td>想清楚该不该做，确认需求和范围</td>
+<td>提问者</td>
+</tr>
+<tr>
+<td><strong>spec</strong></td>
+<td><code>/spec</code></td>
+<td>把需求死磕成精确规格——追问失败模式、硬边界（No-Go）、数据模型、验收口径</td>
+<td>追问者</td>
+</tr>
+<tr>
+<td><strong>autoplan</strong></td>
+<td><code>/autoplan</code></td>
+<td>把"两可决策"暴露出来，供人拍板（它只列选项，不替你做决定）</td>
+<td><strong>决策者</strong></td>
+</tr>
+<tr>
+<td><strong>施工</strong></td>
+<td>自然语言</td>
+<td>按 SPEC 实现，每模块即测</td>
+<td>审查者</td>
+</tr>
+<tr>
+<td><strong>review</strong></td>
+<td><code>/review</code></td>
+<td>找"能跑但会出事"的隐患：分两遍（致命检查 + 信息检查），发现按 P0-P3 分级</td>
+<td>审查者</td>
+</tr>
+<tr>
+<td><strong>qa</strong></td>
+<td><code>/qa</code></td>
+<td>用真实浏览器跑核心流程 + 边界输入</td>
+<td>验收者</td>
+</tr>
+<tr>
+<td><strong>ship</strong></td>
+<td><code>/ship</code></td>
+<td>版本号 + CHANGELOG + README + commit，规范化收尾</td>
+<td>收尾者</td>
+</tr>
+<tr>
+<td><strong>retro</strong></td>
+<td><code>/retro</code></td>
+<td>复盘：做得好 / 摩擦 / 未覆盖测试 / 改进行动项</td>
+<td>复盘者</td>
+</tr>
+</tbody>
+</table>
+<p><strong>几个关键原则：</strong></p>
+<ul>
+<li><strong>人的角色每环节都不同</strong>：office-hours 你是提问者，spec 你是追问者，autoplan 你是决策者，review 你是审查者——但<strong>任何环节，人的判断都不可替代</strong>。</li>
+<li><strong>每一环的产出都是文件</strong>（Markdown），不是口头结论——团队协作可追溯、可复用。</li>
+<li><strong>不是所有改动都要走全流程</strong>——部署配置、文案调整这类操作性工作，直接提示词驱动即可。判断标准：做错代价大不大、会不会被别人用、会不会长期存在。本轮做分类系统会被坐席长期使用 → <strong>走完整流程</strong>。</li>
+<li><strong>本轮最关键的升级</strong>：你和 Agent 的分工不再是"你一步步教它"，而是"<strong>你把启动信息写好，它照流程自己跑，你在 checkpoint 把关</strong>"。</li>
+</ul>
+<hr />
+<h2 id="_2">课前准备</h2>
+<ul>
+<li>[ ] opencode Desktop 已安装并启动</li>
+<li>[ ] 已通读实验一的《解决方案框架》——特别是场景 A 的选型、验收、优先级结论</li>
+<li>[ ] DeepSeek 官方 API key 已配置（<code>DEEPSEEK_API_KEY</code>，在 <code>api.deepseek.com</code> 获取）</li>
+<li>[ ] Python 3.11+ 已安装（<code>离线兜底包/</code> 只需 3.8+，纯标准库）</li>
+<li>[ ] 领取 <code>01_数据包/岭湾项目包/</code>，按清单<strong>逐项点名</strong>，确认文件都在、能打开</li>
+<li>[ ] 创建本实验目录 <code>实验二-诉求分类/</code></li>
+</ul>
+<h3 id="_3">测试样本（外部给定，不写进启动提示词）</h3>
+<blockquote>
+<p><strong>测试数据由讲师外部给定，放在数据包里（<code>评测集/classify_cases.csv</code>，25 条），</strong>不要<strong>抄进启动提示词，也不要让 Agent 自己编数据。</strong></p>
+</blockquote>
+<ul>
+<li><strong>为什么样例必须外部给定</strong>：测试集必须是"外部给定的"——由本手册提供固定数据，而不是让 Agent 自己出题自己考。数据固定，验收口径才固定。</li>
+<li><strong>文件口径</strong>：<code>评测集/classify_cases.csv</code>，<strong>25 条</strong>（5 类 × 5），字段 <code>id,text,label</code>。</li>
+<li><strong>数据纪律（三条，改一条结论就作废）</strong>：<br />
+  1. <strong>原样照抄、严禁重造</strong>——不改写、不删减、不扩写、不"挑好做的跑"、不让 Agent 另造一份；<br />
+  2. <strong>不要把样本正文抄进启动提示词</strong>——样本标签属于验收信息，抄进去等于泄题；<br />
+  3. <strong>落盘由数据包提供</strong>，不需要你手动搬运文件；验收工具直接读 <code>评测集/classify_cases.csv</code>。</li>
+</ul>
+<p><strong>先用离线桩冒烟一次，确认这条命令能跑通（约 1 分钟）：</strong></p>
+<pre><code>python 验收\evaluate.py --task classify --impl stub     # 离线桩
+</code></pre>
+<blockquote>
+<p>在数据包根目录（<code>01_数据包/岭湾项目包/</code>）下执行。基线期望输出：分类·总命中 25/25、分类·自信区准确率 ≥85%、分类·转人工比例 ≤30%，末尾打印"✅ DoD 通过"，退出码 0。<strong>它是"尺子准不准"的基线，不是你的成绩。</strong></p>
+</blockquote>
+<h3 id="gstack_1">安装 gstack（两条路任选）</h3>
+<blockquote>
+<p><strong>国内网络两条配置（先做）：</strong> pip 用清华镜像源（<code>pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</code>）；GitHub 访问走加速代理 <code>https://ghfast.top</code>（克隆仓库时 URL 前缀加 <code>https://ghfast.top/</code>）。</p>
+</blockquote>
+<p><strong>路线 A：让 Agent 自己装（推荐）</strong></p>
+<p>在 opencode 中，把这个提示词交给 Agent，它会帮你装好：</p>
+<pre><code>请帮我安装 gstack（Garry Tan 开源的 AI 开发工作流框架）：
+1. 网络配置：pip 使用清华镜像源，先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. 网络配置：GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+3. 克隆 https://github.com/garrytan/gstack.git 到用户主目录
+4. 运行它的 setup 脚本，host 选 opencode
+5. 装完后验证一下 /office-hours /spec /autoplan /review /qa /ship /retro 这些技能
+   都出现在 ~/.config/opencode/skills/ 下
+6. 告诉我安装结果
+</code></pre>
+<p><strong>路线 B：手动安装</strong></p>
+<pre><code class="language-bash">git clone https://ghfast.top/https://github.com/garrytan/gstack.git ~/gstack
+cd ~/gstack &amp;&amp; ./setup --host opencode
+</code></pre>
+<blockquote>
+<p><strong>衔接实验一：</strong> 打开你们的《解决方案框架》，找到场景 A——"客户诉求智能分类：把客户诉求自动分到对应专业条线"。这轮就是照着它施工。</p>
+</blockquote>
+<hr />
+<h2 id="20">写启动提示词（20 分钟）★本轮核心</h2>
+<blockquote>
+<p><strong>这不是让 AI 干的活，是你（Delta）的活。</strong> 你要把实验一的方案框架，翻译成一段能让 Agent 开跑的 office-hours 启动信息。写得好不好，直接决定 AI 能不能按标准流程跑对。</p>
+</blockquote>
+<h3 id="agent_1">先理清"要交给 Agent 哪些信息"</h3>
+<p>对照实验一的方案框架，把场景 A 的相关结论摘出来，组装成一份完整的启动信息。数据包里的 <code>脚手架/启动提示词-模板.md</code> 已经把这份启动信息拆成 <strong>7 项信息块</strong>，一项都不许留白。<strong>每项都给出确定的内容，不是留白让 Agent 猜</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>要包含的信息</th>
+<th>从方案框架哪里找</th>
+<th>启动信息里怎么写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>背景与角色</strong></td>
+<td>你是谁、在给谁做</td>
+<td>"我是 FDE 团队的 Delta，为岭湾电力客户服务平台（岭湾项目）施工场景 A"；写明 Agent 扮工程实现方、你负责判断与拍板；写明决策人、一线代表、数据归口</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>要做什么</strong></td>
+<td>场景 A 定义</td>
+<td>"做一个客户诉求五分类系统"；写成一句可验收的话，不要写"做一个智能客服系统"</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>输入输出</strong>（并入【要做什么】块）</td>
+<td>场景 A 的"解决什么"</td>
+<td>"输入一句客户诉求全文，输出类别：业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他"，并写死 <code>confidence</code>／<code>reason</code>／<code>needs_human_review</code>／<code>status</code> 与落盘文件</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>技术选型（含理由）</strong></td>
+<td>场景 A 选型</td>
+<td>"已选型文本分类（大模型零样本一次调用），不用 RAG/Agent，因为一次调用即可、样本只有 25 条"</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>数据现状 + 测试样本</strong></td>
+<td>场景 A 的数据风险</td>
+<td>"无历史标注数据 → 必须走大模型零样本分类，不能用传统机器学习。测试样本外部给定：<code>评测集/classify_cases.csv</code>，25 条（5 类 × 5），字段 <code>id,text,label</code>——原样使用、严禁重造，正文<strong>不抄进</strong>提示词"</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>验收口径</strong></td>
+<td>场景 A 的成功衡量</td>
+<td>"自信区准确率 ≥85%（≥21/25），转人工比例 ≤30%，转人工不算错"</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>约束与边界</strong></td>
+<td>场景 A 的风险与应对</td>
+<td>"API key 走环境变量不硬编码；拿不准转人工、不硬归'其他'；不做全部电力业务的细分派单（只做五类 ＋ 6 条线职责）"</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>第 5、6 项是最容易漏的，写不好 Agent 会卡住或走错路线：</strong></p>
+<ul>
+<li><strong>数据现状</strong>：如果你不写"没有历史标注数据"，Agent 可能默认走传统机器学习（TF-IDF ＋ 分类器需要上千条标注），那是死路。必须明确写"→ 走大模型零样本分类"。</li>
+<li><strong>验收口径</strong>：如果你不写"转人工不算错"，Agent 可能做成"整体准确率"但把转人工的样本算成错——这跟"拿不准转人工"的设计自相矛盾。必须明确写"自信区 ≥85% ＋ 转人工 ≤30%，转人工不算错"。</li>
+</ul>
+</blockquote>
+<p><strong>测试样本这一项，岭湾项目的口径与"把数据抄进提示词"相反，必须写对：</strong> 样本正文由数据包提供，你在提示词里<strong>只写文件名与数量</strong>，并写明"外部给定、原样使用、严禁重造"。理由有三条：</p>
+<ol>
+<li><code>脚手架/AGENTS.md</code> 把"测试样本外部给定，不得重造"列为不可协商的项目级硬约束；</li>
+<li>样本标签属于<strong>验收信息</strong>，抄进提示词等于把考卷提前给 Agent；</li>
+<li>抄写过程本身就是改写风险——25 条里改错一个字，验收口径就变了。</li>
+</ol>
+<blockquote>
+<p><strong>注意：</strong> 这份数据是"外部给定"的测试集，<strong>原样照抄，不要改、不要让 Agent 重新造一份</strong>。它的作用是固定验收口径——25 条、每类 5 条、答案确定，Agent 才能公平地被检验。</p>
+</blockquote>
+<h3 id="_4">组装启动提示词——先自己想，再看提示</h3>
+<blockquote>
+<p><strong>不要急着看参考答案。</strong> 写启动提示词的本质，是"<strong>如果换一个人接手这个项目，他需要知道什么，才能不重开讨论、直接开干？</strong>"——站在这个角度，你就能自己列出来。</p>
+</blockquote>
+<p><strong>先尝试自己组装。写的时候，用这 7 个问题自我审查：</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>自查问题</th>
+<th>为什么问这个</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>换一个完全不了解项目的人来读，他能知道<strong>我在为谁、做什么</strong>吗？</td>
+<td>缺了背景，Agent 会自己脑补客户和场景</td>
+</tr>
+<tr>
+<td>2</td>
+<td>他能不能知道<strong>输入是什么、输出是什么</strong>？</td>
+<td>缺了 I/O，Agent 会发明错误的接口</td>
+</tr>
+<tr>
+<td>3</td>
+<td>他能不能知道<strong>"为什么选文本分类而不是 RAG/Agent"</strong>？</td>
+<td>缺了选型理由，Agent 可能又问你要不要用 RAG</td>
+</tr>
+<tr>
+<td>4</td>
+<td>他能不能知道<strong>数据是什么情况</strong>（多少条、标注没标注、测试集在哪）？</td>
+<td>缺了数据现状，Agent 可能走传统 ML 死路，也可能找不到测试集</td>
+</tr>
+<tr>
+<td>5</td>
+<td>他能不能知道<strong>"做出来怎么算成功"</strong>？</td>
+<td>缺了验收口径，Agent 会自己发明一套验收</td>
+</tr>
+<tr>
+<td>6</td>
+<td>他能不能知道<strong>有什么红线</strong>（不做的事、不碰的数据）？</td>
+<td>缺了约束，Agent 会自由发挥</td>
+</tr>
+<tr>
+<td>7</td>
+<td>他能不能知道<strong>"按什么流程跑、产出什么"</strong>？</td>
+<td>缺了流程要求，Agent 不会主动走 gstack 八环节</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果你某一条答不上来——<strong>回到实验一的方案框架去找</strong>。场景 A 的定义、选型理由、成功衡量、风险应对，方案框架里都有。你写不出某一项，往往不是"不会写"，而是"方案框架那部分还没吃透"。</p>
+</blockquote>
+<p><strong>✅ 自查通过后，检查点：</strong></p>
+<ul>
+<li>[ ] 你自己独立写出了启动提示词（先别翻附录）</li>
+<li>[ ] 7 个自查问题你都能回答"能"</li>
+<li>[ ] 数据现状（无历史标注 → 零样本）写进去了</li>
+<li>[ ] 测试样本写明了"外部给定、原样照抄"＋ 文件名与数量（25 条，5 类 × 5），且<strong>没有把样本正文抄进提示词</strong></li>
+<li>[ ] 验收口径（自信区 ≥85%（≥21/25）＋ 转人工 ≤30%，转人工不算错）写进去了</li>
+<li>[ ] 明确写了"按 gstack 八环节流程执行 ＋ 每环节产出文件 ＋ 需要拍板时停下问我"</li>
+<li>[ ] 你和组内对齐了这份提示词（Delta 主导，Echo 队友审查是否忠实于方案框架）</li>
+</ul>
+<blockquote>
+<p>写完、组内对齐后，可以翻开<strong>附录 D：启动提示词参考答案</strong>对照——看你自己写的那份，相比参考答案漏了什么、多了什么。漏的是"你没想到的"，多的是"你的理解"，都有价值。</p>
+</blockquote>
+<hr />
+<h2 id="75">注入并跟进八环节（75 分钟）</h2>
+<h3 id="office-hours">把启动提示词灌进 office-hours</h3>
+<p>打开 opencode 的新对话，把启动提示词作为 <strong>office-hours 的输入</strong>注入。不是直接丢一段话，而是明确告诉 Agent"你要走什么流程"。参考驱动指令（数据包 <code>脚手架/启动提示词-模板.md</code> 第三节的 5 条，原样粘在提示词最后）：</p>
+<pre><code>/office-hours
+
+我是一名 FDE 团队（Delta 角色），需要启动岭湾电力客户服务平台场景 A 的施工。
+
+【在这里粘贴你写好的启动提示词，包括：背景与角色 / 要做什么 / 输入输出 /
+技术选型（含理由）/ 数据现状与测试样本 / 验收口径 / 约束与边界】
+
+1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
+2. 每个环节都要产出对应文件并落盘当前目录，在回复中列出文件名与位置。
+3. 走完一环、进入下一环之前先停下来向我汇报，等我确认后再继续（禁止一口气跑完）。
+4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
+5. 现在从 office-hours 开始。
+</code></pre>
+<blockquote>
+<p><strong>为什么要这样注入，而不是直接丢一句话？</strong> 因为 Agent 默认只理解"你要什么"，不理解"你要它按什么纪律走"。这 5 条驱动指令就是把 gstack 的流程纪律"焊"进它的执行里——<strong>"一环一停""拍板点列选项等你选"这两条尤其关键</strong>，否则 Agent 可能一口气跑完，让你失去所有把关的机会。</p>
+<p><strong>FDE 灵魂追问 #0：</strong> 为什么注入时要强调"走完一个环节就停下来等我确认"？——想想如果 Agent 一口气把 8 环节全跑完、代码也写完了才告诉你，你会怎样？<strong>你失去了所有"中途纠偏"的机会</strong>，只能事后全盘检查。真实 FDE 项目里，让 AI"一小步一确认"不是效率低，是<strong>把失控风险控制住</strong>。</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 你的启动提示词作为输入，灌进了 <code>/office-hours</code></li>
+<li>[ ] 明确要求"按 gstack 八环节执行，一环一停，拍板点列选项"</li>
+<li>[ ] 你和 Agent 的对话已经开了头，它在做 office-hours</li>
+</ul>
+<h3 id="_5">跟进八个环节，你的把关点</h3>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>Agent 会做什么</th>
+<th>你的 checkpoint（必须把关）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>office-hours</strong></td>
+<td>追问需求细节，尤其数据、口径、兜底</td>
+<td>回答它关于数据/口径的问题；确认"值得做"</td>
+</tr>
+<tr>
+<td><strong>spec</strong></td>
+<td>死磕边界：失败模式、No-Go、数据模型、验收口径</td>
+<td>审查 No-Go 是否具体；验收口径是否写进 SPEC（门槛数字照抄 ≥85%／≤30%，不许被"优化"）</td>
+</tr>
+<tr>
+<td><strong>autoplan</strong></td>
+<td>暴露两可决策，等你拍板</td>
+<td><strong>真的拍板</strong>（转人工阈值、兜底策略、要不要做验证面板及其滑块），写回 SPEC</td>
+</tr>
+<tr>
+<td><strong>施工</strong></td>
+<td>按 SPEC 实现，每模块冒烟。<strong>测试样本外部给定在 <code>评测集/classify_cases.csv</code>；交付入口是 <code>src/handler.py</code> 的 <code>handle_request</code></strong></td>
+<td>抽查代码没偏离 SPEC 的 No-Go；确认测试集来自数据包、不是 Agent 自己编的；<strong>人工确认点从第一个模块就接上</strong></td>
+</tr>
+<tr>
+<td><strong>review</strong></td>
+<td>两遍检查（致命+信息），P0-P3 分级</td>
+<td>确认 P0/P1 修复；API key 没硬编码；<strong>审查是否覆盖两条关键坑：1）<code>.env</code> 配置解析异常（如 <code>CONFIDENCE_THRESHOLD</code> 配成非数字）有没有 try/except 兜底，避免启动即崩；2）模型返回缺字段或非法类别时是否安全降级为"转人工"（而不是 KeyError 崩掉整批评估）</strong></td>
+</tr>
+<tr>
+<td><strong>qa</strong></td>
+<td>真实浏览器跑核心流程 + 边界输入</td>
+<td>五类都测；空文本/超长/口语/对抗样本；准确率达标。<strong>耗时提示：批量评估串行 25 条约 2 分钟，建议先跑 CLI（<code>python 验收\evaluate.py --task classify --impl stub</code>）拿结论，再用验证面板演示，不要反复自动化点滑块</strong></td>
+</tr>
+<tr>
+<td><strong>ship</strong></td>
+<td>版本+CHANGELOG+README+commit</td>
+<td>确认 .env 未入库</td>
+</tr>
+<tr>
+<td><strong>retro</strong></td>
+<td>复盘四点</td>
+<td>摩擦写具体；有改进行动项</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agent_2">关键决策点，Agent 停下来时你要拍板</h3>
+<p>Agent 可能会在这些地方等你，常见的有：</p>
+<ol>
+<li><strong>验收口径</strong>：如果 Agent 没在 office-hours 确认，你在 spec/autoplan 里要拍板"自信区 vs 整体准确率"——<strong>项目已定：自信区 ≥85% + 转人工 ≤30%</strong></li>
+<li><strong>准确率门槛</strong>：85% 还是更高？——<strong>快赢定位，85% 即可</strong></li>
+<li><strong>兜底策略</strong>：拿不准归"其他"还是"转人工"？——<strong>已定：转人工</strong>（"其他"是<strong>类别兜底</strong>，不是置信度兜底）</li>
+<li><strong>转人工阈值</strong>：0.6 / 0.5 / 0.7？——<strong>教学初始值 0.6（教学示意值）</strong>；假阴性是底线问题，<strong>宁可多转人工</strong></li>
+<li><strong>面板取舍</strong>：验证面板要不要做阈值调节滑块？——<strong>按你的判断，但注意别卡在自动化测滑块上</strong></li>
+<li><strong>No-Go 确认</strong>：AI 想做的任何"spec 明确不做"的事，拒绝</li>
+</ol>
+<blockquote>
+<p><strong>FDE 灵魂追问 #1：</strong> Agent 在 autoplan 停下来问"准确率门槛定多少"——你不能说"你看着办"。为什么？因为<strong>85% 够不够，是业务决策</strong>（坐席能不能接受这个误分率），AI 不知道，只有你结合实验一的方案框架知道。<strong>决策权在人的原因，就在于人掌握 AI 没有的业务上下文。</strong></p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 八环节都跑完，每环节有产出文件</li>
+<li>[ ] 每次 Agent 停下要拍板时，你都真的做了决策（不是"你看着办"）</li>
+<li>[ ] SPEC 里验收口径写清楚了（自信区 ≥85% + 转人工 ≤30%，转人工不算错）</li>
+<li>[ ] 代码没偏离 No-Go</li>
+<li>[ ] 准确率达标，边界输入测过</li>
+<li>[ ] .env 未入库</li>
+</ul>
+<hr />
+<h2 id="20_1">验收与收尾（20 分钟）</h2>
+<h3 id="_6">核对交付物</h3>
+<p>对照下面清单，确认所有文件都在（文件口径与 <code>脚手架/AGENTS.md</code> 第 2 节的"产出落盘约定"一致）：</p>
+<pre><code>实验二-诉求分类/
+├── office-hours.md           # office-hours 确认记录
+├── SPEC.md                   # 含失败模式 + No-Go + 数据模型 + 验收口径
+├── autoplan-decisions.md     # autoplan 拍板记录
+├── src/handler.py            # 交付入口 handle_request（含分类调用与人工确认点）
+├── app.py                    # 最小验证面板（如 Streamlit）
+├── review.md                 # 两遍审查 + P0-P3
+├── qa-report.md              # 测试报告（含边界输入）
+├── VERSION / CHANGELOG.md / README.md
+└── retro.md                  # 复盘
+</code></pre>
+<blockquote>
+<p><strong>不落在本目录里的东西</strong>：<code>评测集/classify_cases.csv</code>（25 条）、<code>评测集/development_tasks.json</code>（4 条）、<code>分类口径/诉求分类体系.md</code>、<code>脚手架/</code>、<code>离线兜底包/</code> 都在数据包里<strong>原位使用</strong>——它们是外部给定的口径与样本，不复制、不改写。</p>
+</blockquote>
+<h3 id="_7">跑验收命令，确认达标</h3>
+<p>三条命令按顺序跑（<strong>原样引用，不要改参数</strong>）：</p>
+<pre><code>python 验收\evaluate.py --task classify --impl stub     # 离线桩
+python 验收\evaluate.py --task classify --impl src      # 学员实现（src/handler.py 的 handle_request）
+python 验收\evaluate.py --task classify --impl api      # 在线模型直连（需 DEEPSEEK_API_KEY）
+</code></pre>
+<p><strong>运行目录提示</strong>：在数据包根目录（<code>01_数据包/岭湾项目包/</code>）下执行这三条命令；<code>--impl src</code> 默认从<strong>当前目录</strong>读 <code>src/handler.py</code>。若你的工程目录另建（如 <code>实验二-诉求分类/</code>），把命令补成 <code>python 验收\evaluate.py --task classify --impl src --workdir 实验二-诉求分类</code>，否则工具会提示"找不到 handler.py / tools.py / pipeline.py"。</p>
+<p><strong>判据</strong>：<code>--impl stub</code> 必须先跑通（它证明工具口径与样本都正常，排掉"环境问题"与"实现问题"的混淆；离线桩基线的实测结果是"总命中 25/25、自信区准确率 100.0%、转人工比例 0.0%"）；<code>--impl src</code> 是本次交付物的成绩；<code>--impl api</code> 用于对照"在线模型直连"与"你的实现"差在哪。三条跑完，把<strong>自信区准确率</strong>与<strong>转人工比例</strong>两个数字记进 <code>qa-report.md</code>。</p>
+<h3 id="_8">演示给坐席班长 小林 看</h3>
+<p>模拟向坐席班长 小林 演示这个系统。要点：<br />
+- 用<strong>她听得懂的话</strong>讲（别说"零样本分类"）<br />
+- 演示"拿不准的转人工"这个兜底（对应她的角色升级）——"AI 分不准的会留给你判断，你不是被替代，是变成审核员"<br />
+- 让她看到"错分会减少"</p>
+<blockquote>
+<p><strong>FDE 灵魂追问 #2：</strong> 向小林演示时，为什么"转人工兜底"是最好的切入点？——因为这是她最关心的"会不会被替代"的答案。<strong>方案设计时留的"转人工"，不只是技术兜底，更是给一线坐席的"角色定位"。</strong></p>
+</blockquote>
+<h3 id="dod">DoD 验收（演示级声明）</h3>
+<p>在 qa-report 或 retro 里，写一句<strong>验收定位声明</strong>：</p>
+<blockquote>
+<p>"本项目使用约 25 条测试样本，属<strong>演示级验收</strong>——结论仅证明方案在给定样本上可行，不宣称系统已达到生产可用。"</p>
+<p><strong>FDE 灵魂追问 #3：</strong> 为什么必须写这句"演示级验收声明"？——<strong>FDE 的第一戒律是不能夸大交付物。</strong> 25 条样本全对，不代表全量真实诉求全对。你敢把"准确率 100%"写成交付报告吗？写了，就是埋雷。</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 所有交付物齐全</li>
+<li>[ ] 三条验收命令都跑过，<code>--impl src</code> 的成绩记进了 qa-report</li>
+<li>[ ] 向小林演示成功，用了"转人工兜底"讲她的角色升级</li>
+<li>[ ] 写了"演示级验收声明"</li>
+<li>[ ] DoD 全过</li>
+</ul>
+<hr />
+<h2 id="10">复盘沉淀（10 分钟）</h2>
+<h3 id="agent-retro">看 Agent 的 retro 产出</h3>
+<p>Agent 跑 retro 时会产出复盘四点（做得好/摩擦/未覆盖/行动项）。</p>
+<h3 id="_9">首轮复盘：用验证集反查口径定义（预埋桥段）</h3>
+<blockquote>
+<p><strong><code>脚手架/启动提示词-模板.md</code> 里有一处口径是故意写错的。</strong> 它的设计意图是：让首轮效果明显偏低，逼你用<strong>数据</strong>去定位问题，而不是拍脑袋调提示词。</p>
+</blockquote>
+<p><strong>四步复盘法：</strong></p>
+<ol>
+<li><strong>记录首轮结果</strong>：把首轮在 <code>评测集/classify_cases.csv</code> 上的结果<strong>逐条记下来</strong>（判对的、判错的、转人工的），<strong>先不改提示词</strong>；</li>
+<li><strong>反查定义</strong>：把判错的样本拉出来，逐条问"它违反了口径里的哪一条定义"——找出这些错例的<strong>共同点</strong>，而不是逐个打补丁；</li>
+<li><strong>修正提示词</strong>：把<strong>按字面词判定</strong>改成<strong>按动作判定</strong>，并给每条定义配一个可反查的样本；同步核对 <code>分类口径/诉求分类体系.md</code> 的判定原则（第 1 条"按客户要办的事归类，不按字面词归类"、第 3 条"拿不准转人工，不归'其他'"）；</li>
+<li><strong>复测并记录对比</strong>：用<strong>同一批样本</strong>重跑，把首轮与复测的<strong>逐条差异</strong>写成表格（样本 → 首轮判定 → 复测判定 → 结论）。</li>
+</ol>
+<blockquote>
+<p><strong>参考：</strong> 同类事故曾把首轮正确率压到 <strong>66.7%</strong>（教学示意值）——原因不是模型不行，而是口径把"要求赔偿的投诉"错写成了咨询档。<strong>先修定义，再谈模型。</strong></p>
+</blockquote>
+<h3 id="_10">手动补充"对下一轮有用"的两条</h3>
+<p>在 retro.md 追加：</p>
+<ol>
+<li>
+<p><strong>AGENTS.md 建议</strong>：项目根目录应有一份 <code>AGENTS.md</code>（项目硬约束、目录地图、验收命令、工具坑）。数据包的 <code>脚手架/AGENTS.md</code> 是<strong>项目级约束的权威来源</strong>，直接继承即可；若你在施工中踩到数据包没写进去的坑，让 Agent 把它补进本项目的 <code>AGENTS.md</code>——实验三（场景 B）开新会话时，这份文件能让 AI 直接继承上下文。</p>
+</li>
+<li>
+<p><strong>改进行动项交接</strong>：写下"下一轮（场景 B 知识库检索问答）开工前，我要先看这条经验：____"</p>
+</li>
+<li>
+<p><strong>面向 实验五 的能力抽象（长期交接）</strong>：如果分类能力以后由 Agent 按需调用，最小输入输出应该是什么？哪些字段是岭湾专属、哪些可以跨场景复用？建议参考接口（与 <code>脚手架/SKELETON.md</code> 的函数签名一致，只记录、不要求在实验二完成服务化改造）：</p>
+</li>
+</ol>
+<pre><code class="language-text">classify_request
+输入：request_text
+输出：category、confidence、reason、needs_human_review、status
+</code></pre>
+<blockquote>
+<p><strong>衔接实验三：</strong> 实验三开工时，新会话读实验二的 <code>AGENTS.md</code> + <code>retro.md</code>，就能继承"这个项目怎么跑、有哪些坑"的上下文——这就是 FDE 团队的经验回注（碎石路→铺装公路的微缩版）。</p>
+<p><strong>衔接 实验五（进阶，可后置）：</strong> 本实验记住一个判断——<strong>分类在综合 Agent 中可用，但不必每次调用。</strong> 不要让未来的 Agent 集成迫使你现在过度工程化；记录最小能力契约即可。</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] retro.md 追加了 AGENTS.md 建议</li>
+<li>[ ] 首轮复盘完成：找出了错误定义、完成了修正与复测对比</li>
+<li>[ ] 写了改进行动项交接（留给实验三）</li>
+</ul>
+<hr />
+<h2 id="dod_1">完成标准（DoD）</h2>
+<ul>
+<li>[ ] gstack 已安装（Agent 装或手动装）</li>
+<li>[ ] 写了高质量的 office-hours 启动提示词（含数据现状 + 测试样本口径 + 验收口径）</li>
+<li>[ ] Agent 按 gstack 八环节自动跑完，每环节有产出文件</li>
+<li>[ ] 每次拍板都真的做了决策（不是"你看着办"）</li>
+<li>[ ] 验收口径写进 SPEC：自信区 ≥85%（≥21/25） + 转人工 ≤30%，<strong>转人工不算错</strong></li>
+<li>[ ] 分类系统可运行，三条验收命令跑过，<code>--impl src</code> 达标</li>
+<li>[ ] 测试样本 25 条（每类 5 条）<strong>一条没改</strong>（数量、文本、标签与 <code>评测集/classify_cases.csv</code> 一致）</li>
+<li>[ ] .env 未入库，API key 走环境变量、未硬编码，P0/P1 已修复</li>
+<li>[ ] 向小林演示成功（讲了"转人工"= 角色升级）</li>
+<li>[ ] 写了"演示级验收声明"</li>
+<li>[ ] retro.md 追加了 AGENTS.md 建议 + 交接行动项</li>
+<li>[ ] 4 个 FDE 灵魂追问参与讨论</li>
+<li>[ ] <strong>已用一句话说明分类能力在 实验五 中的可选位置，并记录最小输入输出契约</strong></li>
+<li>[ ] 完成《Echo Prototype 检查单》：错分代价分级 / 置信度与转人工策略确认 / 人工处理容量 / 演示反馈 / 需求满足判断</li>
+</ul>
+<hr />
+<h2 id="agstack">附录 A：gstack 安装速查</h2>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent 自装</td>
+<td>用"课前准备"里的提示词让 opencode 装</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>pip 清华镜像源：<code>pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</code>；GitHub 走代理：克隆时 URL 前缀加 <code>https://ghfast.top/</code></td>
+</tr>
+<tr>
+<td>手动</td>
+<td><code>git clone https://ghfast.top/https://github.com/garrytan/gstack.git ~/gstack &amp;&amp; cd ~/gstack &amp;&amp; ./setup --host opencode</code></td>
+</tr>
+<tr>
+<td>验证</td>
+<td><code>~/.config/opencode/skills/</code> 下应有 office-hours/spec/autoplan/review/qa/ship/retro 等目录</td>
+</tr>
+<tr>
+<td>Windows 提示</td>
+<td>路径是 <code>~/.config/opencode/skills/</code>，在资源管理器里对应 <code>C:\Users\&lt;用户名&gt;\.config\opencode\skills\</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="bfde">附录 B：FDE 灵魂追问汇总</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>环节</th>
+<th>追问</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>注入</td>
+<td>为什么强调"走完一个环节就停下来等我确认"？一口气跑完你会失去什么？</td>
+</tr>
+<tr>
+<td>1</td>
+<td>注入跟进</td>
+<td>拍板权为什么必须在人？AI 不知道什么？</td>
+</tr>
+<tr>
+<td>2</td>
+<td>验收收尾</td>
+<td>"转人工兜底"为什么是最好的向小林演示切入点？</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DoD</td>
+<td>为什么必须写"演示级验收声明"？夸大交付物的后果？</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c">附录 C：讲师引导要点</h2>
+<ul>
+<li><strong>写启动提示词环节是本轮教学核心</strong>：不要让学生直接翻附录 D。观察他们是否经历"思考—自查—改写"的过程。常见错误：漏掉"数据现状"（没写无历史标注 → 不会走零样本路线）、漏掉"验收口径"（agent 会自己发明）、选型理由没带过去（agent 可能又问你"用不用 RAG"）、把 25 条样本正文抄进提示词（泄题）。这些漏项正是"7 个自查问题"要他们自己发现的。</li>
+<li><strong>注入环节是本轮第二个教学点</strong>：观察学员是否真的把启动提示词灌进 <code>/office-hours</code>，而不是直接丢给 Agent 一段话就完事。5 条驱动指令的"一环一停 + 拍板点列选项"两条，决定了他们后面还有没有把关的机会。</li>
+<li><strong>跟进环节关键看拍板质量</strong>：Agent 停下时学员是否敷衍"你看着办"。这是"人掌握业务上下文"的核心体验，要盯。</li>
+<li><strong>提醒安装</strong>：课前准备让 Agent 自装 gstack，避免卡在手动安装。Windows 用户注意路径是 <code>~/.config/opencode/skills/</code>。</li>
+<li><strong>口径纪律教学点</strong>：<code>脚手架/AGENTS.md</code> 的硬约束与"测试样本外部给定、不得重造"是本次要反复强调的纪律。<code>评测集/classify_cases.csv</code> 25 条（每类 5 条）<strong>一条都不能改</strong>；改了样本 = 换了考卷，结论作废。</li>
+<li><strong>样本统计教学点</strong>：25 条样本（每类 5 条）让"各类统计"有了最低支撑，但 25 条仍是演示级——每条占 4%，85% 线 = 至少对 21/25。可趁机讲"小样本统计脆弱性"和"演示级验收"——这是 FDE 的素养。</li>
+<li><strong>首轮复盘桥段</strong>：<code>脚手架/启动提示词-模板.md</code> 里有一处故意写错的口径。让学生<strong>先用它跑首轮</strong>，此时不要给答案，只让他们用 <code>评测集/classify_cases.csv</code> 与 <code>评测集/workorders.csv</code> 逐条反查定义，自己改、自己复测、再对照正确写法。</li>
+<li><strong>离线兜底演示</strong>：现场网络或模型不可用时，按 <code>离线兜底包/离线运行说明.md</code> 切离线路径演示——<code>python stub_tools.py</code>（期望"合计 19/19 通过"）→ <code>python run_offline_demo.py "&lt;诉求&gt;"</code>。差异声明必须原样念出：离线分类是<strong>关键词规则</strong>，<code>confidence</code> 不是模型置信度，<strong>准确率必须回到在线路径用同一套样本测</strong>。</li>
+<li><strong>provider 抽象（可选进阶）</strong>：如果时间够，可引导学员做 provider 抽象（用环境变量切换模型提供方），体现"方案可替换"——但这属于加分项，不强求。</li>
+</ul>
+<h2 id="d">附录 D：启动提示词参考答案</h2>
+<blockquote>
+<p><strong>⚠️ 仅供"写启动提示词"环节完成后对照，不要先看。</strong> 看这份答案前，先确保你自己独立写完了一份。对照时重点看：漏了哪些信息？哪些是参考答案没有但你想到了的？</p>
+</blockquote>
+<pre><code>请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台（岭湾项目）启动场景 A 的施工。
+
+【背景】实验一已作为 Echo 完成需求诊断，方案框架中场景 A 定为零样本文本分类
+（客户诉求 → 专业条线类别），属快赢场景，本次由 Delta 施工。
+客户方决策人周主任、坐席班长小林、数字化部陈工，合规由省公司数字化与网络安全部把关。
+
+【要做什么】客户诉求五分类系统：一条客户诉求全文进来，输出类别（业务办理／电费与计量／
+故障报修与停电／投诉举报与用电安全／其他）＋ confidence ＋ reason ＋ needs_human_review。
+拿不准走转人工、不硬归&quot;其他&quot;；只做五分类，不做全业务细分派单（完整 No-Go 交给 spec 环节产出）。
+
+【技术选型】一次大模型调用做零样本分类，配一条确定性兜底规则；不用 RAG/Agent
+（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ 最小验证面板。
+
+【数据现状】无历史标注数据 → 必须走零样本分类，不能用传统机器学习
+（TF-IDF ＋ 分类器需要上千条标注，这条路走不通）。
+
+【测试集】样本外部给定、原样使用，严禁重造、改写、删减；正文不粘贴进本提示词。
+1. 分类样本：评测集/classify_cases.csv，25 条（5 类 × 5），字段 id,text,label
+2. 开发任务：评测集/development_tasks.json，4 条
+
+【验收口径】自信区准确率 ≥85%（≥21/25）；转人工比例 ≤30%；转人工不算错。
+
+【约束】数据不出内网，不把客户诉求原文发到外部服务；API key 走环境变量。
+
+请按 gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）执行，
+每一环产出文件，走完一环停下来等我确认，需要拍板的地方列出选项和利弊问我。
+</code></pre>
+<p><strong>对照要点：</strong></p>
+<ul>
+<li><strong>必备的信息块</strong>：背景 / 要做什么（含输入输出一句）/ 技术选型 / 数据现状 / 测试样本（只写文件名与数量）/ 验收口径 / 约束（边界一句话即可，<strong>完整 No-Go 交给 spec 环节</strong>）。你漏了哪块，对照前面 7 项清单想——那是你写的时候没想到的。</li>
+<li><strong>参考答案里有三处"防翻车"信息</strong>：1）"必须走零样本，不能用传统机器学习"（防 Agent 走死路）；2）"转人工不算错"（防验收口径自相矛盾）；3）"样本正文不粘贴进提示词"（防泄题、防抄错）。</li>
+<li><strong>测试样本数据</strong>：只写文件名与数量（<code>评测集/classify_cases.csv</code>，25 条，5 类 × 5），并明确"外部给定、原样使用、严禁重造"。样本正文由数据包原位提供，<strong>不抄进提示词</strong>。</li>
+<li><strong>流程要求</strong>：参考答案末尾只轻提一句流程要求；真正把流程"焊死"靠的是<strong>注入时粘贴的 5 条驱动指令</strong>，其中"一环一停"最关键。</li>
+</ul>
+<hr />
+<blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+</blockquote>
+    <div class="hb-pager"><a class="prev" href="lab1-requirements-brainstorm.html"><small><span class="dir">← 上一实验</span></small>实验一 · 需求调研与解决方案框架</a><a class="next" href="lab3-policy-rag.html"><small><span class="dir">下一实验 →</span></small>实验三 · 供电业务知识问答</a></div>
+  </main>
+  <aside class="hb-toc"><b>本章目录</b><div class="toc">
+<ul>
+<li><a href="#_1">实验概述</a></li>
+<li><a href="#agent">本轮的核心学习点：怎么让 Agent 替你跑流程</a></li>
+<li><a href="#gstack">知识背景：gstack 是什么</a></li>
+<li><a href="#_2">课前准备</a><ul>
+<li><a href="#_3">测试样本（外部给定，不写进启动提示词）</a></li>
+<li><a href="#gstack_1">安装 gstack（两条路任选）</a></li>
+</ul>
+</li>
+<li><a href="#20">写启动提示词（20 分钟）★本轮核心</a><ul>
+<li><a href="#agent_1">先理清"要交给 Agent 哪些信息"</a></li>
+<li><a href="#_4">组装启动提示词——先自己想，再看提示</a></li>
+</ul>
+</li>
+<li><a href="#75">注入并跟进八环节（75 分钟）</a><ul>
+<li><a href="#office-hours">把启动提示词灌进 office-hours</a></li>
+<li><a href="#_5">跟进八个环节，你的把关点</a></li>
+<li><a href="#agent_2">关键决策点，Agent 停下来时你要拍板</a></li>
+</ul>
+</li>
+<li><a href="#20_1">验收与收尾（20 分钟）</a><ul>
+<li><a href="#_6">核对交付物</a></li>
+<li><a href="#_7">跑验收命令，确认达标</a></li>
+<li><a href="#_8">演示给坐席班长 小林 看</a></li>
+<li><a href="#dod">DoD 验收（演示级声明）</a></li>
+</ul>
+</li>
+<li><a href="#10">复盘沉淀（10 分钟）</a><ul>
+<li><a href="#agent-retro">看 Agent 的 retro 产出</a></li>
+<li><a href="#_9">首轮复盘：用验证集反查口径定义（预埋桥段）</a></li>
+<li><a href="#_10">手动补充"对下一轮有用"的两条</a></li>
+</ul>
+</li>
+<li><a href="#dod_1">完成标准（DoD）</a></li>
+<li><a href="#agstack">附录 A：gstack 安装速查</a></li>
+<li><a href="#bfde">附录 B：FDE 灵魂追问汇总</a></li>
+<li><a href="#c">附录 C：讲师引导要点</a></li>
+<li><a href="#d">附录 D：启动提示词参考答案</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<script>
+(function(){
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function addCopyButtons(){
+    document.querySelectorAll('.hb-main pre, .ov-intro pre').forEach(function(pre){
+      if (pre.querySelector('.code-copy')) return;
+      var code = pre.querySelector('code');
+      if (!code) return;
+      if (code.className && code.className.indexOf('language-mermaid') !== -1) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'code-copy'; btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.addEventListener('click', function(){
+        var text = code.innerText;
+        function done(){ btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', addCopyButtons); } else { addCopyButtons(); }
+})();
+</script>
+</body></html>

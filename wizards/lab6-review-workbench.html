@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验六 · 综合证据评审与决策层汇报 · 评审与汇报工作台</title>
+<style>
+  :root{
+    --navy:#1B3A5C; --navy2:#25507f; --gold:#D4A843; --gold2:#e8c368;
+    --echo:#2E6BA8; --delta:#E0603A;
+    --bg:#0e1b2a; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7c8f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    background:linear-gradient(160deg,#0e1b2a 0%,#1B3A5C 60%,#25507f 100%);
+    color:var(--ink);min-height:100vh;padding:24px;
+    display:flex;align-items:flex-start;justify-content:center;
+  }
+  .wrap{width:100%;max-width:1000px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:rgba(255,255,255,.08);border:1px solid rgba(212,168,67,.35);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;
+  }
+  .topbar .site{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:1.5px}
+  .topbar .links{display:flex;gap:12px;flex-wrap:wrap}
+  .topbar a{color:#cfe0f0;font-size:12.5px;text-decoration:none;border-bottom:1px dashed rgba(207,224,240,.5);padding-bottom:1px}
+  .topbar a:hover{color:var(--gold2);border-bottom-color:var(--gold2)}
+  .card{background:var(--card);border-radius:18px;padding:34px 38px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+  .stage{display:none} .stage.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--gold)}
+  .brand span{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:13px}
+  h1{color:var(--navy);font-size:24px;margin:8px 0 6px;line-height:1.35}
+  .sub{color:var(--muted);font-size:14.5px;line-height:1.7;margin-bottom:20px}
+
+  .btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2c05;border:none;padding:13px 26px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;transition:filter .2s;letter-spacing:1px}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+  .btn.small{padding:8px 16px;font-size:13px;border-radius:9px}
+  .center{text-align:center}
+  .foot{margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .tabs{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap}
+  .tab{padding:10px 18px;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer;background:#eef2f6;color:var(--muted);transition:all .2s;border:none}
+  .tab:hover{transform:translateY(-2px)}
+  .tab.on{background:var(--navy);color:#fff}
+  .tab .tnum{display:block;font-size:11px;font-weight:400;opacity:.8}
+
+  .pane{display:none} .pane.on{display:block;animation:fade .3s ease}
+
+  .sec-head{background:#f4f8fb;border-left:4px solid var(--echo);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:16px}
+  .sec-head b{color:var(--navy);font-size:16px}
+  .sec-head p{color:var(--muted);font-size:13px;line-height:1.6;margin-top:4px}
+
+  .qa-block{border:1px solid #e1e9f0;border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .qa-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;background:#fff;font-size:14px;font-weight:700;color:var(--navy)}
+  .qa-head:hover{background:#f9fbfd}
+  .qa-arrow{color:var(--muted);font-size:12px;transition:transform .25s}
+  .qa-block.open .qa-arrow{transform:rotate(90deg)}
+  .qa-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .qa-block.open .qa-body{max-height:4000px}
+  .qa-inner{padding:4px 16px 16px}
+  .qa-q{font-size:13.5px;font-weight:700;color:var(--navy);margin:12px 0 4px}
+  .qa-a{font-size:13px;color:#4a5a6a;line-height:1.7;border-left:3px solid #e1e9f0;padding:2px 0 2px 12px}
+  .qa-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#eef5fb;color:var(--echo);font-weight:700;margin-right:8px}
+
+  .out-box{background:#f9fbfd;border:1px solid #d3e3f0;border-radius:12px;padding:18px;margin-bottom:16px}
+  .out-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .out-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .out-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+  label.lbl{display:block;font-size:12px;color:var(--muted);font-weight:600;margin:12px 0 4px}
+  input[type=text],textarea,select{width:100%;border:1.5px solid #d5dfe8;border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit;line-height:1.6;background:#fff}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)}
+  textarea{resize:vertical;min-height:52px}
+  textarea.auto{min-height:74px}
+
+  table.fill{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+  table.fill th{background:var(--navy);color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:12.5px}
+  table.fill td{border:1px solid #e1e9f0;padding:6px 7px;vertical-align:top}
+  table.fill td.k{background:#f4f8fb;font-weight:700;color:var(--navy);white-space:nowrap;font-size:12.5px}
+  table.fill select,table.fill input,table.fill textarea{border-width:1px;padding:6px 8px;font-size:12.5px}
+  table.fill textarea{min-height:44px}
+
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .metric{background:#fff;border:1px solid #e1e9f0;border-radius:10px;padding:12px 14px}
+  .metric label{font-size:11.5px;color:var(--muted);font-weight:600}
+  .metric select,.metric input{width:100%;margin-top:5px}
+
+  .note{background:#fff8e8;border:1px solid #f0dca8;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.7;color:#5a4a20;margin:12px 0}
+  .note b{color:var(--navy)}
+  .note code{background:#f5eccd;padding:2px 5px;border-radius:4px;color:var(--navy)}
+
+  .cmd{background:#0f1e2e;border-radius:10px;padding:12px 14px;font-family:"Cascadia Mono","Consolas",monospace;font-size:12.5px;line-height:1.8;color:#d7e4f0;white-space:pre-wrap;margin:10px 0}
+
+  .export-zone{margin-top:8px}
+  .copied{color:#1e8449;font-weight:700;font-size:13px;display:none}
+  .tip{color:var(--muted);font-size:13px;line-height:1.7;margin-top:16px;text-align:center;font-style:italic}
+  .save-hint{color:var(--muted);font-size:12px;margin-top:10px;font-style:italic}
+  @media(max-width:640px){.card{padding:24px 18px}.row3{grid-template-columns:1fr}table.fill{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <span class="site">FDE 转型实战特训 · 岭湾实验站 · 实验五</span>
+  <span class="links">
+    <a href="../index.html" target="_top">← 返回站点首页</a>
+    <a href="lab5-cooperative-agent-wizard.html">← 上一站：实验五 · 综合系统 Agent（进阶）</a>
+    <a href="lab7-migration-review-wizard.html">下一站：实验七 · 复盘真实项目（可选） →</a>
+  </span>
+</div>
+
+<div class="card">
+
+  <!-- STAGE 0: 欢迎 -->
+  <div class="stage on" id="s0">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验六</span></div>
+    <h1>实验六 · 综合证据评审与决策层汇报 · 评审与汇报工作台</h1>
+    <p class="sub">
+      前几轮你们完成了三个单一场景 MVP（客户诉求分类 / 供电业务知识问答 / 工单分级路由工作流）和实验五的综合系统 Agent。这个工作台帮你们完成四个评审：
+      <b>1 两层验收</b>（三个单一场景 + 协同 Agent 是否成立）→ <b>2 能力回注</b>（四层：内容／工具／机制／语义）→ <b>3 交付决策</b>（Go / Conditional Go / Continue Pilot / No-Go）→ <b>4 决策层汇报</b>（10 段结构 + 协同 Agent 演示）。<br>
+      关键判断由团队完成，AI 只做证据整理或红队。<br>
+      <b style="color:var(--delta)">模板不预填答案——请基于你们的证据一栏栏填。</b>
+    </p>
+    <div class="note">
+      <b>两层验收的时间口径（先读懂再填）：</b>第一层＝三个单一场景，<b>课上当场验收</b>，逐栏填实；第二层＝实验五的综合系统 Agent，<b>课后完成后再验收</b>，课上只做"判定标准是什么"的对照讨论，<b>不得在课上宣称第二层已通过</b>。
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn" onclick="go('s1')">开始 → 评审一：两层验收</button>
+    </div>
+  </div>
+
+  <!-- STAGE 1: 工作台 -->
+  <div class="stage" id="s1">
+    <div class="brand"><span class="dot"></span><span>四个评审 · 自由切换</span></div>
+    <h1>综合证据评审工作台</h1>
+    <div class="tabs">
+      <button class="tab on" data-p="p1" onclick="sw(this)"><span class="tnum">评审一</span>两层验收</button>
+      <button class="tab" data-p="p2" onclick="sw(this)"><span class="tnum">评审二</span>能力回注</button>
+      <button class="tab" data-p="p3" onclick="sw(this)"><span class="tnum">评审三</span>交付决策</button>
+      <button class="tab" data-p="p4" onclick="sw(this)"><span class="tnum">评审四</span>汇报 & 导出</button>
+    </div>
+
+    <!-- ===== 评审一：两层验收 ===== -->
+    <div class="pane on" id="p1">
+      <div class="sec-head">
+        <b>评审一：两层验收（35 分钟）</b>
+        <p>先独立写便签，再贴墙讨论，最后收敛。第一层：三个单一场景各自成立吗（当场验收）？第二层：协同 Agent 综合能力成闭环吗（课后验收，课上只对标准）？</p>
+      </div>
+
+      <div class="cmd">python 验收\evaluate.py --task all --impl stub     # 课上以离线桩基线做对照
+python 验收\evaluate.py --task all --impl src      # 各组自己的实现
+python 验收\evaluate.py --task all --impl api      # 在线模型（需 DEEPSEEK_API_KEY）</div>
+
+      <div class="qa-block" id="qa1">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">第一层</span>Q-A1 翻译检验：150 字业务语言，向周主任讲清三个场景解决了什么痛点？</div>
+          <div class="qa-a">给自己设限：禁用 LangGraph / RAG / 准确率等技术词，只讲业务价值——派单少错、答复有依据、坐席不背锅。</div>
+          <div class="qa-q"><span class="qa-tag">第一层</span>Q-A2 算账：自信区 85% 准确率意味着仍有约 15% 的件不在自信区，该硬分还是拒答转人工？</div>
+          <div class="qa-a">转人工不算错；拿不准硬归"其他"才是错。你们认为哪种更负责？</div>
+          <div class="qa-q"><span class="qa-tag">第一层</span>Q-A3 生产差距：测过真实话务量与工单量下的并发吗？方言和口语变体呢？电价与业务规则更新后由谁维护？</div>
+          <div class="qa-a">样本上达标，只是"这套样本"上达标；把分母和场景写清楚。</div>
+          <div class="qa-q"><span class="qa-tag">第二层</span>Q-B1 动态性：哪一步证明协同 Agent 在按需选能力，而不是固定调用 A→B→C？</div>
+          <div class="qa-a">要能指出具体轨迹证据（有一步是因为不需要而未调用），不是"界面看起来智能"。</div>
+          <div class="qa-q"><span class="qa-tag">第二层</span>Q-B2 追问续跑：客户补充后，协同 Agent 真的从原任务继续了吗？</div>
+          <div class="qa-a">讨论：是真正暂停并续跑，还是只是拼了两段问答？追问是不是一次只问最关键的一个？</div>
+          <div class="qa-q"><span class="qa-tag">第二层</span>Q-B3 人工接管：敏感事项是"真暂停"还是只是打了个标签？</div>
+          <div class="qa-a">讨论：request_human_review 返回 interrupted: true 之后有没有再产出答复或草稿？暂停后由哪个客户岗位接管？</div>
+          <div class="qa-q"><span class="qa-tag">全局</span>Q-C1 双视角冲突：Echo 觉得满足、Delta 觉得还差得远——谁对？</div>
+          <div class="qa-a">讨论：两个视角各自在检验什么？结论如何合成？</div>
+          <div class="qa-q"><span class="qa-tag">全局</span>Q-C2 红队：页面很漂亮、演示很顺，为什么仍可能是 Continue Pilot？</div>
+          <div class="qa-a">讨论：演示能跑 ≠ 生产能接管，差的是规模、边界、运维、接管能力。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 1-1：第一层验收表（三个单一场景 · 当场验收）</div>
+            <div class="out-sub">逐栏填实：当初的需求／验收标准、是否满足、生产差距、一句话理由。指标口径照抄不得改。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tA')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tA">
+          <thead><tr><th style="width:19%">场景</th><th style="width:22%">当初的需求 / 验收标准</th><th style="width:12%">是否满足</th><th style="width:23%">生产差距</th><th style="width:24%">一句话理由</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k">A 客户诉求分类</td>
+              <td><textarea data-k="A_std"></textarea></td>
+              <td><select data-k="A_ok"><option value="">—</option><option>✅ 满足</option><option>⚠️ 部分满足</option><option>❌ 未满足</option></select></td>
+              <td><textarea data-k="A_gap"></textarea></td>
+              <td><textarea data-k="A_why"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">B 供电业务知识问答</td>
+              <td><textarea data-k="B_std"></textarea></td>
+              <td><select data-k="B_ok"><option value="">—</option><option>✅ 满足</option><option>⚠️ 部分满足</option><option>❌ 未满足</option></select></td>
+              <td><textarea data-k="B_gap"></textarea></td>
+              <td><textarea data-k="B_why"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">C 工单分级路由工作流</td>
+              <td><textarea data-k="C_std"></textarea></td>
+              <td><select data-k="C_ok"><option value="">—</option><option>✅ 满足</option><option>⚠️ 部分满足</option><option>❌ 未满足</option></select></td>
+              <td><textarea data-k="C_gap"></textarea></td>
+              <td><textarea data-k="C_why"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <b>本层指标口径（照抄，不得改）：</b>分类自信区准确率 ≥85%（25 条，每类 5 条；转人工不算错）／转人工比例 ≤30%；问答答案准确率 ≥80%（6 条）／来源可追溯率 ≥90%（严格比对"文件名 ＋ 条款号"）／库外 2 条必须拒答；路由正确率 ≥90%（6 份工单，判档正确 ＋ 分支动作执行才算对）／敏感件零漏判 100%（6 份中 2 份敏感必须全转人工，假阴性＝0，漏 1 条即不通过）。
+        </div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 1-2：第二层验收表（协同 Agent · 课后验收）</div>
+            <div class="out-sub">课上只填第 2、3 列（判定标准是什么 + 课上对照结论）；第 4 列证据栏留待课后补，指向具体轨迹／报告。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tB')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tB">
+          <thead><tr><th style="width:14%">检查项</th><th style="width:31%">判定标准是什么</th><th style="width:24%">课上对照结论</th><th style="width:31%">证据（课后补：指向哪条轨迹／报告）</th></tr></thead>
+          <tbody>
+            <tr><td class="k">动态选择</td><td><textarea data-k="L1_std"></textarea></td><td><textarea data-k="L1_now"></textarea></td><td><textarea data-k="L1_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">观察与继续</td><td><textarea data-k="L2_std"></textarea></td><td><textarea data-k="L2_now"></textarea></td><td><textarea data-k="L2_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">主动追问</td><td><textarea data-k="L3_std"></textarea></td><td><textarea data-k="L3_now"></textarea></td><td><textarea data-k="L3_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">人工接管</td><td><textarea data-k="L4_std"></textarea></td><td><textarea data-k="L4_now"></textarea></td><td><textarea data-k="L4_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">业务闭环</td><td><textarea data-k="L5_std"></textarea></td><td><textarea data-k="L5_now"></textarea></td><td><textarea data-k="L5_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">展示质量</td><td><textarea data-k="L6_std"></textarea></td><td><textarea data-k="L6_now"></textarea></td><td><textarea data-k="L6_ev" placeholder="课后补"></textarea></td></tr>
+            <tr><td class="k">MVP 边界诚实</td><td><textarea data-k="L7_std"></textarea></td><td><textarea data-k="L7_now"></textarea></td><td><textarea data-k="L7_ev" placeholder="课后补"></textarea></td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <b>第二层两条硬要求（不成立即不合格）：</b>
+          <br>1. <b>人工接管</b>：命中敏感清单的件必须<b>真暂停</b>——<code>request_human_review</code> 返回 <code>interrupted: true</code> 后不再产出答复或草稿；只打印一句"已转人工"继续跑完，判为不合格。人工三选一（批准处置建议／要求补充材料／终止自动处理）后才继续。
+          <br>2. <b>业务闭环</b>：最终必须落到一个明确状态——答复（带 <code>evidence[]</code>）／工单草稿（<code>submitted</code> 恒为 false）／人工接管。
+        </div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 1-3：FDE 化生产差距表（FDE 四问）</div>
+            <div class="out-sub">四问：1. 单一场景能力怎样接入客户真实数据和现有系统？2. Agent 暂停后由哪个客户岗位接管？3. 电价与业务规则、专业条线职责变化后由谁维护？4. FDE 离场后客户团队能否继续运营？</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tC')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tC">
+          <thead><tr><th style="width:18%">对象</th><th style="width:21%">真实环境适配</th><th style="width:21%">业务动作闭环</th><th style="width:20%">客户责任／人工接管</th><th style="width:20%">FDE 撤出条件</th></tr></thead>
+          <tbody>
+            <tr><td class="k">A 客户诉求分类</td><td><textarea data-k="G_A1"></textarea></td><td><textarea data-k="G_A2"></textarea></td><td><textarea data-k="G_A3"></textarea></td><td><textarea data-k="G_A4"></textarea></td></tr>
+            <tr><td class="k">B 供电业务知识问答</td><td><textarea data-k="G_B1"></textarea></td><td><textarea data-k="G_B2"></textarea></td><td><textarea data-k="G_B3"></textarea></td><td><textarea data-k="G_B4"></textarea></td></tr>
+            <tr><td class="k">C 工单分级路由</td><td><textarea data-k="G_C1"></textarea></td><td><textarea data-k="G_C2"></textarea></td><td><textarea data-k="G_C3"></textarea></td><td><textarea data-k="G_C4"></textarea></td></tr>
+            <tr><td class="k">协同 Agent</td><td><textarea data-k="G_D1"></textarea></td><td><textarea data-k="G_D2"></textarea></td><td><textarea data-k="G_D3"></textarea></td><td><textarea data-k="G_D4"></textarea></td></tr>
+          </tbody>
+        </table>
+        <label class="lbl">数据出域交代（必须单独列）</label>
+        <textarea class="auto" data-k="data_out" placeholder="需求红线：数据不出内网。我们的工程决策：______（内网侧部署的模型选型、成本、工期 → ______）。不得只写我们很重视安全这类表态。"></textarea>
+      </div>
+    </div>
+
+    <!-- ===== 评审二：能力回注 ===== -->
+    <div class="pane" id="p2">
+      <div class="sec-head">
+        <b>评审二：能力回注（30 分钟）★灵魂环节</b>
+        <p>用"碎石路→铺装公路"隐喻 + 四层回注（内容／工具／Workflow-Agent 机制／业务语义），判断四个对象哪些能沉淀成平台能力。判断筛子：换个客户，这个东西要不要全换？要换＝内容（不回注），不用换＝机制（回注）。</p>
+      </div>
+
+      <div class="qa-block" id="qa2">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">识别</span>Q-D1 内容 vs 机制：协同 Agent 里哪些是岭湾的内容（不回注）、哪些是能复用的机制（回注）？</div>
+          <div class="qa-a">判断标准：换个客户，要不要全换？要换=内容，不用换=机制。岭湾的五类诉求口径、六条专业条线职责说法、5 份知识文档里的条款锚点是内容。</div>
+          <div class="qa-q"><span class="qa-tag">抽象</span>Q-D2 工具契约：分类、依据检索、条线查询三件接口，换个客户要全改吗？</div>
+          <div class="qa-a">讨论：接口不变、只换数据？还是连接口都要重设计？</div>
+          <div class="qa-q"><span class="qa-tag">机制</span>Q-D3 Agent 机制：受控 Agent 循环、主动澄清、人工暂停、停止条件——是岭湾专属还是通用模式？</div>
+          <div class="qa-a">讨论：这些机制抽象掉岭湾的壳以后，别的客户能不能直接用？</div>
+          <div class="qa-q"><span class="qa-tag">语义</span>Q-D4 业务本体：诉求-依据条款-专业条线-服务工单-人工审核这套关系，换一个供电服务客户成立吗？</div>
+          <div class="qa-a">讨论：成立的部分，就是能回注的业务语义；可以自建领域模型、知识图谱或其他业务语义层。</div>
+          <div class="qa-q"><span class="qa-tag">优先级</span>Q-D5 先铺哪条路：只给一个团队资源，先铺哪条公路？为什么？</div>
+          <div class="qa-a">用通用性 × 成本（或价值 × 成本）过一遍所有候选。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">🛤️ 输出物 2-1：四对象碎石路 / 能铺路判断</div>
+            <div class="out-sub">内容＝换客户要全换（不回注）；机制＝换客户不用改（回注）。"贯穿"一行写跨三个场景的共同机制。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tD')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tD">
+          <thead><tr><th style="width:20%">对象</th><th style="width:40%">客户特定实现（碎石路／内容）</th><th style="width:40%">可回注能力（能铺路／机制）</th></tr></thead>
+          <tbody>
+            <tr><td class="k">A 客户诉求分类</td><td><textarea data-k="R_A1"></textarea></td><td><textarea data-k="R_A2"></textarea></td></tr>
+            <tr><td class="k">B 供电业务知识问答</td><td><textarea data-k="R_B1"></textarea></td><td><textarea data-k="R_B2"></textarea></td></tr>
+            <tr><td class="k">C 工单分级路由工作流</td><td><textarea data-k="R_C1"></textarea></td><td><textarea data-k="R_C2"></textarea></td></tr>
+            <tr><td class="k">协同 Agent</td><td><textarea data-k="R_D1"></textarea></td><td><textarea data-k="R_D2"></textarea></td></tr>
+            <tr><td class="k">贯穿</td><td><textarea data-k="R_E1"></textarea></td><td><textarea data-k="R_E2"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 2-2：四层能力回注清单（≥4 个候选，至少覆盖工具／机制两层）</div>
+            <div class="out-sub">每个候选答全六问：从哪识别、去掉什么、抽象成什么、集成到哪、在哪个第二场景验证、谁维护。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tE')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tE">
+          <thead><tr><th style="width:22%">候选</th><th style="width:26%">抽象后的通用能力</th><th style="width:16%">层次（内容／工具／机制／语义）</th><th style="width:20%">第二场景</th><th style="width:16%">维护人</th></tr></thead>
+          <tbody>
+            <tr><td><textarea data-k="E1a"></textarea></td><td><textarea data-k="E1b"></textarea></td><td><textarea data-k="E1c"></textarea></td><td><textarea data-k="E1d"></textarea></td><td><textarea data-k="E1e"></textarea></td></tr>
+            <tr><td><textarea data-k="E2a"></textarea></td><td><textarea data-k="E2b"></textarea></td><td><textarea data-k="E2c"></textarea></td><td><textarea data-k="E2d"></textarea></td><td><textarea data-k="E2e"></textarea></td></tr>
+            <tr><td><textarea data-k="E3a"></textarea></td><td><textarea data-k="E3b"></textarea></td><td><textarea data-k="E3c"></textarea></td><td><textarea data-k="E3d"></textarea></td><td><textarea data-k="E3e"></textarea></td></tr>
+            <tr><td><textarea data-k="E4a"></textarea></td><td><textarea data-k="E4b"></textarea></td><td><textarea data-k="E4c"></textarea></td><td><textarea data-k="E4d"></textarea></td><td><textarea data-k="E4e"></textarea></td></tr>
+            <tr><td><textarea data-k="E5a"></textarea></td><td><textarea data-k="E5b"></textarea></td><td><textarea data-k="E5c"></textarea></td><td><textarea data-k="E5d"></textarea></td><td><textarea data-k="E5e"></textarea></td></tr>
+          </tbody>
+        </table>
+        <label class="lbl">业务本体（可选）</label>
+        <textarea class="auto" data-k="ontology" placeholder="对象：客户诉求 / 依据条款 / 专业条线 / 服务工单 / 人工审核任务&#10;属性：类别 / 状态 / 敏感等级 / 来源 / 责任部门&#10;关系：诉求→引用→依据条款；工单→分派→部门；工单→触发→人工审核&#10;动作：查询 / 分派 / 补证 / 升级 / 办结&#10;治理：谁可查看 / 谁可执行 / 哪些动作必须人工批准"></textarea>
+        <div class="note">
+          <b>判断纪律：</b>客户专属内容要明确标"不回注"（不是漏掉，是判断过）；本组只到<b>候选</b>这一步的，如实标注"尚未在第二场景验证"。
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 评审三：交付决策 ===== -->
+    <div class="pane" id="p3">
+      <div class="sec-head">
+        <b>评审三：交付决策（15 分钟）</b>
+        <p>对 A／B／C、协同 Agent、整体给出 Go / Conditional Go / Continue Pilot / No-Go。每项必须说明：依据证据 / 剩余风险 / 补齐责任人 / 下一 Gate。<b style="color:var(--delta)">不能因为界面漂亮就默认 Go，也不能通篇 Go。</b></p>
+      </div>
+
+      <div class="qa-block" id="qa3">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">决策</span>Q-E1 什么证据出现，会让你把某一项从 Go 改成 No-Go？</div>
+          <div class="qa-a">给不出具体条件的 Go 只是表态，不是决策。</div>
+          <div class="qa-q"><span class="qa-tag">决策</span>Q-E2 通篇 Go 说明什么？</div>
+          <div class="qa-a">没有风险边界的决策不是决策——把每一项的风险边界找出来；补齐责任人必须写到具体岗位／人名。</div>
+          <div class="qa-q"><span class="qa-tag">决策</span>Q-E3 页面很漂亮，为什么仍可能是 Continue Pilot？</div>
+          <div class="qa-a">演示能跑 ≠ 生产能接管。差的是规模、边界、运维、接管能力。协同 Agent 一栏还要写明"待课后验收补齐证据"。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 3-1：五项交付决策</div>
+            <div class="out-sub">决策状态：Go（证据足够可进下一阶段）／Conditional Go（可推进但必须先满足明确条件）／Continue Pilot（继续试点收集证据）／No-Go（价值或风险不成立）。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tF')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tF">
+          <thead><tr><th style="width:15%">对象</th><th style="width:15%">决策状态</th><th style="width:20%">依据证据</th><th style="width:18%">剩余风险</th><th style="width:16%">补齐责任人</th><th style="width:16%">下一 Gate</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k">A 客户诉求分类</td>
+              <td><select data-k="F_A_d"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td>
+              <td><textarea data-k="F_A_ev"></textarea></td><td><textarea data-k="F_A_risk"></textarea></td><td><textarea data-k="F_A_own"></textarea></td><td><textarea data-k="F_A_gate"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">B 供电业务知识问答</td>
+              <td><select data-k="F_B_d"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td>
+              <td><textarea data-k="F_B_ev"></textarea></td><td><textarea data-k="F_B_risk"></textarea></td><td><textarea data-k="F_B_own"></textarea></td><td><textarea data-k="F_B_gate"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">C 工单分级路由工作流</td>
+              <td><select data-k="F_C_d"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td>
+              <td><textarea data-k="F_C_ev"></textarea></td><td><textarea data-k="F_C_risk"></textarea></td><td><textarea data-k="F_C_own"></textarea></td><td><textarea data-k="F_C_gate"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">综合系统 Agent（实验五）</td>
+              <td><select data-k="F_D_d"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td>
+              <td><textarea data-k="F_D_ev" placeholder="待课后验收补齐证据"></textarea></td><td><textarea data-k="F_D_risk"></textarea></td><td><textarea data-k="F_D_own"></textarea></td><td><textarea data-k="F_D_gate"></textarea></td>
+            </tr>
+            <tr>
+              <td class="k">整体</td>
+              <td><select data-k="F_Z_d"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td>
+              <td><textarea data-k="F_Z_ev"></textarea></td><td><textarea data-k="F_Z_risk"></textarea></td><td><textarea data-k="F_Z_own"></textarea></td><td><textarea data-k="F_Z_gate"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">🔎 输出物 3-2：风险边界自检（评审三必做）</div>
+        <div class="out-sub">答不上来这两句，说明该项目的 Go 没有风险边界。</div>
+        <label class="lbl">什么证据出现，会把哪一项从 Go 改成 No-Go？</label>
+        <textarea class="auto" data-k="risk_nogo" placeholder="具体到样本 / 运行结果 / 轨迹，不能写风险可控这类形容词"></textarea>
+        <label class="lbl">什么证据出现，会把哪一项从 Go 改成 Continue Pilot？</label>
+        <textarea class="auto" data-k="risk_pilot" placeholder="同上"></textarea>
+      </div>
+    </div>
+
+    <!-- ===== 评审四：汇报 & 导出 ===== -->
+    <div class="pane" id="p4">
+      <div class="sec-head">
+        <b>评审四：决策层汇报 + 导出（25 分钟）</b>
+        <p>面向周主任（客户服务中心主任 · 决策层）与省公司数字化与网络安全部（监管层）。10 段结构顺序不换，第 10 段才提请求。协同 Agent 现场演示至少两条轨迹：依据类问题带来源 / 追问或敏感暂停。</p>
+      </div>
+
+      <div class="qa-block" id="qa4">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">汇报</span>Q-F1 对周主任 vs 对省公司数字化与网络安全部，话术能一样吗？</div>
+          <div class="qa-a">对周主任放大 1／2／3／6／10 段，讲价值与"能拿去汇报"；对省公司数字化与网络安全部放大 7／8 段，讲合规与"数据从哪来、到哪去、谁签字"。两线不要混。</div>
+          <div class="qa-q"><span class="qa-tag">汇报</span>Q-F2 协同 Agent 现场演示至少两条轨迹，为什么没有固定调用全部工具？</div>
+          <div class="qa-a">依据类问题不需要查条线；敏感问题必须交还给人。要能在演示中讲清这个边界。</div>
+          <div class="qa-q"><span class="qa-tag">汇报</span>Q-F3 ROI 怎么给？</div>
+          <div class="qa-a">给算账的框架和方向，每个数字带分母与来源，不编数字；上线后 N 周出真实数据。</div>
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-F4 接管与撤出：协同 Agent 暂停后由哪个客户岗位接管？FDE 撤出后谁维护电价与业务规则、专业条线职责？</div>
+          <div class="qa-a">答不出具体岗位，就等于没有责任人。</div>
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-F5 用"转人工"当挡箭牌够吗？</div>
+          <div class="qa-a">转人工不是免责——接收队列、负责人、处理时限、人工可见必要上下文、审核结果可回写、未处理告警、可用于评测改进，七项缺一项它就是个标签。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">🎤 输出物 4-1：决策层汇报稿（10 段结构，顺序不换）</div>
+        <div class="out-sub">1 封面：岭湾电力客户服务平台 AI 阶段交付与决策汇报 · 2 结论（三个场景 + 协同 Agent 的当前决策，结论先行）· 3 场景 A：客户诉求分类能力及证据（含分母）· 4 场景 B：供电业务知识问答的证据及可追溯性 · 5 场景 C：工单分级路由与敏感件边界 · 6 协同 Agent：现场演示（至少两条轨迹）· 7 人机边界：主动追问、人工暂停与客户接管 · 8 合规与真实环境约束 · 9 能力回注与业务本体 · 10 下一步：交付决策请求。</div>
+        <textarea class="auto" style="min-height:150px" data-k="report10" placeholder="按 10 段结构写下汇报要点。每段一行，重点写：结论、证据（带分母）、决策。第 1 页结论句 150 字内，不出现技术黑话。"></textarea>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">🎤 输出物 4-2：协同 Agent 演示轨迹记录（至少两条）</div>
+            <div class="out-sub">轨迹 1（依据类）：输入 / 调用的工具 / 结果 / 为什么这样；轨迹 2（信息不足或敏感）：输入 / 暂停或追问点 / 人工动作 / 恢复过程。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tG')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tG">
+          <thead><tr><th style="width:16%">轨迹</th><th style="width:28%">输入</th><th style="width:28%">调用的工具 / 暂停点</th><th style="width:28%">结果与人工动作</th></tr></thead>
+          <tbody>
+            <tr><td class="k">轨迹 1 依据类</td><td><textarea data-k="T1a"></textarea></td><td><textarea data-k="T1b"></textarea></td><td><textarea data-k="T1c"></textarea></td></tr>
+            <tr><td class="k">轨迹 2 追问或敏感</td><td><textarea data-k="T2a"></textarea></td><td><textarea data-k="T2b"></textarea></td><td><textarea data-k="T2c"></textarea></td></tr>
+            <tr><td class="k">轨迹 3（可选）条线查询与草稿</td><td><textarea data-k="T3a"></textarea></td><td><textarea data-k="T3b"></textarea></td><td><textarea data-k="T3c"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">📋 输出物 4-3：讲演三句话（5 分钟收尾用，从评审产出提炼）</div>
+        <div class="out-sub">1 两层验收结论（能满足吗？能上生产吗？）2 能力回注清单（铺了哪条公路）3 交付决策核心（该不该继续）。</div>
+        <textarea class="auto" data-k="talk1" placeholder="一句话：需求覆盖 + 离生产的最大差距"></textarea>
+        <label class="lbl">第 2 句</label>
+        <textarea class="auto" data-k="talk2" placeholder="一句话：最该回注的能力 + 在哪个第二场景验证"></textarea>
+        <label class="lbl">第 3 句</label>
+        <textarea class="auto" data-k="talk3" placeholder="一句话：整体决策（Go / Conditional Go / Continue Pilot / No-Go）+ 关键依据"></textarea>
+      </div>
+
+      <div class="export-zone">
+        <div class="center" style="margin:20px 0">
+          <button class="btn" onclick="exportAll()">📥 导出全部成果（.md）</button>
+          <span class="copied" id="copied">已导出 ✓</span>
+        </div>
+      </div>
+      <p class="tip">导出的是完整 markdown 文档，包含两层验收表、FDE 化生产差距表与数据出域交代、能力回注清单、交付决策、决策层汇报稿与演示轨迹。</p>
+      <div class="foot">
+        <button class="btn ghost" onclick="go('s0')">回到开头</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+// Tab 切换
+function sw(el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById(el.dataset.p).classList.add('on');
+}
+function toggleQA(head){
+  head.parentElement.classList.toggle('open');
+}
+function go(id){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// 读取输入
+function V(id){
+  const el = document.querySelector('[data-k="'+id+'"]');
+  return el ? String(el.value).trim() : '';
+}
+function cell(id){ return V(id) || '—'; }
+
+// ===== 本地保存 =====
+const SAVE_KEY = 'lw_lab6_review_workbench';
+function saveLocal(){
+  const obj = {};
+  document.querySelectorAll('[data-k]').forEach(el=>{ obj[el.dataset.k] = el.value; });
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(obj)); }catch(e){}
+}
+function loadLocal(){
+  let obj = null;
+  try{ obj = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); }catch(e){ obj = null; }
+  if(!obj) return;
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    if(obj[el.dataset.k] !== undefined) el.value = obj[el.dataset.k];
+  });
+}
+document.addEventListener('input', saveLocal);
+document.addEventListener('change', saveLocal);
+loadLocal();
+
+// ===== 复制表结构（生成 markdown 表格） =====
+function tableMarkdown(id){
+  const t = document.getElementById(id);
+  if(!t) return '';
+  let out = '';
+  t.querySelectorAll('tr').forEach(tr=>{
+    const cells = tr.querySelectorAll('th,td');
+    const arr = [];
+    cells.forEach(td=>{
+      const f = td.querySelector('textarea,input,select');
+      if(f){ arr.push(String(f.value).trim() || '________'); }
+      else { arr.push(td.textContent.trim()); }
+    });
+    out += '| ' + arr.join(' | ') + ' |\n';
+    if(tr.querySelector('th')){
+      out += '|' + arr.map(()=>'---').join('|') + '|\n';
+    }
+  });
+  return out;
+}
+function writeClipboard(txt, done){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,done);
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta); done();
+  }
+}
+function copyTable(id){
+  const md = tableMarkdown(id);
+  writeClipboard(md, ()=>{
+    const c = document.getElementById('copied');
+    c.textContent = '已复制表结构 ✓';
+    c.style.display='inline';
+    setTimeout(()=>{ c.style.display='none'; c.textContent='已导出 ✓'; }, 1800);
+  });
+}
+
+// ===== 导出 =====
+function exportAll(){
+  let md = `# 实验六 · 综合证据评审与决策层汇报成果（岭湾电力客户服务平台）\n\n> 导出时间 ${new Date().toLocaleString('zh-CN')}\n\n`;
+
+  md += `## 一、两层验收表\n\n`;
+  md += `### 第一层：三个单一场景（当场验收）\n\n`;
+  md += `| 场景 | 当初的需求 / 验收标准 | 是否满足 | 生产差距 | 一句话理由 |\n|---|---|---|---|---|\n`;
+  md += `| A 客户诉求分类 | ${cell('A_std')} | ${cell('A_ok')} | ${cell('A_gap')} | ${cell('A_why')} |\n`;
+  md += `| B 供电业务知识问答 | ${cell('B_std')} | ${cell('B_ok')} | ${cell('B_gap')} | ${cell('B_why')} |\n`;
+  md += `| C 工单分级路由工作流 | ${cell('C_std')} | ${cell('C_ok')} | ${cell('C_gap')} | ${cell('C_why')} |\n\n`;
+  md += `> 指标口径：分类自信区准确率 ≥85%（25 条，转人工不算错）、转人工比例 ≤30%；问答答案准确率 ≥80%（6 条）、来源可追溯率 ≥90%、库外 2 条必须拒答；路由正确率 ≥90%（6 份，判档正确＋分支动作执行）、敏感件零漏判 100%（6 份中 2 份敏感必须全转人工）。\n\n`;
+
+  md += `### 第二层：协同 Agent 综合能力（课后验收，课上只对标准）\n\n`;
+  md += `| 检查项 | 判定标准是什么 | 课上对照结论 | 证据（课后补） |\n|---|---|---|---|\n`;
+  [['动态选择','L1'],['观察与继续','L2'],['主动追问','L3'],['人工接管','L4'],['业务闭环','L5'],['展示质量','L6'],['MVP 边界诚实','L7']].forEach(r=>{
+    md += `| ${r[0]} | ${cell(r[1]+'_std')} | ${cell(r[1]+'_now')} | ${cell(r[1]+'_ev')} |\n`;
+  });
+  md += `\n> 第二层两条硬要求：人工接管——request_human_review 返回 interrupted: true 后不再产出答复或草稿（假暂停不合格）；业务闭环——最终落到答复（带 evidence[]）／工单草稿（submitted 恒为 false）／人工接管。\n\n`;
+
+  md += `### FDE 化生产差距表（FDE 四问）\n\n`;
+  md += `| 对象 | 真实环境适配 | 业务动作闭环 | 客户责任／人工接管 | FDE 撤出条件 |\n|---|---|---|---|---|\n`;
+  md += `| A 客户诉求分类 | ${cell('G_A1')} | ${cell('G_A2')} | ${cell('G_A3')} | ${cell('G_A4')} |\n`;
+  md += `| B 供电业务知识问答 | ${cell('G_B1')} | ${cell('G_B2')} | ${cell('G_B3')} | ${cell('G_B4')} |\n`;
+  md += `| C 工单分级路由 | ${cell('G_C1')} | ${cell('G_C2')} | ${cell('G_C3')} | ${cell('G_C4')} |\n`;
+  md += `| 协同 Agent | ${cell('G_D1')} | ${cell('G_D2')} | ${cell('G_D3')} | ${cell('G_D4')} |\n\n`;
+  md += `### 数据出域交代\n${V('data_out')||'（未填写）'}\n\n`;
+
+  md += `## 二、能力回注（四层）\n\n`;
+  md += `### 四对象判断（碎石路 / 能铺路）\n\n`;
+  md += `| 对象 | 客户特定实现 | 可回注能力 |\n|---|---|---|\n`;
+  md += `| A 客户诉求分类 | ${cell('R_A1')} | ${cell('R_A2')} |\n`;
+  md += `| B 供电业务知识问答 | ${cell('R_B1')} | ${cell('R_B2')} |\n`;
+  md += `| C 工单分级路由工作流 | ${cell('R_C1')} | ${cell('R_C2')} |\n`;
+  md += `| 协同 Agent | ${cell('R_D1')} | ${cell('R_D2')} |\n`;
+  md += `| 贯穿 | ${cell('R_E1')} | ${cell('R_E2')} |\n\n`;
+  md += `### 四层能力回注清单\n\n`;
+  md += `| 候选 | 抽象后的通用能力 | 层次 | 第二场景 | 维护人 |\n|---|---|---|---|---|\n`;
+  ['1','2','3','4','5'].forEach(n=>{
+    md += `| ${cell('E'+n+'a')} | ${cell('E'+n+'b')} | ${cell('E'+n+'c')} | ${cell('E'+n+'d')} | ${cell('E'+n+'e')} |\n`;
+  });
+  md += `\n### 业务本体（可选）\n${V('ontology')||'（未填写）'}\n\n`;
+
+  md += `## 三、交付决策（Go / Conditional Go / Continue Pilot / No-Go）\n\n`;
+  md += `| 对象 | 决策 | 依据证据 | 剩余风险 | 补齐责任人 | 下一 Gate |\n|---|---|---|---|---|---|\n`;
+  md += `| A 客户诉求分类 | ${cell('F_A_d')} | ${cell('F_A_ev')} | ${cell('F_A_risk')} | ${cell('F_A_own')} | ${cell('F_A_gate')} |\n`;
+  md += `| B 供电业务知识问答 | ${cell('F_B_d')} | ${cell('F_B_ev')} | ${cell('F_B_risk')} | ${cell('F_B_own')} | ${cell('F_B_gate')} |\n`;
+  md += `| C 工单分级路由工作流 | ${cell('F_C_d')} | ${cell('F_C_ev')} | ${cell('F_C_risk')} | ${cell('F_C_own')} | ${cell('F_C_gate')} |\n`;
+  md += `| 综合系统 Agent（实验五） | ${cell('F_D_d')} | ${cell('F_D_ev')} | ${cell('F_D_risk')} | ${cell('F_D_own')} | ${cell('F_D_gate')} |\n`;
+  md += `| 整体 | ${cell('F_Z_d')} | ${cell('F_Z_ev')} | ${cell('F_Z_risk')} | ${cell('F_Z_own')} | ${cell('F_Z_gate')} |\n\n`;
+  md += `### 风险边界自检\n- 从 Go 改成 No-Go 的证据：${V('risk_nogo')||'（未填写）'}\n- 从 Go 改成 Continue Pilot 的证据：${V('risk_pilot')||'（未填写）'}\n\n`;
+
+  md += `## 四、决策层汇报稿（10 段）\n\n`;
+  md += `${V('report10')||'（未填写）'}\n\n`;
+  md += `### 协同 Agent 演示轨迹\n\n`;
+  md += `| 轨迹 | 输入 | 调用的工具 / 暂停点 | 结果与人工动作 |\n|---|---|---|---|\n`;
+  md += `| 轨迹 1 依据类 | ${cell('T1a')} | ${cell('T1b')} | ${cell('T1c')} |\n`;
+  md += `| 轨迹 2 追问或敏感 | ${cell('T2a')} | ${cell('T2b')} | ${cell('T2c')} |\n`;
+  md += `| 轨迹 3（可选） | ${cell('T3a')} | ${cell('T3b')} | ${cell('T3c')} |\n\n`;
+
+  md += `## 五、讲演三句话\n\n`;
+  md += `1. 两层验收结论：${V('talk1')||'（未填写）'}\n`;
+  md += `2. 能力回注清单：${V('talk2')||'（未填写）'}\n`;
+  md += `3. 交付决策核心：${V('talk3')||'（未填写）'}\n\n`;
+
+  md += `---\n\n> 演示级验收声明：本项目使用约 25 条测试样本 / 6 条问答验证集 / 6 份工单样本，属演示级验收——仅证明方案在给定样本上可行，不宣称达到生产可用。\n`;
+
+  const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '实验五-综合评审与决策层汇报成果.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  const c = document.getElementById('copied');
+  c.textContent = '已导出 ✓';
+  c.style.display='inline';
+  setTimeout(()=> c.style.display='none', 2000);
+}
+</script>
+</body>
+</html>

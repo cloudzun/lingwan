@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>实验三 · 供电业务知识问答 · FDE 转型实战特训 岭湾实验站</title>
+<style>
+:root{
+  --indigo:#1a237e; --indigo2:#283593; --indigo3:#3949ab; --indigo-soft:#5c6bc0;
+  --amber:#ffb300; --amber-dark:#b28704; --amber-bg:rgba(255,179,0,.08);
+  --ink:#263238; --ink-soft:#546e7a; --muted:#78909c; --line:#e2e8f0;
+  --bg:#ffffff; --bg-soft:#fafbfc; --code-bg:#101f4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Roboto","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+a{color:var(--amber-dark);text-decoration:none}
+a:hover{color:var(--indigo);text-decoration:underline}
+.hb-top{background:linear-gradient(135deg,#1a237e 0%,#283593 55%,#3949ab 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb-top .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:15px}
+.hb-top .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);flex:none}
+.hb-top .brand small{font-weight:400;font-size:12px;opacity:.85;margin-left:6px}
+.hb-top a{color:#fff;font-size:13px;font-weight:500}
+.hb-top a:hover{color:var(--amber);text-decoration:none}
+.ch-nav{background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.ch-nav a{font-size:13px;font-weight:500;color:var(--muted);padding:6px 12px;border-radius:4px;white-space:nowrap;border-bottom:2px solid transparent}
+.ch-nav a:hover{color:var(--indigo);text-decoration:none;background:var(--bg-soft)}
+.ch-nav a.on{color:var(--indigo);font-weight:700;border-bottom-color:var(--amber)}
+.ch-nav a.home{margin-left:auto;color:var(--amber-dark)}
+.hb-wrap{max-width:none;margin:0;padding:28px 24px 60px;display:flex;gap:40px;align-items:flex-start;justify-content:space-between}
+.hb-main{flex:1;min-width:0;max-width:900px}
+aside.hb-toc{width:320px;flex:none;position:sticky;top:24px;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;border-left:3px solid var(--amber);padding:16px 18px;max-height:calc(100vh - 60px);overflow:auto}
+aside.hb-toc b{font-size:11.5px;color:var(--muted);display:block;margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase}
+aside.hb-toc ul{list-style:none;padding-left:0}
+aside.hb-toc a{display:block;font-size:13px;padding:5px 8px;border-radius:4px;color:var(--ink-soft);font-weight:500}
+aside.hb-toc a:hover{background:#fff;color:var(--indigo);text-decoration:none}
+aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-size:12.5px}
+.hb-main h1{color:var(--indigo);font-size:26px;line-height:1.4;margin:4px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.5px}
+.hb-main .ch-role{font-size:12px;color:var(--amber-dark);font-weight:700;letter-spacing:1.5px;margin-bottom:18px}
+.hb-main h2{color:var(--indigo);font-size:20px;margin:34px 0 12px;padding-left:12px;border-left:4px solid var(--amber);font-weight:600}
+.hb-main h3{color:var(--indigo2);font-size:17px;margin:24px 0 10px;font-weight:600}
+.hb-main h4{color:var(--indigo);font-size:15px;margin:18px 0 8px;font-weight:600}
+.hb-main p{margin:10px 0}
+.hb-main ul,.hb-main ol{margin:10px 0;padding-left:26px}
+.hb-main li{margin:5px 0}
+.hb-main strong{color:var(--indigo);font-weight:700}
+.hb-main blockquote{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--indigo-soft);border-radius:4px;padding:12px 16px;margin:14px 0;color:var(--ink-soft)}
+.hb-main blockquote p{margin:6px 0}
+.hb-main blockquote blockquote{background:#f1f3f6;border-left-color:var(--amber)}
+.hb-main code{background:var(--bg-soft);color:var(--amber-dark);padding:2px 6px;border-radius:4px;font-size:13px;font-family:"Cascadia Mono","Consolas",monospace}
+.hb-main pre{background:var(--code-bg);border-radius:6px;padding:16px;overflow:auto;margin:14px 0;line-height:1.65}
+.hb-main pre code{background:none;color:#e8eaf6;padding:0;font-size:12.8px;white-space:pre}
+.code-wrap{position:relative;margin:14px 0}
+.code-wrap pre{margin:0}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e8eaf6;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;opacity:.65;transition:opacity .15s,background .15s;font-family:"Roboto","PingFang SC",sans-serif;line-height:1.4}
+.code-copy:hover{opacity:1;background:var(--amber);border-color:var(--amber);color:#1a237e}
+.code-copy.copied{background:var(--amber);border-color:var(--amber);color:#1a237e;opacity:1}
+.hb-main table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff}
+.hb-main th{background:var(--indigo3);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.hb-main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.hb-main tr:nth-child(even) td{background:var(--bg-soft)}
+.hb-main tr:hover td{background:var(--amber-bg)}
+.hb-main hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+.hb-main img{max-width:100%;border-radius:4px}
+.hb-pager{display:flex;justify-content:space-between;gap:14px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
+.hb-pager a{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:14px 18px;color:var(--ink);font-weight:600;font-size:14px}
+.hb-pager a:hover{border-color:var(--amber);text-decoration:none}
+.hb-pager a small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hb-pager a.next{text-align:right}
+.hb-pager a .dir{color:var(--amber-dark);font-weight:700}
+.ov-hero{max-width:none;margin:0;padding:36px 28px 8px}
+.ov-hero h1{color:var(--indigo);font-size:26px;line-height:1.4;font-weight:700;letter-spacing:.5px}
+.ov-hero .tag{display:inline-block;color:var(--amber-dark);font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.ov-hero p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:900px}
+.ov-cards{max-width:none;margin:0;padding:16px 28px 46px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;display:block;color:var(--ink);transition:border-color .18s}
+.ov-card:hover{border-color:var(--amber);text-decoration:none}
+.ov-card .no{font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--amber-dark);margin-bottom:6px}
+.ov-card h3{color:var(--indigo);font-size:16px;margin-bottom:6px;line-height:1.4;font-weight:600}
+.ov-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.ov-card .meta{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.ov-card .meta span{background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-weight:500}
+.ov-card.zip-card{background:linear-gradient(180deg,#fff8e8,#fff);border-color:var(--amber)}
+.ov-card.zip-card .no{color:var(--amber-dark)}
+.ov-intro{max-width:none;margin:0;padding:6px 28px 0}
+.mermaid{text-align:center;margin:18px 0;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px}
+.mermaid svg{max-width:100%;height:auto}
+@media(max-width:760px){
+  .hb-wrap{flex-direction:column;gap:18px}
+  aside.hb-toc{width:100%;position:static;max-height:280px}
+  .hb-main h1{font-size:21px}
+}
+</style>
+<script src="../assets/vendor/mermaid.min.js"></script>
+
+<script>
+(function(){
+  function initMermaid(){
+    var blocks = document.querySelectorAll('pre code.language-mermaid');
+    if(!blocks.length || typeof mermaid === 'undefined') return;
+    blocks.forEach(function(code){
+      var div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      code.parentNode.replaceWith(div);
+    });
+    mermaid.initialize({startOnLoad:false, theme:'default', securityLevel:'loose', flowchart:{htmlLabels:true}});
+    mermaid.run({querySelector:'.mermaid'});
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+})();
+</script>
+
+</head><body>
+<header class="hb-top">
+  <div class="brand"><span class="dot"></span>FDE 转型实战特训 · 岭湾实验站<small>岭湾电力客户服务平台（教学合成案例）</small></div>
+  <a href="../index.html">实验站首页</a>
+</header>
+<div class="ch-nav"><a class="ch-nav-item" href="lab1-requirements-brainstorm.html">实验一 · 需求调研与解决方案框架</a><a class="ch-nav-item" href="lab2-classifier.html">实验二 · 诉求智能分类系统</a><a class="ch-nav-item on" href="lab3-policy-rag.html">实验三 · 供电业务知识问答</a><a class="ch-nav-item" href="lab4-routing-workflow.html">实验四 · 工单分级路由工作流</a><a class="ch-nav-item" href="lab5-cooperative-agent.html">实验五 · 综合系统 Agent（进阶）</a><a class="ch-nav-item" href="lab6-review-and-report.html">实验六 · 综合证据评审与决策层汇报</a><a class="ch-nav-item" href="lab7-migration-review.html">实验七 · 复盘真实项目（可选）</a><a class="home" href="../index.html">← 返回实验站</a></div>
+<div class="hb-wrap">
+  <main class="hb-main">
+    <div class="ch-role">🤖 Delta · 施工线 · 答案可追溯　|　Delta</div><h1>实验三 · 供电业务知识问答</h1><blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。<br />
+<strong>对应课纲：</strong> FDE 综合实操 · 实验三（Delta 视角 · 场景 B）<br />
+<strong>时长：</strong> 约 120 分钟<br />
+<strong>角色：</strong> 你继续扮演 <strong>Delta（FDE/FDSE）</strong>——手上沾泥，把方案变成能跑的代码<br />
+<strong>工作流：</strong> gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）<br />
+<strong>前置：</strong> 已完成实验一（需求调研与解决方案框架）与实验二（客户诉求智能分类 · 场景 A），组内拥有《解决方案框架》与本项目的《AGENTS.md》<br />
+<strong>配套：</strong> <code>01_数据包/岭湾项目包/</code>（下称"数据包"）；全程只用数据包内的材料，不额外索取外部数据</p>
+</blockquote>
+<hr />
+<h2 id="_1">实验概述</h2>
+<p>上一轮，你作为 Delta 把场景 A（诉求分类）做出来了，坐席分派效率大幅提升。周主任（客户服务中心主任）看到成效，催着把下一个子场景推上去。</p>
+<p>这一轮，你要施工<strong>场景 B：供电业务知识问答</strong>。回想实验一的调研——用电客户问供电业务（报装要什么材料、阶梯电价怎么算、停电提前几天通知），坐席靠经验和翻文件回答，知识文档多、常更新、口径不一，答错了坐席担责任。周主任的要求很明确：</p>
+<blockquote>
+<p><strong>"让用电客户问供电业务，系统直接给答案，还得告诉他是哪份文件、哪条规定的，免得坐席背锅。"</strong></p>
+<p><strong>你的施工任务书</strong>是实验一《解决方案框架》里的场景 B。这一轮你不再是"想清楚做什么"的人，而是"把它做出来"的人。</p>
+</blockquote>
+<p><strong>目标</strong>：用 AI（opencode）在 2 小时内，做出一个<strong>供电业务知识问答系统</strong>——用电客户/坐席输入一个业务问题（如"居民阶梯电价的第二档如何划分并加价"），系统从知识文档库检索相关内容，生成精确回答，并<strong>标注答案来源</strong>（哪份文件、哪一条），带一个 Streamlit 对话界面。</p>
+<p><strong>技术方案不变</strong>（来自实验一选型）：</p>
+<ul>
+<li><strong>RAG</strong>（不是微调、不是纯关键词搜索）——知识文档会更新、答案必须可溯源、不能凭模型记忆瞎答。</li>
+<li>技术栈：opencode + gstack 工程流程 + DeepSeek+ 向量库 + Streamlit。</li>
+</ul>
+<blockquote>
+<p><strong>本实验的能力定位：</strong> 它解决"<strong>依据是什么</strong>"——从知识库检索证据，生成可追溯回答。在实验五 · 综合系统 Agent（进阶）中，这一能力会被封装为 <strong><code>search_policy</code> 工具</strong>，只有任务确实需要业务依据时才调用。实验五 复用的是<strong>数据、证据纪律和工具契约</strong>，不要求复用本实验的项目代码或向量库实现——它甚至可能用更轻量的检索方案（见本实验第 4 节复盘说明）。本实验的重点，是守住"没有证据不回答、来源可以核对"这条底线。</p>
+</blockquote>
+<pre><code class="language-mermaid">graph LR
+    OH[&quot;office-hours&lt;br/&gt;确认该做&quot;] --&gt; SP[&quot;spec&lt;br/&gt;死磕边界&quot;]
+    SP --&gt; AP[&quot;autoplan&lt;br/&gt;决策拍板&quot;]
+    AP --&gt; BL[&quot;施工&lt;br/&gt;按spec实现&quot;]
+    BL --&gt; RV[&quot;review&lt;br/&gt;两遍检查&quot;]
+    RV --&gt; QA[&quot;qa&lt;br/&gt;真实跑一遍&quot;]
+    QA --&gt; SH[&quot;ship&lt;br/&gt;规范收尾&quot;]
+    SH --&gt; RT[&quot;retro&lt;br/&gt;复盘&quot;]
+
+    style OH fill:#4C78A8,color:#fff
+    style SP fill:#72B7B2,color:#fff
+    style AP fill:#F58518,color:#fff
+    style BL fill:#E45756,color:#fff
+    style RV fill:#B279A2,color:#fff
+    style QA fill:#54A24B,color:#fff
+    style SH fill:#B279A2,color:#fff
+    style RT fill:#FF9DA6,color:#333
+</code></pre>
+<hr />
+<h2 id="rag">本轮的核心学习点：RAG 的"答案可追溯"</h2>
+<p>这一轮，你延续场景 A 的工作方式——写启动提示词，交给 Agent 跑 gstack 八环节，你在 checkpoint 把关。<strong>流程和场景 A 一样，但技术场景变了：从"一次调用"变成"检索 + 生成"。</strong></p>
+<p><strong>RAG 和分类器的本质区别：</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>场景 A 分类器</th>
+<th>本实验 RAG</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入</td>
+<td>一句诉求</td>
+<td>一个问题</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>一个类别</td>
+<td><strong>一段回答 + 来源引用</strong></td>
+</tr>
+<tr>
+<td>核心</td>
+<td>一次 API 调用</td>
+<td><strong>先检索（找相关文件）→ 再生成（基于文件回答）</strong></td>
+</tr>
+<tr>
+<td>关键挑战</td>
+<td>分得准不准</td>
+<td><strong>答得准 + 来源可追溯</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>为什么"答案可追溯"是供电业务问答的命门？</strong> 用电客户问供电业务，AI 答错了，坐席/平台要负责。如果 AI 的答案能溯源到"XX指引 第十一条"，客户可以去核对，坐席也可以说"这是按文件规定来的"。<strong>来源引用不是锦上添花，是业务知识问答类项目常见的验收准入门槛（教学经验口径，非普遍法定要求）。</strong> 这正是周主任要的"免得坐席背锅"。</p>
+</blockquote>
+<hr />
+<h2 id="rag_1">知识背景：RAG 是什么</h2>
+<p><strong>RAG（Retrieval-Augmented Generation，检索增强生成）</strong> 的核心思想一句话：<strong>"考试时翻开书找答案，而不是把书背进脑子。"</strong></p>
+<ul>
+<li>普通 LLM：凭记忆回答——可能记错、记漏、记混（尤其在电价、时限这种常更新的内容上）</li>
+<li><strong>RAG</strong>：先检索相关知识文档片段，再基于片段回答——<strong>答案可溯源、且知识文档更新只需重建索引</strong></li>
+</ul>
+<p><strong>RAG 的核心链路：</strong></p>
+<pre><code>知识文档 → 分块 → 向量化 → 存入向量库
+                                    ↓ 用户提问
+                    问题向量化 → 检索 top-K 相关片段
+                                    ↓
+                 组装 prompt（系统提示 + 片段 + 问题）→ LLM 生成答案 + 标注来源
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>一句话</th>
+<th>本实验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>分块（chunking）</strong></td>
+<td>把长文档切成小段</td>
+<td>按语义/段落切，块太小截断信息、太大检索不准</td>
+</tr>
+<tr>
+<td><strong>向量化（embedding）</strong></td>
+<td>把文字变成数字向量</td>
+<td>bge-m3 等中文 embedding 模型</td>
+</tr>
+<tr>
+<td><strong>向量库</strong></td>
+<td>存向量+原文，支持相似度检索</td>
+<td>Chroma 本地存储</td>
+</tr>
+<tr>
+<td><strong>检索</strong></td>
+<td>找到和问题最像的片段</td>
+<td>top-3 余弦相似度</td>
+</tr>
+<tr>
+<td><strong>引用</strong></td>
+<td>答案必须标来源</td>
+<td>文件名 + 条款号</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RAG vs 微调 vs 纯关键词搜索（选型判断）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>适用</th>
+<th>为什么本场景不用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RAG</strong></td>
+<td>文档常更新、答案需溯源</td>
+<td>✅ 知识文档常更新，RAG 只需重建索引；答案天生带引用</td>
+</tr>
+<tr>
+<td>微调</td>
+<td>模型要"学会"固定领域知识</td>
+<td>❌ 文档一更新就要重训；答案无法溯源；易幻觉</td>
+</tr>
+<tr>
+<td>纯关键词搜索</td>
+<td>问题→文档字面匹配</td>
+<td>❌ "电费算错了怎么退"和"电费差错核查与退补"有语义鸿沟，关键词匹配不上</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="0">0. 课前准备</h2>
+<ul>
+<li>[ ] opencode Desktop 已安装并启动</li>
+<li>[ ] gstack 已安装（实验二装过，可复用）</li>
+<li>[ ] 模型服务连通、<code>DEEPSEEK_API_KEY</code> 已配置（<strong>只确认"已设置"，不回显、不入库</strong>）</li>
+<li>[ ] <strong>向量库与 embedding 依赖已装</strong>（详见下方）</li>
+<li>[ ] 已通读实验一的《解决方案框架》场景 B 部分</li>
+<li>[ ] 已查看数据包 <code>脚手架/AGENTS.md</code> 与实验二的《retro.md》（交接经验）</li>
+<li>[ ] 创建本实验目录 <code>实验三-供电业务知识问答/</code></li>
+</ul>
+<h3 id="embedding">环境准备：向量库与 embedding 依赖</h3>
+<p>RAG 比分类器多了两样东西——<strong>向量库</strong>和 <strong>embedding 模型</strong>。让 Agent 帮你装，或手动装：</p>
+<pre><code>帮我安装 RAG 需要的依赖到当前 Python 环境：
+1. 创建一个独立的虚拟环境 venv（不要复用之前的项目环境）
+2. 安装向量数据库（推荐 chromadb）
+3. 配置 embedding 服务：优先走 API（如硅基流动的 bge-m3），把 base_url 和模型名写进 .env
+4. 安装完成后，写一行代码验证：能成功调用 embedding 并得到向量维度
+</code></pre>
+<blockquote>
+<p><strong>提示：</strong> embedding 有两条路——本地跑（下载模型）或走 API。</p>
+<ul>
+<li><strong>本实验用 API 优先</strong>（如硅基流动 bge-m3）。理由：课堂模拟数据（完全虚构、脱敏、无真实个人信息）可在课堂批准环境使用公网服务；<strong>真实客户数据未经确认不得进入公网服务</strong>。且本地跑 bge-m3 要下载 2GB+ 模型和 torch，机器配置低容易卡死。</li>
+<li><strong>验证标准：</strong> 装完后必须实际跑一行 <code>import</code> + 调用，确认能返回向量。注意 <code>pip list</code> 显示"已安装"可能是假象（全局环境变量泄漏导致加载到残缺包），<strong>务必实测导入</strong>，不要只看安装列表。</li>
+<li>若 API 不可用（无网络/无额度），可降级本地模型，但要预期下载时间和性能开销。</li>
+<li><strong>红线提醒（数据包 <code>脚手架/AGENTS.md</code> 第 1 条）：数据不出内网。</strong> 课堂用的全部是教学合成的虚构材料；任何真实客户诉求、用电信息、知识文档内容不得发往外部网络服务。</li>
+</ul>
+</blockquote>
+<h3 id="_2">知识文档（数据包 <code>知识文档/</code> 素材目录）</h3>
+<blockquote>
+<p><strong>知识文档放在数据包 <code>01_数据包/岭湾项目包/知识文档/</code> 目录下，由讲师随数据包一起提供。施工时让 Agent 从该目录读取全部文档，不要让 Agent 自己编业务内容。</strong></p>
+</blockquote>
+<p>知识库覆盖用电客户高频咨询的 5 个领域，共 5 份文档，<strong>混合格式</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>格式</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>岭湾电力供电营业规则实施细则（教学合成版）.md</code></td>
+<td>Markdown</td>
+<td>8章32条：总则与适用范围／供电方案与答复／受电装置与检验／装表接电／用电变更／计量与计费／供用电安全与违约用电／附则</td>
+</tr>
+<tr>
+<td><code>岭湾电力电价与电费计收说明（教学合成版）.md</code></td>
+<td>Markdown</td>
+<td>6章25条：总则／电价分类／居民阶梯电价／峰谷分时与力率调整／电费计算与结算周期／电费差错、退补、票据与附则</td>
+</tr>
+<tr>
+<td><code>岭湾电力业扩报装办理指南（教学合成版）.md</code></td>
+<td>Markdown</td>
+<td>7章26条：总则／报装渠道与申请材料／居民低压新装流程与办理时限／低压与高压办理差异／供电方案答复期限／竣工验收与装表送电／变更用电与附则</td>
+</tr>
+<tr>
+<td><code>岭湾电力供电服务规范与服务承诺（教学合成版）.docx</code></td>
+<td><strong>Word</strong></td>
+<td>6章26条：总则与适用范围／服务渠道与信息公开／服务响应与到达现场时限／欠费与复电／投诉处理与回访／服务承诺、渠道信息补充与附则</td>
+</tr>
+<tr>
+<td><code>岭湾电力分布式光伏并网服务指引（教学合成版）.pdf</code></td>
+<td><strong>PDF</strong></td>
+<td>6章21条：总则与并网方式／居民光伏并网申请条件与材料／受理与现场勘查／接入方案答复时限／计量与结算／安全责任、运维与附则</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>格式说明：</strong> md 文档可直接读取；<code>.docx</code> 和 <code>.pdf</code> 需要先做格式解析（转成可检索文本），才能分块向量化。这两份的 Markdown 源件另存于 <code>知识文档/_源文件（md）/</code>，转换脚本留档后可用它比对解析结果、并在知识文档更新后复现重转。</p>
+<p><strong>整包下载：</strong> 在线实验站的素材页提供这 5 份文档的一次性打包（<code>policy-docs/lab3-policy-rag-docs.zip</code>），需要离线取用或课前备料时直接下载整包即可。</p>
+</blockquote>
+<hr />
+<h2 id="1-20">1. 写启动提示词（20 分钟）★本轮核心</h2>
+<blockquote>
+<p><strong>这不是让 AI 干的活，是你（Delta）的活。</strong> 你要把实验一的方案框架（场景 B 部分），翻译成一段能让 Agent 开跑的 office-hours 启动信息。流程和场景 A 一样，但这次你有了场景 A 的经验——<strong>该写什么，你心里应该有数了。</strong></p>
+</blockquote>
+<h3 id="step-1-agent">Step 1：先理清"要交给 Agent 哪些信息"</h3>
+<p>和场景 A 一样，一份好的启动信息要包含 7 项。但<strong>场景 B 的内容不同</strong>，对照实验一方案框架场景 B 填：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>要包含的信息</th>
+<th>从方案框架哪里找</th>
+<th>启动信息里怎么写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>背景与角色</strong></td>
+<td>你是谁、在给谁做</td>
+<td>"我是 FDE 团队的 Delta，施工场景 B：供电业务知识问答"</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>要做什么</strong></td>
+<td>场景 B 定义</td>
+<td>"做一个供电业务知识问答系统，基于知识文档回答用电客户咨询"</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>输入输出</strong></td>
+<td>场景 B 的"解决什么"</td>
+<td>"输入一个业务问题，输出：回答 + 来源引用（哪份文件、哪一条）"</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>技术选型（含理由）</strong></td>
+<td>场景 B 选型</td>
+<td>"已选型 RAG，不用微调（知识文档常更新、需溯源）、不用纯关键词搜索（语义鸿沟）"</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>数据现状</strong></td>
+<td>场景 B 的数据风险</td>
+<td>"有 5 份知识文档（见下）+ Q&amp;A 验证集 6 条 + 库外问题 2 条；知识文档会更新，需重建索引"</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>验收口径</strong></td>
+<td>场景 B 的成功衡量</td>
+<td>"答案准确率 ≥80% + 来源可追溯率 ≥90%（双指标，见下）；库外问题必须拒答"</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>约束与边界</strong></td>
+<td>场景 B 的风险与应对</td>
+<td>"答案必须带来源引用，不能凭模型记忆瞎答；检索不到应答'知识库中未找到，建议咨询人工'；API key 走环境变量"</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>第 5、6 项是最容易漏的，写不好 Agent 会卡住或走错路线：</strong></p>
+<ul>
+<li><strong>数据现状</strong>：如果你不写"知识文档 + Q&amp;A 验证集"在哪、知识文档会更新，Agent 可能用模型记忆直接回答（那就不是 RAG 了），或者不知道测试集在哪。</li>
+<li><strong>验收口径</strong>：如果你不写"来源可追溯率"这个指标，Agent 可能只优化答案对错、不重视引用——可溯源是供电业务问答的命门。</li>
+</ul>
+</blockquote>
+<h3 id="step-2">Step 2：组装启动提示词——先自己想，再看提示</h3>
+<blockquote>
+<p><strong>不要急着看参考答案。</strong> 写启动提示词的本质，是"<strong>如果换一个人接手这个项目，他需要知道什么，才能不重开讨论、直接开干？</strong>"</p>
+</blockquote>
+<p><strong>先尝试自己组装。写的时候，用这 7 个问题自我审查：</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>自查问题</th>
+<th>为什么问这个</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>换一个不了解项目的人读，他能知道<strong>我在为谁、做什么</strong>吗？</td>
+<td>缺了背景，Agent 会脑补客户和场景</td>
+</tr>
+<tr>
+<td>2</td>
+<td>他能不能知道<strong>输入是什么、输出是什么</strong>？</td>
+<td>缺了 I/O，Agent 会发明错误接口</td>
+</tr>
+<tr>
+<td>3</td>
+<td>他能不能知道<strong>"为什么选 RAG 而不是微调/关键词搜索"</strong>？</td>
+<td>缺了选型理由，Agent 可能问你"要不要微调"</td>
+</tr>
+<tr>
+<td>4</td>
+<td>他能不能知道<strong>数据是什么情况</strong>（文档在哪、多少份、验证集在哪）？</td>
+<td>缺了数据现状，Agent 可能凭记忆回答或找不到测试集</td>
+</tr>
+<tr>
+<td>5</td>
+<td>他能不能知道<strong>"做出来怎么算成功"</strong>？</td>
+<td>缺了验收口径（尤其"来源可追溯"），Agent 会自己发明一套</td>
+</tr>
+<tr>
+<td>6</td>
+<td>他能不能知道<strong>有什么红线</strong>？</td>
+<td>缺了约束，Agent 可能不重视来源引用</td>
+</tr>
+<tr>
+<td>7</td>
+<td>他能不能知道<strong>"按什么流程跑、产出什么"</strong>？</td>
+<td>缺了流程要求，Agent 不会主动走 gstack 八环节</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果你某一条答不上来——<strong>回到实验一的方案框架场景 B 去找</strong>。这轮你已经有场景 A 的经验，应该能更快写出来。</p>
+</blockquote>
+<p><strong>✅ 自查通过后，检查点：</strong></p>
+<ul>
+<li>[ ] 你自己独立写出了启动提示词（先别翻附录 D）</li>
+<li>[ ] 7 个自查问题你都能回答"能"</li>
+<li>[ ] 数据现状写进去了（5 份知识文档在数据包 <code>知识文档/</code>＋Q&amp;A 6 条＋库外 2 条，<strong>只写文件名与数量、不粘贴正文</strong>）</li>
+<li>[ ] 验收口径（答案 ≥80% + 来源可追溯 ≥90%，库外问题必须拒答）写进去了</li>
+<li>[ ] 明确写了"按 gstack 八环节流程执行 + 每环节产出文件 + 需要拍板时停下问我"</li>
+<li>[ ] 你和组内对齐了这份提示词（Delta 主导，Echo 队友审查）</li>
+</ul>
+<blockquote>
+<p>写完、组内对齐后，可以对照<strong>附录 D：启动提示词参考答案</strong>——看你自己写的，相比参考答案漏了什么、多了什么。</p>
+</blockquote>
+<h3 id="step-3">Step 3：把数据按文件名引用，不粘贴正文</h3>
+<p>在启动信息里只写<strong>来源目录、文件名与数量</strong>，不要把文档内容与验证集正文抄进提示词：</p>
+<pre><code>【数据现状】知识库在数据包 知识文档/ 目录下，共 5 份文档（混合格式）：
+  岭湾电力供电营业规则实施细则（教学合成版）.md
+  岭湾电力电价与电费计收说明（教学合成版）.md
+  岭湾电力业扩报装办理指南（教学合成版）.md
+  岭湾电力供电服务规范与服务承诺（教学合成版）.docx
+  岭湾电力分布式光伏并网服务指引（教学合成版）.pdf
+其中 .docx 与 .pdf 需要先解析成可检索文本再入库；知识文档会更新，更新后需要重建索引。
+验收样本由讲师外部给定，直接用数据包里的 评测集/qa_pairs.csv（6 条）
+与 评测集/qa_pairs_out_of_scope.csv（2 条），原样使用、不得重造；样本正文不要抄进提示词。
+</code></pre>
+<blockquote>
+<p><strong>为什么只写文件名与数量</strong>：一是<strong>防泄题</strong>（样本标签属于验收信息，抄进提示词等于把答案给了 Agent）；二是<strong>防漂移</strong>（粘贴的副本一旦与数据包不一致，验收结论就作废）。数据都在数据包，Agent 需要时自己去读。<br />
+<strong>落盘与来源 metadata 属于 spec 环节</strong>：要让 Agent 把解析后的文本落盘、要它按 <code>source_file</code>／<code>normalized_file</code> 锚定来源，这些写进 SPEC 的"数据与样本"一节（见 <code>脚手架/SPEC模板.md</code>），不必挤进启动提示词。<br />
+<strong>验证集问题不要设计得太宽</strong>：一个宽问题会覆盖多个条款（如"停电通知有什么要求"会同时涉及计划停电与紧急停电），单条款锚定必然歧义；数据包里的 6 条已按单条款拆细，直接照用。</p>
+</blockquote>
+<hr />
+<h2 id="2-75">2. 注入并跟进八环节（75 分钟）</h2>
+<h3 id="step-1-office-hours">Step 1：把启动提示词灌进 office-hours</h3>
+<p>和场景 A 一样，用驱动指令把流程纪律"焊"进 Agent 的执行。参考驱动指令：</p>
+<pre><code>/office-hours
+
+我是一名 FDE 团队（Delta 角色），需要启动岭湾电力客户服务平台场景 B 的施工。
+
+【在这里粘贴你写好的启动提示词，包括：背景 / 要做什么 / 技术选型 /
+数据现状 / 验收口径 / 约束】
+
+请以 gstack 标准开发流程执行本次开发，严格遵守以下要求：
+1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
+2. 每个环节都要产出对应文件并落盘当前目录，在回复中列出文件名与位置。
+3. 走完一环、进入下一环之前先停下来向我汇报，等我确认后再继续（禁止一口气跑完）。
+4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
+5. 现在从 office-hours 开始。
+</code></pre>
+<h3 id="step-2_1">Step 2：跟进八个环节，你的把关点</h3>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>Agent 会做什么</th>
+<th>你的 checkpoint（必须把关）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>office-hours</strong></td>
+<td>追问需求细节，尤其数据、口径、溯源</td>
+<td>回答它关于文档/口径的问题；确认"值得做"</td>
+</tr>
+<tr>
+<td><strong>spec</strong></td>
+<td>死磕边界：失败模式、No-Go、数据模型、验收口径</td>
+<td>审查 No-Go 是否具体；<strong>"答案必须带来源"是否写进 SPEC</strong></td>
+</tr>
+<tr>
+<td><strong>autoplan</strong></td>
+<td>暴露两可决策，等你拍板</td>
+<td><strong>真的拍板</strong>：切块策略、检索 top-K、检索不到怎么办</td>
+</tr>
+<tr>
+<td><strong>施工</strong></td>
+<td>按 SPEC 实现（文档→分块→向量化→检索→生成），每模块冒烟。<strong>交付入口是 <code>src/handler.py</code>（对外暴露与 <code>脚手架/SKELETON.md</code> 一致的 <code>search_policy</code> 签名）</strong></td>
+<td>抽查代码没偏离 spec；<strong>知识文档来自数据包 <code>知识文档/</code>、不是 Agent 编的；5 份都读全了（含 docx/pdf）；建索引后对每条验证集问题抽查 top-k，目标条款在不在前几</strong></td>
+</tr>
+<tr>
+<td><strong>review</strong></td>
+<td>两遍检查（致命+信息），P0-P3 分级</td>
+<td>确认 P0/P1 修复；API key 没硬编码；<strong>embedding 调用无硬编码模型名</strong></td>
+</tr>
+<tr>
+<td><strong>qa</strong></td>
+<td>真实跑核心流程 + 边界输入</td>
+<td>用 Q&amp;A 验证集测；答案准确率 + 来源可追溯率双指标达标；<strong>库外 2 条必须拒答</strong></td>
+</tr>
+<tr>
+<td><strong>ship</strong></td>
+<td>版本+CHANGELOG+README+commit</td>
+<td>确认 .env 未入库</td>
+</tr>
+<tr>
+<td><strong>retro</strong></td>
+<td>复盘四点</td>
+<td>摩擦写具体；有改进行动项</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agent">关键决策点，Agent 停下来时你要拍板</h3>
+<p>场景 B 有几个<strong>场景 A 没有的决策点</strong>（都围绕 RAG 的特性）：</p>
+<ol>
+<li><strong>切块策略</strong>：知识文档天然按「条」组织，<strong>推荐按条切块</strong>（正则匹配形如 <code>**第X条**</code> 的条款标记，每条一个块，条款号随块保留）——引用粒度天然对齐"第X条"，与验证集的 expected_source 零转换。固定长度切块（如 800 字符）会一次塞进好几条、切断条款号，不推荐。<strong>同时注意：文档末尾的"本指南由岭湾电力有限公司营销管理部门负责解释 / 自发布之日起施行 / 有效期"这类程序性条款，对所有问题都呈中等相似度、互相高度相似，会污染检索——建索引时建议过滤</strong>（正则匹配"负责解释/施行/有效期"）。</li>
+<li><strong>检索数量（top-K）</strong>：检索几条片段喂给模型？太少答案不全，太多噪声大。实测 top-5 配合程序性条款过滤，效果稳定。</li>
+<li><strong>检索不到时怎么办</strong>：知识库里没有这个问题，模型该怎么答？<strong>绝不能编</strong>——应明确说"知识库中未找到，建议咨询人工"。注意：相似度阈值只是"进生成的门槛"，检索到相似度不高的片段进了生成时，<strong>拒答靠提示词约束模型判断兜底</strong>——这是两层防线，验收时要各测一条（数据包已备 2 条库外问题实测拒答）。</li>
+<li><strong>来源引用格式</strong>：答案引用要不要显示"文件名 + 条款号"？要——这是可溯源的底线。</li>
+<li><strong>建索引后必须抽查检索</strong>：建完索引，对每条验证集问题输出 top-k 排名，人工扫一眼目标条款在不在前几。<strong>不抽查直接验收，目标条款可能被程序性条款挤掉，首轮必 FAIL、白花几十分钟</strong>——这是 RAG 施工最实用的经验。</li>
+</ol>
+<blockquote>
+<p><strong>FDE 灵魂追问 #1：</strong> Agent 在 autoplan 停下来问"检索不到时模型怎么回答"——你不能说"你看着办"。为什么？因为<strong>供电业务场景，编造电价、时限、办理材料这类答复是事故</strong>（坐席/平台要负责）。你必须拍板"检索不到必须明说，不能编"。这个决策 AI 不知道严重性，只有你知道。</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 八环节都跑完，每环节有产出文件</li>
+<li>[ ] 每次 Agent 停下要拍板时，你都真的做了决策（不是"你看着办"）</li>
+<li>[ ] SPEC 里写清了"答案必须带来源引用"，验收口径写清了答案 ≥80% + 来源可追溯 ≥90%</li>
+<li>[ ] 知识文档来自数据包 <code>知识文档/</code>（5 份读全，含 docx/pdf 解析），不是 Agent 编的</li>
+<li>[ ] 建索引后抽查过 top-k，目标条款在检索结果前几</li>
+<li>[ ] 库外 2 条实测拒答，应答"知识库中未找到，建议咨询人工"</li>
+<li>[ ] .env 未入库</li>
+</ul>
+<hr />
+<h2 id="3-20">3. 验收与收尾（20 分钟）</h2>
+<h3 id="step-1">Step 1：核对交付物</h3>
+<pre><code>实验三-供电业务知识问答/
+├── 01-office-hours.md
+├── SPEC.md                   # 含失败模式 + No-Go + 数据模型 + 验收口径
+├── SPEC-决策记录.md           # autoplan 拍板记录
+├── docs/                     # 知识库（从数据包 知识文档/ 读取，或复制到此）
+├── src/                      # 分块/向量化/检索/生成模块
+├── src/handler.py            # 交付入口（暴露 search_policy，签名见 脚手架/SKELETON.md）
+├── streamlit_app.py          # 对话界面（命名自定，功能一致即可）
+├── tests/qa_pairs.csv        # Q&amp;A 验证集（6 条）
+├── tests/qa_pairs_out_of_scope.csv   # 库外问题集（2 条，必须拒答）
+├── review.md / qa-report.md
+├── VERSION / CHANGELOG.md / README.md
+└── retro.md
+</code></pre>
+<blockquote>
+<p><strong>不落在本目录里的东西</strong>：<code>知识文档/</code>、<code>评测集/</code>、<code>脚手架/</code>、<code>离线兜底包/</code> 都在数据包里<strong>原位使用</strong>——它们是外部给定的口径与样本，不复制、不改写。</p>
+</blockquote>
+<h3 id="step-2_2">Step 2：验收口径——答案 + 来源双指标</h3>
+<p>RAG 的验收比分类器复杂，用<strong>双指标</strong>，并单列一条拒答要求：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>要求</th>
+<th>判定机制（怎么算"对"）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>答案准确率</strong></td>
+<td>≥80%</td>
+<td>让 LLM 做语义评判：对照 expected_answer 判"一致/不一致"（输出结构化结果），比关键词匹配鲁棒</td>
+</tr>
+<tr>
+<td><strong>来源可追溯率</strong></td>
+<td>≥90%</td>
+<td>严格比对：回答引用的"文件名 + 条款号"与 expected_source 一致才算对（条款号归一化：'第16条'/'第十六条'都算 16；漏引/错引/不符都算未达标）</td>
+</tr>
+<tr>
+<td><strong>库外拒答</strong></td>
+<td>必须拒答</td>
+<td>另加 2 条库外问题（<code>评测集/qa_pairs_out_of_scope.csv</code>）；应答"知识库中未找到，建议咨询人工"，<strong>不得编造</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>为什么"答案对但来源错"也要扣分？</strong> 因为供电业务问答的命门是可溯源。<strong>答案对了、来源引错了，等于让客户去核对一份不存在的文件——比不答更糟。</strong> 所以"来源可追溯"单列一个 90% 的硬指标。</p>
+<p><strong>统计提示（小样本口径）：</strong> 6 条验证集上，"可追溯率 ≥90%" 实际需要 <strong>6/6 全对</strong>——5/6≈83.3% 不达标（90% 门槛退化为"全对制"）；"答案准确率 ≥80%" 则 5/6≈83.3% 即可达标。小样本结论<strong>只说明本次样本</strong>，不代表稳定的生产水平。对"全对才过线"要有心理预期，避免差一条时困惑。</p>
+</blockquote>
+<p><strong>跑验收命令，确认达标（三条按顺序跑，原样引用，不要改参数）：</strong></p>
+<pre><code class="language-bash">python 验收\evaluate.py --task qa --impl stub     # 离线桩
+python 验收\evaluate.py --task qa --impl src      # 学员实现（src/handler.py）
+python 验收\evaluate.py --task qa --impl api      # 在线模型（需 DEEPSEEK_API_KEY）
+</code></pre>
+<p><strong>判据</strong>：<code>--impl stub</code> 必须先跑通（它证明工具口径与样本都正常，排掉"环境问题"与"实现问题"的混淆）；<code>--impl src</code> 是本次交付物的成绩；<code>--impl api</code> 用于对照"在线模型直连"与"你的实现"差在哪。三条跑完，把<strong>答案准确率</strong>、<strong>来源可追溯率</strong>与<strong>库外拒答结果</strong>记进 <code>qa-report.md</code>。</p>
+<h3 id="step-3_1">Step 3：演示给"坐席班长 小林"看</h3>
+<p>模拟向小林演示这个系统。要点：</p>
+<ul>
+<li>用<strong>她听得懂的话</strong>讲（别说"RAG""向量检索"）</li>
+<li>演示一个"带来源引用"的回答——"系统答完还告诉客户是哪份文件、哪一条，你可以去核对"</li>
+<li>呼应她的"答错业务答复担责任"的顾虑——"以后答错了，责任能追溯到文件，不用你背锅"</li>
+</ul>
+<blockquote>
+<p><strong>FDE 灵魂追问 #2：</strong> 向小林演示时，为什么"来源引用"是最好的切入点？——因为她最怕"答错被追责"。<strong>来源引用把"AI 答错了谁负责"这个问题，从"坐席背锅"变成了"按文件来，有据可查"。</strong> 这正是场景 B 的核心价值，也是 RAG 在这个场景不可替代的原因。</p>
+</blockquote>
+<h3 id="step-4dod">Step 4：DoD 验收（演示级声明）</h3>
+<p>在 qa-report 或 retro 里，写一句<strong>验收定位声明</strong>：</p>
+<blockquote>
+<p>"本项目使用 5 份知识文档 + 6 条 Q&amp;A 验证集（另加 2 条库外问题），属<strong>演示级验收</strong>——结论仅证明方案在给定知识库和样本上可行，不宣称覆盖全部供电业务或达到生产可用。"</p>
+<p><strong>FDE 灵魂追问 #3：</strong> 为什么必须写这句"演示级验收声明"？——<strong>FDE 的第一戒律是不能夸大交付物。</strong> 5 份文档答得好，不代表客户问的所有供电业务都能答。而且这类场景夸大更危险——<strong>说"覆盖全部业务"而实际没有，客户按错误信息办事（比如按错的时限去等复电），责任是平台扛。</strong> 敢写"答案准确率 100%"吗？</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 所有交付物齐全</li>
+<li>[ ] 三条验收命令都跑过，<code>--impl src</code> 的双指标记进了 qa-report</li>
+<li>[ ] 库外 2 条实测拒答，无编造</li>
+<li>[ ] 向小林演示成功，讲了"来源引用 = 追责有据"</li>
+<li>[ ] 写了"演示级验收声明"</li>
+<li>[ ] DoD 全过</li>
+</ul>
+<hr />
+<h2 id="4-10">4. 复盘沉淀（10 分钟）</h2>
+<h3 id="step-1-agent-retro">Step 1：看 Agent 的 retro 产出</h3>
+<p>Agent 跑 retro 时会产出复盘四点（做得好/摩擦/未覆盖/行动项）。</p>
+<h3 id="step-2_3">Step 2：手动补充"对下一轮有用"的两条</h3>
+<p>在 retro.md 追加：</p>
+<ol>
+<li><strong>AGENTS.md 更新</strong>：让 Agent 更新项目根目录的 AGENTS.md（知识文档结构、向量库路径、Q&amp;A 验证命令、来源 metadata 口径）——下一轮（实验四：场景 C 工单分级路由工作流）与 实验五 开新会话时，AI 能继承上下文。</li>
+<li><strong>改进行动项交接</strong>：写下"下一轮（实验四：场景 C 工单分级路由工作流）开工前，我要先看这条经验：____"</li>
+<li><strong>面向 实验五 的最小业务问答工具契约（长期交接）</strong>：如果其他系统调用本次 RAG（而不是由用户直接操作页面），调用方至少需要哪些字段？建议参考接口（与 <code>脚手架/SKELETON.md</code> 的函数签名一致，只记录、不要求服务化改造）：</li>
+</ol>
+<pre><code class="language-text">search_policy
+输入：question
+输出：answer、evidence、evidence_sufficient、status
+</code></pre>
+<blockquote>
+<p><strong>来源 metadata 统一口径（写入 retro，实验五 沿用）：</strong></p>
+<ul>
+<li><code>source_file</code>：原始文件名，如 <code>岭湾电力供电服务规范与服务承诺（教学合成版）.docx</code></li>
+<li><code>normalized_file</code>：转换后的检索文件名，如 <code>岭湾电力供电服务规范与服务承诺（教学合成版）.md</code></li>
+<li><code>article</code>：条款号</li>
+<li><code>excerpt</code>：引用片段</li>
+</ul>
+<p>面向客户和坐席展示 <code>source_file + article</code>；内部索引、调试和回验用 <code>normalized_file</code>；验收脚本按明确的 metadata 字段比较，不依赖展示文本中的偶然格式。</p>
+<p><strong>关于检索方案的说明（为 实验五 铺垫）：</strong> 本实验使用 Chroma + embedding，是为了完整体验 RAG 主链路。实验五 为降低综合实验复杂度，可以采用 BM25 + jieba 或其他经拍板的轻量检索方案。两者必须共同守住"没有证据不回答、来源可以核对"的底线。</p>
+<p><strong>衔接下一轮：</strong> 实验四（场景 C：工单分级路由工作流）开工时，新会话读本实验的 AGENTS.md + retro.md，继承"这个项目怎么跑、有哪些坑"的上下文。<strong>本轮的知识文档、来源 metadata 和无证据兜底，将在 实验五 中作为 <code>search_policy</code> 工具的契约基础。</strong></p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] retro.md 追加了 AGENTS.md 更新</li>
+<li>[ ] 写了改进行动项交接（留给场景 C）</li>
+<li>[ ] 记录了 <code>search_policy</code> 最小契约与来源 metadata 四个字段</li>
+</ul>
+<hr />
+<h2 id="5-dod">5. 完成标准（DoD）</h2>
+<ul>
+<li>[ ] RAG 依赖已装好（向量库 + embedding），验证可用</li>
+<li>[ ] 写了高质量的 office-hours 启动提示词（含数据现状 + 双指标验收口径 + 知识文档 + Q&amp;A 验证集）</li>
+<li>[ ] Agent 按 gstack 八环节自动跑完，每环节有产出文件</li>
+<li>[ ] 每次拍板都真的做了决策（切块策略、检索数量、检索不到兜底）</li>
+<li>[ ] 验收口径写进 SPEC：答案 ≥80% + 来源可追溯 ≥90%，库外问题必须拒答</li>
+<li>[ ] 供电业务知识问答系统可运行，三条验收命令跑过，<code>--impl src</code> 双指标达标</li>
+<li>[ ] 5 份知识文档来自数据包 <code>知识文档/</code>（不是 Agent 编的），且 docx/pdf 已正确解析（转换脚本留档，知识文档更新后可复现重转）</li>
+<li>[ ] 库外 2 条（<code>评测集/qa_pairs_out_of_scope.csv</code>）实测拒答，应答"知识库中未找到，建议咨询人工"，无编造</li>
+<li>[ ] .env 未入库，P0/P1 已修复</li>
+<li>[ ] 向小林演示成功（讲了"来源引用 = 追责有据"）</li>
+<li>[ ] 写了"演示级验收声明"</li>
+<li>[ ] retro.md 追加了 AGENTS.md 更新 + 交接行动项</li>
+<li>[ ] 3 个 FDE 灵魂追问参与讨论</li>
+<li>[ ] <strong>已记录 <code>search_policy</code> 的最小契约，并统一原始文件、转换文件、条款和摘录的来源字段（source_file / normalized_file / article / excerpt）</strong></li>
+<li>[ ] 完成《Echo Prototype 检查单》：允许回答/必须拒答边界 / 引用支撑核查 / 业务适用边界 / 坐席复核 / 需求满足判断</li>
+</ul>
+<hr />
+<h2 id="agstack">附录 A：gstack 安装速查</h2>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent 自装</td>
+<td>用"课前准备"里的提示词让 opencode 装</td>
+</tr>
+<tr>
+<td>手动</td>
+<td><code>git clone &lt;gstack 仓库地址&gt; ~/gstack &amp;&amp; cd ~/gstack &amp;&amp; ./setup --host opencode</code>（仓库地址由讲师随课程提供）</td>
+</tr>
+<tr>
+<td>验证</td>
+<td><code>~/.config/opencode/skills/</code> 下应有 office-hours/spec/autoplan/review/qa/ship/retro 等目录</td>
+</tr>
+<tr>
+<td>Windows 提示</td>
+<td>路径是 <code>~/.config/opencode/skills/</code>，在资源管理器里对应 <code>C:\Users\&lt;用户名&gt;\.config\opencode\skills\</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="bfde">附录 B：FDE 灵魂追问汇总</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>环节</th>
+<th>追问</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>注入跟进</td>
+<td>"检索不到"拍板为什么必须是人的？编造电价、时限、办理材料这类答复的后果？</td>
+</tr>
+<tr>
+<td>2</td>
+<td>验收收尾</td>
+<td>为什么"来源引用"是最好的向小林演示切入点？</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DoD</td>
+<td>为什么必须写"演示级验收声明"？这类场景夸大更危险在哪？</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c">附录 C：讲师引导要点</h2>
+<ul>
+<li><strong>Step 1 技术选型是本轮教学核心</strong>：观察学员是否说清"为什么 RAG 不用微调/关键词搜索"。文档更新+需溯源+防幻觉是三个关键理由。</li>
+<li><strong>数据现状</strong>：最容易漏的是"知识文档会更新，需重建索引"——漏了 Agent 可能不做索引更新机制。</li>
+<li><strong>双指标验收</strong>：学员容易只盯"答案对错"，忽视"来源可追溯"。讲师要点醒——来源错误比答案错误更糟。</li>
+<li><strong>决策点（切块策略/top-K/检索不到兜底）</strong>：观察学员是否真拍板，还是"你看着办"。检索不到必须明说不能编，这是底线。</li>
+<li><strong>验证集设计（本轮核心教学点）</strong>：宽问题 + 单条款锚定 = 歧义。引导学员把宽问题拆成多条，既提升验收稳定性，也是 RAG 特有的设计判断力。</li>
+<li><strong>衔接实验二</strong>：上一轮 retro 的改进行动项，本轮开工前有没有先看？Agent 复用 AGENTS.md 了吗？</li>
+<li><strong>离线兜底演示</strong>：现场网络或模型不可用时，按 <code>离线兜底包/离线运行说明.md</code> 切离线路径——<code>cd 离线兜底包</code> → <code>python stub_tools.py</code>（期望"合计 19/19 通过"）→ <code>python run_offline_demo.py "我想申请居民新装电表 需要什么材料"</code>。差异声明必须原样念出：离线检索来自<strong>预置证据片段</strong>，<strong>只覆盖少量验证集、不具备泛化能力</strong>；<strong>答案语义质量必须回到在线路径用同一套样本评测</strong>。</li>
+</ul>
+<h2 id="d">附录 D：启动提示词参考答案</h2>
+<blockquote>
+<p><strong>⚠️ 仅供第 1 节完成后对照，不要先看。</strong></p>
+</blockquote>
+<pre><code>请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台启动场景 B 的施工。
+
+【背景】我们上一轮完成了场景 A（诉求分类），周主任催着推进下一个子场景。场景 B
+（供电业务知识问答）已选型为 RAG，现在由 Delta 施工。
+
+【要做什么】做一个供电业务知识问答系统：用电客户或坐席输入业务问题，系统从知识文档
+检索证据再生成回答，并标注来源（哪份文件、哪一条）。输出字段固定为 answer + evidence[]
+（document/article/excerpt）+ evidence_sufficient + status；字段明细交 SPEC。
+
+【技术选型】RAG，不用微调（知识文档常更新、需溯源、易幻觉）、不用纯关键词搜索
+（自然语言和文件表述有语义鸿沟）。技术栈：Python + DeepSeek+ 向量库 + Streamlit。
+
+【数据现状】知识库在 知识文档/，共 5 份（混合格式）：供电营业规则 8 章 32 条、
+电价与电费 6 章 25 条、业扩报装 7 章 26 条、供电服务规范（.docx）6 章 26 条、分布式光伏并网（.pdf）6 章 21 条。
+样本外部给定：评测集/qa_pairs.csv 6 条、评测集/qa_pairs_out_of_scope.csv 2 条，原样使用、不得重造或改写。
+
+【验收口径】答案准确率 ≥80% + 来源可追溯率 ≥90%（引用须对到文件名 + 条款号，
+对不上不算达标）；库外问题必须拒答，应答&quot;知识库中未找到，建议咨询人工&quot;。
+无证据时必须返回 not_found，不得编造条款号或数值；回答中的数值一律标注&quot;（教学示意值）&quot;。
+
+【约束】数据不出内网，只用 知识文档/ 与 评测集/ 内的材料；API key 走环境变量
+（DEEPSEEK_API_KEY），不硬编码、不入库、不回显。
+
+请按 gstack 标准开发流程（office-hours → spec → autoplan → 施工 → review → qa → ship →
+retro）执行这次开发，每一环节产出文件，并在我需要拍板的地方停下来问我。
+</code></pre>
+<p><strong>对照要点：</strong></p>
+<ul>
+<li><strong>六项信息块</strong>：背景与角色、要做什么（含输入输出与字段契约）、技术选型（含理由）、数据现状、验收口径（双指标 + 拒答）、约束。缺哪一块，回到本节 Step 1 的清单补。</li>
+<li><strong>两处"防翻车"信息</strong>：1）无证据必须返回 <code>not_found</code>，不得编造条款号或数值（防编造，底线）；2）回答中的数值一律标注"（教学示意值）"（防把教学数字当真实标准）。</li>
+<li><strong>样本只写文件名与数量</strong>：6 条 Q&amp;A 与 2 条库外问题<strong>正文一个字都不抄</strong>，样本外部给定、不得重造。</li>
+<li><strong>边界一句话说清不做什么即可；完整 No-Go 交给 spec 环节</strong>。</li>
+<li><strong>流程要求</strong>：末尾提"按流程执行"，真正焊死靠驱动指令（5 条，每条一行）。</li>
+</ul>
+<hr />
+<h2 id="e">附录 E：技术选型背景与生产级对照说明</h2>
+<blockquote>
+<p>本附录回答三个问题：<strong>1）为什么这么选？2）相对生产级 RAG 简化了什么、为什么？3）想对齐生产级 RAG 的高级场景，技术条件和提示词怎么改？</strong> 供学有余力的学员扩展，也供讲师备课引用。</p>
+</blockquote>
+<h3 id="e1">E.1 技术选型：为什么用这些</h3>
+<p>本实验的 RAG 技术栈：<strong>Chroma（向量库）+ bge-m3（embedding，走 API）+ DeepSeek（生成）</strong>。选型逻辑如下：</p>
+<p><strong>向量数据库为什么用 Chroma？</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Chroma（本实验）</th>
+<th>生产级的其他选项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定位</td>
+<td>轻量开发向量库</td>
+<td>Milvus（大规模生产）/ pgvector（已有 PG）</td>
+</tr>
+<tr>
+<td>部署</td>
+<td><code>pip install</code> 一行</td>
+<td>Milvus 需 K8s 运维，pgvector 需 PG 基础设施</td>
+</tr>
+<tr>
+<td>适用规模</td>
+<td>&lt; 100 万向量</td>
+<td>Milvus 数十亿 / pgvector &lt; 100 万</td>
+</tr>
+<tr>
+<td>推荐场景</td>
+<td><strong>PoC / MVP</strong></td>
+<td>生产 / 大规模</td>
+</tr>
+</tbody>
+</table>
+<p>生产级 RAG 的选型共识说得很清楚：<strong>"你在搭 PoC → 用 Chroma。pip install 一行，4 个核心 API，十分钟跑通全流程。"</strong> 本实验就是 PoC——用最简单的方式跑通完整的 RAG 管线，验证"供电业务知识问答"这个场景可行。<strong>不为 100 份文档搭 Milvus 集群</strong>，是 FDE 的基本判断。</p>
+<p><strong>Embedding 为什么用 bge-m3（走 API）？</strong></p>
+<ul>
+<li>bge-m3 是<strong>中文 RAG 的常见起点</strong>——1024 维、支持 8192 token、三重检索能力（Dense 语义 + Sparse 关键词 + ColBERT 精细匹配）。</li>
+<li>本实验<strong>走 API 而非本地跑</strong>（见课前准备）：课堂模拟数据（完全虚构、脱敏、无真实个人信息）可在课堂批准环境使用公网服务；真实客户数据未经确认不得进入公网服务。且本地跑要下载 2GB+ 模型 + torch，机器配置低会卡死。API 方式免运维、快速验证。</li>
+<li>生产替代：预算允许且精度要求高时，可升级 Qwen3-Embedding-8B（MTEB 多语言第一）。</li>
+</ul>
+<p><strong>为什么是 DeepSeek 做生成？</strong> 生产级 RAG 实践常用的国产选择；DeepSeek 在 RAG 场景幻觉低、能可靠引用文档内容，且是国产开源模型、契合政企数据约束。</p>
+<h3 id="e2-rag">E.2 相对生产级 RAG 的简化：做了什么、为什么</h3>
+<p>生产级 RAG 是完整的工程课，本实验是 <strong>120 分钟的 PoC</strong>，为了在时间内跑通，做了以下简化：</p>
+<table>
+<thead>
+<tr>
+<th>生产级 RAG 完整方案</th>
+<th>本实验（简化后）</th>
+<th>简化的原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>文档解析</strong>：专业解析器（如 Docling），处理扫描件/复杂排版</td>
+<td>简单转文本（docx/pdf 用脚本转 md，转换脚本留档）</td>
+<td>知识文档是结构化文本，无需 OCR；聚焦 RAG 主链路</td>
+</tr>
+<tr>
+<td><strong>分块</strong>：512 tokens + 20% 重叠，按语义切</td>
+<td>按「条」切块（每条一块，不设固定长度）</td>
+<td>知识文档天然按条组织，按条切块引用粒度对齐验证集</td>
+</tr>
+<tr>
+<td><strong>检索</strong>：混合检索（Dense+Sparse）→ 重排序到 top-10</td>
+<td>仅 Dense 余弦相似度 + top-k（本实验 top-5）</td>
+<td>条款语义清晰、问题规范，基础检索够用；混合检索/重排序是"发现问题再升级"</td>
+</tr>
+<tr>
+<td><strong>评估</strong>：RAGAS 等三维评估（忠实度/上下文精度/回答相关性）</td>
+<td>双指标（答案准确率 + 来源可追溯率）+ 库外拒答</td>
+<td>RAGAS 需要专门工具与标注成本，双指标已覆盖核心（答得对 + 有据可查）；RAGAS 属生产级评估</td>
+</tr>
+<tr>
+<td><strong>生产化</strong>：访问控制、增量更新、持续幻觉监控</td>
+<td>演示级验收声明 + 知识文档更新需重建索引</td>
+<td>PoC 阶段不搭生产设施；"演示级"声明避免夸大</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>简化不是偷懒，是 FDE 的"从最简单开始"原则。</strong> 生产级 RAG 的通行做法是：先用基础检索跑通，<strong>如果评估发现某一类查询持续表现差——再针对性地加 HyDE 或重排序，而不是堆砌技术</strong>。本实验的教学目标就是让你先跑通基础链路，理解 RAG 各环节的作用，为将来按需升级打底。</p>
+</blockquote>
+<h3 id="e3-rag">E.3 对齐生产级 RAG 高级场景：技术条件与提示词</h3>
+<p>如果学员想把本实验升级到生产级 RAG 的完整方案，可按下面配置：</p>
+<p><strong>1. 检索质量升级——混合检索 + 重排序</strong></p>
+<ul>
+<li><strong>技术条件</strong>：</li>
+<li>bge-m3 本身支持 Dense + Sparse 双向量，用 <code>hybrid_search=True</code> 启用混合检索（硅基流动/ChromaLlamaIndex 均支持）</li>
+<li>重排序需 bge-reranker-v2-m3（实测能提升 top-5 召回率 10-20%）</li>
+<li><strong>启动提示词补一句</strong>：<br />
+<code>检索环节请启用混合检索（Dense 语义 + Sparse 关键词融合），
+  检索到 top-100 后用 bge-reranker-v2-m3 重排序到 top-10，
+  再喂给生成模型。</code></li>
+</ul>
+<p><strong>2. 评估升级——RAGAS 三维</strong></p>
+<ul>
+<li><strong>技术条件</strong>：安装 <code>ragas</code>，用 RAGAS 的 Faithfulness / Context Precision / Response Relevancy 三指标替代/补充双指标。</li>
+<li><strong>启动提示词补一句</strong>：<br />
+<code>评估环节请用 RAGAS 框架：忠实度（回答的每个声明能否在检索文档中找到依据）、
+  上下文精度（相关 chunk 是否排在前面）、回答相关性（回答是否切题）。
+  验收标准：三指标均 ≥0.7。</code></li>
+</ul>
+<p><strong>3. 生产化——访问控制 + 增量更新</strong></p>
+<ul>
+<li><strong>技术条件</strong>：索引时为每条 chunk 存 ACL 元数据（哪些角色可见）；文档更新时删除旧 chunk、插入新 chunk，而非全量重建（Chroma 支持元数据过滤，LlamaIndex 支持增量索引）。</li>
+<li><strong>启动提示词补一句</strong>：<br />
+<code>索引入库时，为每条 chunk 附加来源文档和可访问角色的元数据；
+  知识文档更新时采用增量更新（删除旧 chunk、插入新 chunk），
+  并保留 ACL 过滤能力。</code></li>
+</ul>
+<p><strong>4. 查询优化——HyDE / 查询改写</strong></p>
+<ul>
+<li><strong>技术条件</strong>：查询环节多一次 LLM 调用生成假设回答（HyDE）或改写口语化查询。</li>
+<li><strong>启动提示词补一句</strong>：<br />
+<code>对短查询和口语化查询，先用 LLM 做查询改写（或生成假设文档 HyDE），
+  再用改写后的查询做检索。</code></li>
+</ul>
+<blockquote>
+<p><strong>升级原则提醒：</strong> 不要一次性把上面全加上——那是堆砌技术。正确做法是：先跑通基础版，用评估找出"哪一类查询表现差"，<strong>针对性地只加对应那一项</strong>。FDE 的功夫在"什么时候不加复杂度"，而不是"能加多少"。</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+</blockquote>
+    <div class="hb-pager"><a class="prev" href="lab2-classifier.html"><small><span class="dir">← 上一实验</span></small>实验二 · 诉求智能分类系统</a><a class="next" href="lab4-routing-workflow.html"><small><span class="dir">下一实验 →</span></small>实验四 · 工单分级路由工作流</a></div>
+  </main>
+  <aside class="hb-toc"><b>本章目录</b><div class="toc">
+<ul>
+<li><a href="#_1">实验概述</a></li>
+<li><a href="#rag">本轮的核心学习点：RAG 的"答案可追溯"</a></li>
+<li><a href="#rag_1">知识背景：RAG 是什么</a></li>
+<li><a href="#0">0. 课前准备</a><ul>
+<li><a href="#embedding">环境准备：向量库与 embedding 依赖</a></li>
+<li><a href="#_2">知识文档（数据包 知识文档/ 素材目录）</a></li>
+</ul>
+</li>
+<li><a href="#1-20">1. 写启动提示词（20 分钟）★本轮核心</a><ul>
+<li><a href="#step-1-agent">Step 1：先理清"要交给 Agent 哪些信息"</a></li>
+<li><a href="#step-2">Step 2：组装启动提示词——先自己想，再看提示</a></li>
+<li><a href="#step-3">Step 3：把数据按文件名引用，不粘贴正文</a></li>
+</ul>
+</li>
+<li><a href="#2-75">2. 注入并跟进八环节（75 分钟）</a><ul>
+<li><a href="#step-1-office-hours">Step 1：把启动提示词灌进 office-hours</a></li>
+<li><a href="#step-2_1">Step 2：跟进八个环节，你的把关点</a></li>
+<li><a href="#agent">关键决策点，Agent 停下来时你要拍板</a></li>
+</ul>
+</li>
+<li><a href="#3-20">3. 验收与收尾（20 分钟）</a><ul>
+<li><a href="#step-1">Step 1：核对交付物</a></li>
+<li><a href="#step-2_2">Step 2：验收口径——答案 + 来源双指标</a></li>
+<li><a href="#step-3_1">Step 3：演示给"坐席班长 小林"看</a></li>
+<li><a href="#step-4dod">Step 4：DoD 验收（演示级声明）</a></li>
+</ul>
+</li>
+<li><a href="#4-10">4. 复盘沉淀（10 分钟）</a><ul>
+<li><a href="#step-1-agent-retro">Step 1：看 Agent 的 retro 产出</a></li>
+<li><a href="#step-2_3">Step 2：手动补充"对下一轮有用"的两条</a></li>
+</ul>
+</li>
+<li><a href="#5-dod">5. 完成标准（DoD）</a></li>
+<li><a href="#agstack">附录 A：gstack 安装速查</a></li>
+<li><a href="#bfde">附录 B：FDE 灵魂追问汇总</a></li>
+<li><a href="#c">附录 C：讲师引导要点</a></li>
+<li><a href="#d">附录 D：启动提示词参考答案</a></li>
+<li><a href="#e">附录 E：技术选型背景与生产级对照说明</a><ul>
+<li><a href="#e1">E.1 技术选型：为什么用这些</a></li>
+<li><a href="#e2-rag">E.2 相对生产级 RAG 的简化：做了什么、为什么</a></li>
+<li><a href="#e3-rag">E.3 对齐生产级 RAG 高级场景：技术条件与提示词</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+</div>
+<script>
+(function(){
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function addCopyButtons(){
+    document.querySelectorAll('.hb-main pre, .ov-intro pre').forEach(function(pre){
+      if (pre.querySelector('.code-copy')) return;
+      var code = pre.querySelector('code');
+      if (!code) return;
+      if (code.className && code.className.indexOf('language-mermaid') !== -1) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'code-copy'; btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.addEventListener('click', function(){
+        var text = code.innerText;
+        function done(){ btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', addCopyButtons); } else { addCopyButtons(); }
+})();
+</script>
+</body></html>

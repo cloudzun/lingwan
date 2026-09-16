@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验七 · 复盘真实项目（可选） · 复盘向导</title>
+<style>
+  :root{
+    --navy:#1B3A5C; --navy2:#25507f; --gold:#D4A843; --gold2:#e8c368;
+    --echo:#2E6BA8; --delta:#E0603A;
+    --bg:#0e1b2a; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7c8f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    background:linear-gradient(160deg,#0e1b2a 0%,#1B3A5C 60%,#25507f 100%);
+    color:var(--ink);min-height:100vh;padding:24px;
+    display:flex;align-items:flex-start;justify-content:center;
+  }
+  .wrap{width:100%;max-width:1000px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:rgba(255,255,255,.08);border:1px solid rgba(212,168,67,.35);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;
+  }
+  .topbar .site{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:1.5px}
+  .topbar .links{display:flex;gap:12px;flex-wrap:wrap}
+  .topbar a{color:#cfe0f0;font-size:12.5px;text-decoration:none;border-bottom:1px dashed rgba(207,224,240,.5);padding-bottom:1px}
+  .topbar a:hover{color:var(--gold2);border-bottom-color:var(--gold2)}
+  .card{background:var(--card);border-radius:18px;padding:34px 38px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+  .stage{display:none} .stage.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--gold)}
+  .brand span{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:13px}
+  h1{color:var(--navy);font-size:24px;margin:8px 0 6px;line-height:1.35}
+  .sub{color:var(--muted);font-size:14.5px;line-height:1.7;margin-bottom:20px}
+
+  .tabs{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer;background:#eef2f6;color:var(--muted);transition:all .2s;border:none}
+  .tab:hover{transform:translateY(-2px)}
+  .tab.on{background:var(--navy);color:#fff}
+  .tab .tnum{display:block;font-size:11px;font-weight:400;opacity:.8}
+
+  .pane{display:none} .pane.on{display:block;animation:fade .3s ease}
+  .sec-head{background:#f4f8fb;border-left:4px solid var(--echo);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:16px}
+  .sec-head b{color:var(--navy);font-size:16px}
+  .sec-head p{color:var(--muted);font-size:13px;line-height:1.6;margin-top:4px}
+
+  .qa-block{border:1px solid #e1e9f0;border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .qa-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;background:#fff;font-size:14px;font-weight:700;color:var(--navy)}
+  .qa-head:hover{background:#f9fbfd}
+  .qa-arrow{color:var(--muted);font-size:12px;transition:transform .25s}
+  .qa-block.open .qa-arrow{transform:rotate(90deg)}
+  .qa-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .qa-block.open .qa-body{max-height:4000px}
+  .qa-inner{padding:4px 16px 16px}
+  .qa-q{font-size:13.5px;font-weight:700;color:var(--navy);margin:12px 0 4px}
+  .qa-a{font-size:13px;color:#4a5a6a;line-height:1.7;border-left:3px solid #e1e9f0;padding:2px 0 2px 12px}
+  .qa-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#eef5fb;color:var(--echo);font-weight:700;margin-right:8px}
+
+  .out-box{background:#f9fbfd;border:1px solid #d3e3f0;border-radius:12px;padding:18px;margin-bottom:16px}
+  .out-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .out-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .out-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+  label.lbl{display:block;font-size:12px;color:var(--muted);font-weight:600;margin:12px 0 4px}
+  input[type=text],textarea,select{width:100%;border:1.5px solid #d5dfe8;border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit;line-height:1.6;background:#fff}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)}
+  textarea{resize:vertical;min-height:52px}
+  textarea.auto{min-height:74px}
+
+  table.fill{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+  table.fill th{background:var(--navy);color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:12.5px}
+  table.fill td{border:1px solid #e1e9f0;padding:6px 7px;vertical-align:top}
+  table.fill td.k{background:#f4f8fb;font-weight:700;color:var(--navy);white-space:nowrap;font-size:12.5px}
+  table.fill select,table.fill input,table.fill textarea{border-width:1px;padding:6px 8px;font-size:12.5px}
+  table.fill textarea{min-height:44px}
+
+  .note{background:#fff8e8;border:1px solid #f0dca8;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.7;color:#5a4a20;margin:12px 0}
+  .note b{color:var(--navy)}
+  .note code{background:#f5eccd;padding:2px 5px;border-radius:4px;color:var(--navy)}
+
+  .btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2c05;border:none;padding:13px 26px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;transition:filter .2s;letter-spacing:1px}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+  .btn.small{padding:8px 16px;font-size:13px;border-radius:9px}
+  .center{text-align:center}
+  .foot{margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .export-zone{margin-top:8px}
+  .copied{color:#1e8449;font-weight:700;font-size:13px;display:none}
+  .tip{color:var(--muted);font-size:13px;line-height:1.7;margin-top:16px;text-align:center;font-style:italic}
+  @media(max-width:640px){.card{padding:24px 18px}table.fill{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <span class="site">FDE 转型实战特训 · 岭湾实验站 · 实验七（可选）</span>
+  <span class="links">
+    <a href="../index.html" target="_top">← 返回站点首页</a>
+    <a href="lab6-review-workbench.html">← 上一站：实验六 · 综合证据评审与决策层汇报</a>
+    <a href="lab5-cooperative-agent-wizard.html">实验五 · 综合系统 Agent（进阶）</a>
+  </span>
+</div>
+
+<div class="card">
+
+  <!-- STAGE 0: 欢迎 -->
+  <div class="stage on" id="s0">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验七</span></div>
+    <h1>实验七 · 复盘真实项目（可选） · 复盘向导</h1>
+    <p class="sub">
+      课程结束后的<strong>无编号可选挑战</strong>：把你在岭湾课程主线里学会的 FDE 理念、流程和判断框架，迁移到自己的真实项目上，完成拆解、复盘与决策层汇报。<br>
+      <b>框架不变，项目换成本人的真实工作。</b>只使用 Echo（主责判断）与 Delta（主责施工）两个角色，不新增第三种学员角色。<br>
+      <b style="color:var(--delta)">模板不预填答案——基于你的真实证据一栏栏填。</b>不影响主线结业；没有合适真实项目的学员，完成主线即可。
+    </p>
+    <div class="note">
+      <b>AI 可以用，但关键判断必须是你自己下：</b>AI 可以帮你整理材料、按证据状态归类、扮演红队质询、检查汇报结构；但"客户真正的问题是什么""这个风险能不能接受""值不值得继续投"——AI 替不了 Echo 和 Delta。
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn" onclick="go('s1')">开始 → Echo 重走 Discovery</button>
+    </div>
+  </div>
+
+  <!-- STAGE 1: 工作台 -->
+  <div class="stage" id="s1">
+    <div class="brand"><span class="dot"></span><span>三部分 + 汇报 · 自由切换</span></div>
+    <h1>复盘真实项目工作台</h1>
+    <div class="tabs">
+      <button class="tab on" data-p="p1" onclick="sw(this)"><span class="tnum">Part 1</span>Echo 重走 Discovery</button>
+      <button class="tab" data-p="p2" onclick="sw(this)"><span class="tnum">Part 2</span>Delta 重审落地</button>
+      <button class="tab" data-p="p3" onclick="sw(this)"><span class="tnum">Part 3</span>双视角收口</button>
+      <button class="tab" data-p="p4" onclick="sw(this)"><span class="tnum">汇报</span>决策层汇报 & 导出</button>
+    </div>
+
+    <!-- ===== Part 1: Echo 重走 Discovery ===== -->
+    <div class="pane on" id="p1">
+      <div class="sec-head">
+        <b>Part 1 · Echo 重走 Discovery（约 60 分钟）</b>
+        <p>Echo 主责判断：整理事实底账 → 四类失败模式 → 四层决策链 → 重新定义问题 → 拆场景选型。产出你真实项目的解决方案框架，并给每个字段标注证据状态。</p>
+      </div>
+
+      <div class="qa-block" id="qa1">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 红队质询问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">事实</span>Q-E1 这个"真实问题"是你推断的，还是客户确认的？</div>
+          <div class="qa-a">能区分事实与判断，并指出哪一句是客户原话。</div>
+          <div class="qa-q"><span class="qa-tag">价值</span>Q-E2 如果不再做这个项目，客户的具体损失是什么？</div>
+          <div class="qa-a">讲出具体业务损失，不能只说"效率低"；还要说清这个价值几周能验证、用什么证据。</div>
+          <div class="qa-q"><span class="qa-tag">选型</span>Q-E3 为什么用这个技术路线？为什么不用更复杂的？</div>
+          <div class="qa-a">三问必答：为什么选它、为什么不用更复杂的、如果不用 AI 是否反而更合适。</div>
+          <div class="qa-q"><span class="qa-tag">风险</span>Q-E4 四类失败模式里哪一类最致命？证据在哪？</div>
+          <div class="qa-a">数据不可用 / 业务不配合 / 合规卡住 / ROI 说不清——客户不会主动告诉你，你得自己读出来。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 1：真实项目解决方案框架</div>
+            <div class="out-sub">复用实验一的框架结构；每个字段标注证据状态（已实测／客户确认／当前假设／待获取）。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tP1')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tP1">
+          <thead><tr><th style="width:26%">判断项</th><th style="width:58%">内容</th><th style="width:16%">证据状态</th></tr></thead>
+          <tbody>
+            <tr><td class="k">1 客户 / 被服务部门</td><td><textarea data-k="p1_cust"></textarea></td><td><select data-k="p1_cust_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+            <tr><td class="k">2 客户原始表达</td><td><textarea data-k="p1_origin"></textarea></td><td><select data-k="p1_origin_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+            <tr><td class="k">3 当前业务流程</td><td><textarea data-k="p1_flow"></textarea></td><td><select data-k="p1_flow_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+            <tr><td class="k">4 已有系统 / 原型</td><td><textarea data-k="p1_sys"></textarea></td><td><select data-k="p1_sys_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+            <tr><td class="k">5 已掌握数据</td><td><textarea data-k="p1_data"></textarea></td><td><select data-k="p1_data_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+            <tr><td class="k">6 已有成败 / 停滞</td><td><textarea data-k="p1_hist"></textarea></td><td><select data-k="p1_hist_s"><option value="">—</option><option>已实测</option><option>客户确认</option><option>当前假设</option><option>待获取</option></select></td></tr>
+          </tbody>
+        </table>
+        <label class="lbl">真实问题重定义（表面需求 vs 真实问题 vs 最终应交付的能力）</label>
+        <textarea class="auto" data-k="p1_problem" placeholder="写清：客户的表面需求是什么、你重新识别的真实问题是什么、为什么原表述会导致错误施工、哪项业务变化才算成功"></textarea>
+        <label class="lbl">场景拆解与技术选型</label>
+        <textarea class="auto" data-k="p1_scenes" placeholder="每个子场景按八项写清：业务目标 / 使用者 / 输入输出 / 最小方案 / 技术路线 / 人工边界 / 验收证据 / 不做范围"></textarea>
+        <label class="lbl">四类失败模式风险 + 四层决策链干系人</label>
+        <textarea class="auto" data-k="p1_risk" placeholder="数据 / 业务 / 合规 / ROI 各写一条；干系人按客户侧决策层 / 操作层 / 技术层 / 监管层列"></textarea>
+        <div class="note">
+          <b>技术路线仍按课程逻辑：</b>一次调用可以解决 → Prompt 或分类；必须查询资料并提供来源 → RAG；路径稳定、规则可以预先枚举 → Workflow；需要根据中间结果追问／选工具／调整下一步 → Agent；需要改变模型稳定行为且数据充分 → 再评估微调。<b>若不用 AI 反而更合适，就诚实写出来。</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Part 2: Delta 重审落地 ===== -->
+    <div class="pane" id="p2">
+      <div class="sec-head">
+        <b>Part 2 · Delta 重审 Prototype / Build / Scale（约 60 分钟）</b>
+        <p>Delta 主责施工：判断项目实际阶段 → 按方案类型检查证据 →（必要时）最小验证设计 → 真实环境适配／业务闭环／人工接管／FDE 撤出差距。</p>
+      </div>
+
+      <div class="qa-block" id="qa2">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 红队质询问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">阶段</span>Q-D1 现在是什么阶段？凭什么？</div>
+          <div class="qa-a">有代码 ≠ 已证明原型价值；有页面 ≠ 已进入 Build；已经上线 ≠ 客户能够接管。</div>
+          <div class="qa-q"><span class="qa-tag">选型</span>Q-D2 你这个"Agent"是动态的，还是固定 Workflow？</div>
+          <div class="qa-a">诚实区分，不为了好看硬叫 Agent；如果是固定 Workflow，就写它是固定 Workflow。</div>
+          <div class="qa-q"><span class="qa-tag">数据</span>Q-D3 演示数据和真实数据差多少？</div>
+          <div class="qa-a">列出差异，并说明差异会如何影响你的结论。</div>
+          <div class="qa-q"><span class="qa-tag">接管</span>Q-D4 客户离场后，谁用、谁维护、谁升级？</div>
+          <div class="qa-a">讲清运营责任归属与 FDE 撤出条件；只有你的电脑能跑，就还没完成交付。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 2：Delta 复盘表</div>
+            <div class="out-sub">阶段判断 + 逐类证据 + 真实环境差距 + 人工接管 + 下一 Gate。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tP2')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tP2">
+          <thead><tr><th style="width:22%">子场景</th><th style="width:13%">当前阶段</th><th style="width:22%">已验证证据</th><th style="width:20%">未验证假设</th><th style="width:23%">真实环境差距 / 人工接管 / 下一 Gate</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><textarea data-k="p2_s1n"></textarea></td>
+              <td><select data-k="p2_s1st"><option value="">—</option><option>Discovery</option><option>Prototype</option><option>Build</option><option>Scale</option></select></td>
+              <td><textarea data-k="p2_s1ev"></textarea></td>
+              <td><textarea data-k="p2_s1as"></textarea></td>
+              <td><textarea data-k="p2_s1gap"></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea data-k="p2_s2n"></textarea></td>
+              <td><select data-k="p2_s2st"><option value="">—</option><option>Discovery</option><option>Prototype</option><option>Build</option><option>Scale</option></select></td>
+              <td><textarea data-k="p2_s2ev"></textarea></td>
+              <td><textarea data-k="p2_s2as"></textarea></td>
+              <td><textarea data-k="p2_s2gap"></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea data-k="p2_s3n"></textarea></td>
+              <td><select data-k="p2_s3st"><option value="">—</option><option>Discovery</option><option>Prototype</option><option>Build</option><option>Scale</option></select></td>
+              <td><textarea data-k="p2_s3ev"></textarea></td>
+              <td><textarea data-k="p2_s3as"></textarea></td>
+              <td><textarea data-k="p2_s3gap"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+        <label class="lbl">按方案类型检查原型证据（分类 / RAG / Workflow / Agent 逐类核对）</label>
+        <textarea class="auto" data-k="p2_evidence" placeholder="分类：输入与类别明确吗？有外部给定样本吗？拿不准转人工吗？ / RAG：文档从哪来？有来源吗？无证据拒答吗？ / Workflow：路径可枚举吗？分支动作真执行吗？ / Agent：按需选工具吗？会追问吗？高风险会暂停吗？有停止条件吗？"></textarea>
+        <label class="lbl">尚无原型时的最小验证设计（输入 → 最小技术 → 输出 → 外部给定样本 → 怎样验收 → 什么情况转人工或判定失败）</label>
+        <textarea class="auto" data-k="p2_mvp" placeholder="不要求重新开发完整系统，但至少说明一套最小验证方案"></textarea>
+        <label class="lbl">真实环境差距：演示 vs 真实数据、输出如何进业务流程、谁接管、状态如何回写、FDE 撤出条件</label>
+        <textarea class="auto" data-k="p2_gap" placeholder="逐项写清真实环境适配 / 业务动作闭环 / 客户责任 / 撤出条件"></textarea>
+      </div>
+    </div>
+
+    <!-- ===== Part 3: 双视角收口 ===== -->
+    <div class="pane" id="p3">
+      <div class="sec-head">
+        <b>Part 3 · Echo + Delta 双视角收口（约 30 分钟）</b>
+        <p>共同判断：问题是否找对、价值是否成立、原型是否成立、能否进真实环境、什么能力值得沉淀、下一阶段决策。</p>
+      </div>
+
+      <div class="qa-block" id="qa3">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 红队质询问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">决策</span>Q-G1 Echo 说值、Delta 说还远——谁对？</div>
+          <div class="qa-a">两个视角互补，合起来要能点破最硬的那条差距。</div>
+          <div class="qa-q"><span class="qa-tag">沉淀</span>Q-G2 凭什么说这项能力可以带走？</div>
+          <div class="qa-a">六问必答：从哪识别、去掉什么客户特定内容、抽象成什么、集成到哪里、在哪个第二场景验证、谁维护。</div>
+          <div class="qa-q"><span class="qa-tag">决策</span>Q-G3 为什么是 Go，而不是 Continue Pilot？</div>
+          <div class="qa-a">给具体风险边界；"演示能跑"不等于"生产能接管"。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 3-1：双视角验收</div>
+            <div class="out-sub">Echo：问题是否找对、价值是否成立、组织是否愿意采用；Delta：原型是否成立、能否进真实环境、客户能否接管。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tP3')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tP3">
+          <thead><tr><th style="width:20%">视角</th><th style="width:52%">判断内容</th><th style="width:28%">互补点 / 最硬差距</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Echo（问题 / 价值 / 采用）</td><td><textarea data-k="p3_echo"></textarea></td><td><textarea data-k="p3_gap"></textarea></td></tr>
+            <tr><td class="k">Delta（原型 / 落地 / 接管）</td><td><textarea data-k="p3_delta"></textarea></td><td><textarea data-k="p3_gap2"></textarea></td></tr>
+            <tr><td class="k">共同结论</td><td><textarea data-k="p3_both"></textarea></td><td><textarea data-k="p3_gap3"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="out-box">
+        <div class="out-head">
+          <div>
+            <div class="out-title">📋 输出物 3-2：能力沉淀候选清单（四层）</div>
+            <div class="out-sub">四层：内容（换客户必须全换，通常不留）／工具（接口契约）／Workflow-Agent 机制（路由、追问、人工暂停、停止条件）／业务语义（对象、关系、状态、动作、治理）。</div>
+          </div>
+          <button class="btn small ghost" onclick="copyTable('tP4')">📋 复制表结构</button>
+        </div>
+        <table class="fill" id="tP4">
+          <thead><tr><th style="width:20%">候选</th><th style="width:24%">抽象后的通用能力</th><th style="width:16%">层次</th><th style="width:24%">第二场景验证</th><th style="width:16%">维护人</th></tr></thead>
+          <tbody>
+            <tr><td><textarea data-k="p3_c1a"></textarea></td><td><textarea data-k="p3_c1b"></textarea></td><td><textarea data-k="p3_c1c"></textarea></td><td><textarea data-k="p3_c1d"></textarea></td><td><textarea data-k="p3_c1e"></textarea></td></tr>
+            <tr><td><textarea data-k="p3_c2a"></textarea></td><td><textarea data-k="p3_c2b"></textarea></td><td><textarea data-k="p3_c2c"></textarea></td><td><textarea data-k="p3_c2d"></textarea></td><td><textarea data-k="p3_c2e"></textarea></td></tr>
+            <tr><td><textarea data-k="p3_c3a"></textarea></td><td><textarea data-k="p3_c3b"></textarea></td><td><textarea data-k="p3_c3c"></textarea></td><td><textarea data-k="p3_c3d"></textarea></td><td><textarea data-k="p3_c3e"></textarea></td></tr>
+            <tr><td><textarea data-k="p3_c4a"></textarea></td><td><textarea data-k="p3_c4b"></textarea></td><td><textarea data-k="p3_c4c"></textarea></td><td><textarea data-k="p3_c4d"></textarea></td><td><textarea data-k="p3_c4e"></textarea></td></tr>
+          </tbody>
+        </table>
+        <label class="lbl">能力沉淀 · 候选逐条评估（每个候选复制一份填）</label>
+        <textarea class="auto" data-k="p3_ev" placeholder="候选：______（来源：______）&#10;1 识别：客户特定实现（碎石路）______ / 可能复用场景 ______ / 内容 or 机制 ______&#10;2 抽象：抽象后的通用能力 ______ / 去掉了哪些客户特定逻辑 ______ / 可配置参数或接口 ______&#10;3 四层归属：内容 / 工具 / 机制 / 业务语义 ______&#10;4 验证与维护：在哪个第二场景验证 ______ / 谁负责维护 ______"></textarea>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">📋 输出物 3-3：下一阶段决策</div>
+        <div class="out-sub">决策：Go（证据足够可进下一阶段）／Conditional Go（可推进但必须先满足明确条件）／Continue Pilot（继续试点收集证据）／No-Go（价值或风险不成立，停止或返回 Discovery）。</div>
+        <table class="fill">
+          <tbody>
+            <tr><td class="k" style="width:22%">建议决策</td><td><select data-k="p3_decision"><option value="">—</option><option>Go</option><option>Conditional Go</option><option>Continue Pilot</option><option>No-Go</option></select></td></tr>
+            <tr><td class="k">Echo 的业务依据</td><td><textarea data-k="p3_echo_basis"></textarea></td></tr>
+            <tr><td class="k">Delta 的技术依据</td><td><textarea data-k="p3_delta_basis"></textarea></td></tr>
+            <tr><td class="k">未关闭风险</td><td><textarea data-k="p3_open_risk"></textarea></td></tr>
+            <tr><td class="k">下一步动作</td><td><textarea data-k="p3_next"></textarea></td></tr>
+            <tr><td class="k">下一 Gate（时点 ＋ 判据 ＋ 判定人）</td><td><textarea data-k="p3_gate"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== 汇报 & 导出 ===== -->
+    <div class="pane" id="p4">
+      <div class="sec-head">
+        <b>决策层汇报 + 导出（约 30 分钟）</b>
+        <p>面向扮演客户侧决策层／操作层／技术层／监管层的听众。汇报 8 分钟 + 质询 7 分钟。Echo 讲问题与价值，Delta 讲方案与落地，共同提出结论（10 段结构）。</p>
+      </div>
+
+      <div class="qa-block" id="qa4">
+        <div class="qa-head" onclick="toggleQA(this)">💡 讨论指引 · 红队质询问题卡（卡住时展开）<span class="qa-arrow">▶</span></div>
+        <div class="qa-body"><div class="qa-inner">
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-R1 证据真实吗？哪些结论只是当前假设？</div>
+          <div class="qa-a">说不出证据的结论，先标成假设再说。</div>
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-R2 谁承担人工和业务责任？客户能否接管？</div>
+          <div class="qa-a">接管责任、运营维护、FDE 撤出条件。</div>
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-R3 为什么应该继续或停止？哪些能力值得带走？</div>
+          <div class="qa-a">用证据回答，不凭感觉。</div>
+          <div class="qa-q"><span class="qa-tag">质询</span>Q-R4 出了数据问题谁负责？有没有泄露客户秘密、个人信息或凭据？</div>
+          <div class="qa-a">保密红线：API Key、密码与 Token、客户生产数据、身份证号／手机号等个人信息、未公开合同、内部网络拓扑、未经授权的源码和日志，一律不得展示。</div>
+        </div></div>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">🎤 输出物 4-1：决策层汇报稿（10 段结构）</div>
+        <div class="out-sub">Echo：1 客户及项目背景 · 2 表面需求 vs 真实问题 · 3 场景拆解与优先级 · 4 价值证据与采用风险；Delta：5 技术路线与选型理由 · 6 原型证据或最小验证设计 · 7 真实环境差距、接管与下一 Gate；Echo + Delta：8 能力沉淀候选 · 9 Go / Conditional Go / Continue Pilot / No-Go · 10 请求批准的资源或行动。</div>
+        <textarea class="auto" style="min-height:150px" data-k="p4_report" placeholder="按 10 段写下汇报要点（Echo 部分 + Delta 部分 + 共同结论）"></textarea>
+      </div>
+
+      <div class="out-box">
+        <div class="out-title">📋 输出物 4-2：证据状态与匿名化声明</div>
+        <div class="out-sub">所有信息按四类标记：已实测（有运行结果、数据或用户行为支持）／客户确认（客户或业务负责人明确确认）／当前假设（合理但尚未验证）／待获取（缺少关键资料或数据）。</div>
+        <label class="lbl">本项目引用的真实证据（至少一项，并标明证据状态）</label>
+        <textarea class="auto" data-k="p4_evidence" placeholder="例如：匿名化需求材料 / 访谈摘要 / 业务流程图 / 脱敏样本 / 原型运行结果 / QA 记录 / 试用反馈 / 失败记录 / 业务基线 / 版本与修改记录"></textarea>
+        <label class="lbl">匿名化声明（必填）</label>
+        <textarea class="auto" data-k="p4_anon" placeholder="本案例依据真实项目改编，客户名称和业务数据已经匿名化；结论仅覆盖课程期间取得的证据范围。"></textarea>
+        <div class="note">
+          <b>红线：</b>如果没有任何真实证据，只能把项目标为"<b>项目构想</b>"，重点设计验证计划，<b>不得声称已经完成真实验证</b>；不得伪造没有发生过的施工过程——只做复盘时，把已有证据映射到 gstack 八环节（office-hours 该不该做 / spec 边界与失败路径 / autoplan 谁拍板 / build 是否忠实需求 / review 哪些隐患发现太晚 / qa 是否用真实用户与边界验证 / ship 是否可交付可复现 / retro 哪些经验值得带走）。
+        </div>
+      </div>
+
+      <div class="export-zone">
+        <div class="center" style="margin:20px 0">
+          <button class="btn" onclick="exportAll()">📥 导出全部成果（.md）</button>
+          <span class="copied" id="copied">已导出 ✓</span>
+        </div>
+      </div>
+      <p class="tip">导出的是完整 markdown 文档，包含真实项目解决方案框架、Delta 复盘表、双视角收口、能力沉淀候选、下一阶段决策与决策层汇报稿。</p>
+      <div class="foot">
+        <button class="btn ghost" onclick="go('s0')">回到开头</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+// Tab 切换
+function sw(el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById(el.dataset.p).classList.add('on');
+}
+function toggleQA(head){
+  head.parentElement.classList.toggle('open');
+}
+function go(id){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function V(id){
+  const el = document.querySelector('[data-k="'+id+'"]');
+  return el ? String(el.value).trim() : '';
+}
+function cell(id){ return V(id) || '—'; }
+
+// ===== 本地保存 =====
+const SAVE_KEY = 'lw_lab7_migration_review_wizard';
+function saveLocal(){
+  const obj = {};
+  document.querySelectorAll('[data-k]').forEach(el=>{ obj[el.dataset.k] = el.value; });
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(obj)); }catch(e){}
+}
+function loadLocal(){
+  let obj = null;
+  try{ obj = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); }catch(e){ obj = null; }
+  if(!obj) return;
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    if(obj[el.dataset.k] !== undefined) el.value = obj[el.dataset.k];
+  });
+}
+document.addEventListener('input', saveLocal);
+document.addEventListener('change', saveLocal);
+loadLocal();
+
+// ===== 复制表结构 =====
+function tableMarkdown(id){
+  const t = document.getElementById(id);
+  if(!t) return '';
+  let out = '';
+  t.querySelectorAll('tr').forEach(tr=>{
+    const cells = tr.querySelectorAll('th,td');
+    const arr = [];
+    cells.forEach(td=>{
+      const f = td.querySelector('textarea,input,select');
+      if(f){ arr.push(String(f.value).trim() || '________'); }
+      else { arr.push(td.textContent.trim()); }
+    });
+    out += '| ' + arr.join(' | ') + ' |\n';
+    if(tr.querySelector('th')){
+      out += '|' + arr.map(()=>'---').join('|') + '|\n';
+    }
+  });
+  return out;
+}
+function writeClipboard(txt, done){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,done);
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta); done();
+  }
+}
+function copyTable(id){
+  writeClipboard(tableMarkdown(id), ()=>{
+    const c = document.getElementById('copied');
+    c.textContent = '已复制表结构 ✓';
+    c.style.display='inline';
+    setTimeout(()=>{ c.style.display='none'; c.textContent='已导出 ✓'; }, 1800);
+  });
+}
+
+function exportAll(){
+  let md = `# 复盘真实项目 · FDE 方法迁移成果\n\n> 导出时间 ${new Date().toLocaleString('zh-CN')}\n\n`;
+
+  md += `## 一、Echo 重走 Discovery\n\n`;
+  md += `### 项目事实底账与证据状态\n\n`;
+  md += `| 判断项 | 内容 | 证据状态 |\n|---|---|---|\n`;
+  md += `| 1 客户 / 被服务部门 | ${cell('p1_cust')} | ${cell('p1_cust_s')} |\n`;
+  md += `| 2 客户原始表达 | ${cell('p1_origin')} | ${cell('p1_origin_s')} |\n`;
+  md += `| 3 当前业务流程 | ${cell('p1_flow')} | ${cell('p1_flow_s')} |\n`;
+  md += `| 4 已有系统 / 原型 | ${cell('p1_sys')} | ${cell('p1_sys_s')} |\n`;
+  md += `| 5 已掌握数据 | ${cell('p1_data')} | ${cell('p1_data_s')} |\n`;
+  md += `| 6 已有成败 / 停滞 | ${cell('p1_hist')} | ${cell('p1_hist_s')} |\n\n`;
+  md += `### 真实问题重定义\n${V('p1_problem')||'（未填写）'}\n\n`;
+  md += `### 场景拆解与技术选型\n${V('p1_scenes')||'（未填写）'}\n\n`;
+  md += `### 风险与干系人\n${V('p1_risk')||'（未填写）'}\n\n`;
+
+  md += `## 二、Delta 重审落地\n\n`;
+  md += `### 阶段与证据\n\n`;
+  md += `| 子场景 | 当前阶段 | 已验证证据 | 未验证假设 | 真实环境差距 / 人工接管 / 下一 Gate |\n|---|---|---|---|---|\n`;
+  ['1','2','3'].forEach(n=>{
+    md += `| ${cell('p2_s'+n+'n')} | ${cell('p2_s'+n+'st')} | ${cell('p2_s'+n+'ev')} | ${cell('p2_s'+n+'as')} | ${cell('p2_s'+n+'gap')} |\n`;
+  });
+  md += `\n### 原型证据检查\n${V('p2_evidence')||'（未填写）'}\n\n`;
+  md += `### 最小验证设计\n${V('p2_mvp')||'（未填写）'}\n\n`;
+  md += `### 真实环境差距\n${V('p2_gap')||'（未填写）'}\n\n`;
+
+  md += `## 三、双视角收口\n\n`;
+  md += `### 双视角验收\n\n`;
+  md += `| 视角 | 判断内容 | 互补点 / 最硬差距 |\n|---|---|---|\n`;
+  md += `| Echo（问题 / 价值 / 采用） | ${cell('p3_echo')} | ${cell('p3_gap')} |\n`;
+  md += `| Delta（原型 / 落地 / 接管） | ${cell('p3_delta')} | ${cell('p3_gap2')} |\n`;
+  md += `| 共同结论 | ${cell('p3_both')} | ${cell('p3_gap3')} |\n\n`;
+  md += `### 能力沉淀候选（四层）\n\n`;
+  md += `| 候选 | 抽象后的通用能力 | 层次 | 第二场景验证 | 维护人 |\n|---|---|---|---|---|\n`;
+  ['1','2','3','4'].forEach(n=>{
+    md += `| ${cell('p3_c'+n+'a')} | ${cell('p3_c'+n+'b')} | ${cell('p3_c'+n+'c')} | ${cell('p3_c'+n+'d')} | ${cell('p3_c'+n+'e')} |\n`;
+  });
+  md += `\n### 候选逐条评估\n${V('p3_ev')||'（未填写）'}\n\n`;
+  md += `### 下一阶段决策\n\n`;
+  md += `- 建议决策：${cell('p3_decision')}\n`;
+  md += `- Echo 的业务依据：${V('p3_echo_basis')||'（未填写）'}\n`;
+  md += `- Delta 的技术依据：${V('p3_delta_basis')||'（未填写）'}\n`;
+  md += `- 未关闭风险：${V('p3_open_risk')||'（未填写）'}\n`;
+  md += `- 下一步动作：${V('p3_next')||'（未填写）'}\n`;
+  md += `- 下一 Gate：${V('p3_gate')||'（未填写）'}\n\n`;
+
+  md += `## 四、决策层汇报\n\n`;
+  md += `${V('p4_report')||'（未填写）'}\n\n`;
+  md += `### 引用的真实证据\n${V('p4_evidence')||'（未填写）'}\n\n`;
+  md += `### 匿名化声明\n${V('p4_anon')||'本案例依据真实项目改编，客户名称和业务数据已经匿名化；结论仅覆盖课程期间取得的证据范围。'}\n`;
+
+  const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '复盘真实项目-FDE方法迁移成果.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  const c = document.getElementById('copied');
+  c.textContent = '已导出 ✓';
+  c.style.display='inline';
+  setTimeout(()=> c.style.display='none', 2000);
+}
+</script>
+</body>
+</html>

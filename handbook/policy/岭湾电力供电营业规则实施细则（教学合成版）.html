@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>岭湾电力供电营业规则实施细则（教学合成版） · FDE 转型实战特训 岭湾实验站</title>
+<style>
+:root{
+  --indigo:#1a237e; --indigo2:#283593; --indigo3:#3949ab; --indigo-soft:#5c6bc0;
+  --amber:#ffb300; --amber-dark:#b28704; --amber-bg:rgba(255,179,0,.08);
+  --ink:#263238; --ink-soft:#546e7a; --muted:#78909c; --line:#e2e8f0;
+  --bg:#ffffff; --bg-soft:#fafbfc; --code-bg:#101f4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Roboto","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+a{color:var(--amber-dark);text-decoration:none}
+a:hover{color:var(--indigo);text-decoration:underline}
+.hb-top{background:linear-gradient(135deg,#1a237e 0%,#283593 55%,#3949ab 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb-top .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:15px}
+.hb-top .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);flex:none}
+.hb-top .brand small{font-weight:400;font-size:12px;opacity:.85;margin-left:6px}
+.hb-top a{color:#fff;font-size:13px;font-weight:500}
+.hb-top a:hover{color:var(--amber);text-decoration:none}
+.ch-nav{background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.ch-nav a{font-size:13px;font-weight:500;color:var(--muted);padding:6px 12px;border-radius:4px;white-space:nowrap;border-bottom:2px solid transparent}
+.ch-nav a:hover{color:var(--indigo);text-decoration:none;background:var(--bg-soft)}
+.ch-nav a.on{color:var(--indigo);font-weight:700;border-bottom-color:var(--amber)}
+.ch-nav a.home{margin-left:auto;color:var(--amber-dark)}
+.hb-wrap{max-width:none;margin:0;padding:28px 24px 60px;display:flex;gap:40px;align-items:flex-start;justify-content:space-between}
+.hb-main{flex:1;min-width:0;max-width:900px}
+aside.hb-toc{width:320px;flex:none;position:sticky;top:24px;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;border-left:3px solid var(--amber);padding:16px 18px;max-height:calc(100vh - 60px);overflow:auto}
+aside.hb-toc b{font-size:11.5px;color:var(--muted);display:block;margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase}
+aside.hb-toc ul{list-style:none;padding-left:0}
+aside.hb-toc a{display:block;font-size:13px;padding:5px 8px;border-radius:4px;color:var(--ink-soft);font-weight:500}
+aside.hb-toc a:hover{background:#fff;color:var(--indigo);text-decoration:none}
+aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-size:12.5px}
+.hb-main h1{color:var(--indigo);font-size:26px;line-height:1.4;margin:4px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.5px}
+.hb-main .ch-role{font-size:12px;color:var(--amber-dark);font-weight:700;letter-spacing:1.5px;margin-bottom:18px}
+.hb-main h2{color:var(--indigo);font-size:20px;margin:34px 0 12px;padding-left:12px;border-left:4px solid var(--amber);font-weight:600}
+.hb-main h3{color:var(--indigo2);font-size:17px;margin:24px 0 10px;font-weight:600}
+.hb-main h4{color:var(--indigo);font-size:15px;margin:18px 0 8px;font-weight:600}
+.hb-main p{margin:10px 0}
+.hb-main ul,.hb-main ol{margin:10px 0;padding-left:26px}
+.hb-main li{margin:5px 0}
+.hb-main strong{color:var(--indigo);font-weight:700}
+.hb-main blockquote{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--indigo-soft);border-radius:4px;padding:12px 16px;margin:14px 0;color:var(--ink-soft)}
+.hb-main blockquote p{margin:6px 0}
+.hb-main blockquote blockquote{background:#f1f3f6;border-left-color:var(--amber)}
+.hb-main code{background:var(--bg-soft);color:var(--amber-dark);padding:2px 6px;border-radius:4px;font-size:13px;font-family:"Cascadia Mono","Consolas",monospace}
+.hb-main pre{background:var(--code-bg);border-radius:6px;padding:16px;overflow:auto;margin:14px 0;line-height:1.65}
+.hb-main pre code{background:none;color:#e8eaf6;padding:0;font-size:12.8px;white-space:pre}
+.code-wrap{position:relative;margin:14px 0}
+.code-wrap pre{margin:0}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e8eaf6;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;opacity:.65;transition:opacity .15s,background .15s;font-family:"Roboto","PingFang SC",sans-serif;line-height:1.4}
+.code-copy:hover{opacity:1;background:var(--amber);border-color:var(--amber);color:#1a237e}
+.code-copy.copied{background:var(--amber);border-color:var(--amber);color:#1a237e;opacity:1}
+.hb-main table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff}
+.hb-main th{background:var(--indigo3);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.hb-main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.hb-main tr:nth-child(even) td{background:var(--bg-soft)}
+.hb-main tr:hover td{background:var(--amber-bg)}
+.hb-main hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+.hb-main img{max-width:100%;border-radius:4px}
+.hb-pager{display:flex;justify-content:space-between;gap:14px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
+.hb-pager a{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:14px 18px;color:var(--ink);font-weight:600;font-size:14px}
+.hb-pager a:hover{border-color:var(--amber);text-decoration:none}
+.hb-pager a small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hb-pager a.next{text-align:right}
+.hb-pager a .dir{color:var(--amber-dark);font-weight:700}
+.ov-hero{max-width:none;margin:0;padding:36px 28px 8px}
+.ov-hero h1{color:var(--indigo);font-size:26px;line-height:1.4;font-weight:700;letter-spacing:.5px}
+.ov-hero .tag{display:inline-block;color:var(--amber-dark);font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.ov-hero p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:900px}
+.ov-cards{max-width:none;margin:0;padding:16px 28px 46px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;display:block;color:var(--ink);transition:border-color .18s}
+.ov-card:hover{border-color:var(--amber);text-decoration:none}
+.ov-card .no{font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--amber-dark);margin-bottom:6px}
+.ov-card h3{color:var(--indigo);font-size:16px;margin-bottom:6px;line-height:1.4;font-weight:600}
+.ov-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.ov-card .meta{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.ov-card .meta span{background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-weight:500}
+.ov-card.zip-card{background:linear-gradient(180deg,#fff8e8,#fff);border-color:var(--amber)}
+.ov-card.zip-card .no{color:var(--amber-dark)}
+.ov-intro{max-width:none;margin:0;padding:6px 28px 0}
+.mermaid{text-align:center;margin:18px 0;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px}
+.mermaid svg{max-width:100%;height:auto}
+@media(max-width:760px){
+  .hb-wrap{flex-direction:column;gap:18px}
+  aside.hb-toc{width:100%;position:static;max-height:280px}
+  .hb-main h1{font-size:21px}
+}
+</style>
+
+</head><body>
+<header class="hb-top">
+  <div class="brand"><span class="dot"></span>FDE 转型实战特训 · 岭湾实验站<small>岭湾电力客户服务平台（教学合成案例）</small></div>
+  <a href="../../index.html">实验站首页</a>
+</header>
+<div class="ch-nav"><a class="ch-nav-item" href="../lab1-requirements-brainstorm.html">实验一 · 需求调研与解决方案框架</a><a class="ch-nav-item" href="../lab2-classifier.html">实验二 · 诉求智能分类系统</a><a class="ch-nav-item" href="../lab3-policy-rag.html">实验三 · 供电业务知识问答</a><a class="ch-nav-item" href="../lab4-routing-workflow.html">实验四 · 工单分级路由工作流</a><a class="ch-nav-item" href="../lab5-cooperative-agent.html">实验五 · 综合系统 Agent（进阶）</a><a class="ch-nav-item" href="../lab6-review-and-report.html">实验六 · 综合证据评审与决策层汇报</a><a class="ch-nav-item" href="../lab7-migration-review.html">实验七 · 复盘真实项目（可选）</a><a class="home" href="../../index.html">← 返回实验站</a></div>
+<div class="hb-wrap">
+  <main class="hb-main">
+    <div class="ch-role">知识文档 · RAG 语料</div><h1>岭湾电力供电营业规则实施细则（教学合成版）</h1><p><a href="../../policy-docs/岭湾电力供电营业规则实施细则（教学合成版）.md" download>下载原文（md）</a></p><h1 id="_1">岭湾电力供电营业规则实施细则（教学合成版）</h1>
+<p>本文件为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+<hr />
+<h2 id="_2">第一章 总则与适用范围</h2>
+<p><strong>第一条</strong></p>
+<p>为规范岭湾电力有限公司（以下简称"岭湾电力"）供用电营业行为，明确供电企业与用电客户之间的权利义务，保障供用电双方合法权益，维护正常供用电秩序，制定本实施细则。</p>
+<p><strong>第二条</strong></p>
+<p>本细则适用于岭湾电力供电营业区内各类用电客户的新装、增容、变更、计量、计费、用电检查等营业业务办理，以及供电企业与客户之间因供用电关系发生的营业性往来。</p>
+<p><strong>第三条</strong></p>
+<p>本细则所称供电营业区，是指岭湾电力依法取得供电营业许可、承担供电服务义务的地域范围；供电营业区发生调整的，岭湾电力应提前向社会公告（教学示意值）。</p>
+<p><strong>第四条</strong></p>
+<p>供电企业与用电客户应当依照平等自愿、协商一致的原则签订供用电合同；未签订书面合同但已形成实际供用电关系的，双方权利义务参照本细则及供电企业公示的营业规则执行（教学示意值）。</p>
+<p><strong>第五条</strong></p>
+<p>本细则所列时限、有效期等数值均为教学示意值，仅用于教学演示，不作为实际办理依据；实务以现行有效规定为准。</p>
+<hr />
+<h2 id="_3">第二章 供电方案与答复</h2>
+<p><strong>第六条</strong></p>
+<p>用电客户申请新装或增容用电，应当依照业扩报装有关规定向岭湾电力提交申请；供电企业自受理之日起启动供电方案编制工作。</p>
+<p><strong>第七条</strong></p>
+<p>供电方案应当包括供电电源、供电电压、供电容量、计量方式、受电装置要求、进户方式等主要内容，并作为后续受电工程设计、施工和竣工检验的依据。</p>
+<p><strong>第八条</strong></p>
+<p>供电方案答复期限按照客户类别和供电电压等级分别确定（教学示意值）：</p>
+<p>（一）居民及低压电力客户，自受理之日起不超过 8 个工作日答复（教学示意值）；</p>
+<p>（二）高压单电源客户，自受理之日起不超过 20 个工作日答复（教学示意值）；</p>
+<p>（三）高压双电源客户，自受理之日起不超过 30 个工作日答复（教学示意值）。</p>
+<p><strong>第九条</strong></p>
+<p>供电方案有效期自答复之日起计算，高压客户为 1 年（教学示意值），低压客户为 6 个月（教学示意值）；逾期未实施的，客户应当申请延期或重新申请。</p>
+<hr />
+<h2 id="_4">第三章 受电装置与检验</h2>
+<p><strong>第十条</strong></p>
+<p>受电装置是指从供电企业产权分界点起至客户用电设备止的电气设施，包括受电变压器、开关设备、计量装置、保护装置及内部配电线路等。</p>
+<p><strong>第十一条</strong></p>
+<p>客户受电装置的设计、施工应当由具备相应资质的单位承担，并符合国家和行业有关技术标准；客户应当在施工前将设计文件报供电企业备案。</p>
+<p><strong>第十二条</strong></p>
+<p>客户受电装置竣工后，应当向供电企业提出竣工检验申请，并提交竣工图纸、试验报告、设备合格证明等资料。</p>
+<p><strong>第十三条</strong></p>
+<p>供电企业应当自受理竣工检验申请之日起 5 个工作日内组织检验（教学示意值）；检验发现不符合要求的，供电企业应当一次性书面告知需要整改的内容。</p>
+<p><strong>第十四条</strong></p>
+<p>客户完成整改后应当申请复验；复验合格的，方可办理装表接电手续；未经检验或检验不合格的受电装置，不得接入电网运行。</p>
+<hr />
+<h2 id="_5">第四章 装表接电</h2>
+<p><strong>第十五条</strong></p>
+<p>供电企业应当在受电装置检验合格、供用电合同签订、相关费用结清后组织装表接电；客户应当为装表接电提供必要的作业条件。</p>
+<p><strong>第十六条</strong></p>
+<p>供电企业应当自竣工检验合格并具备送电条件之日起，居民客户 3 个工作日内完成装表送电（教学示意值），非居民低压客户 5 个工作日内完成装表送电（教学示意值）。</p>
+<p><strong>第十七条</strong></p>
+<p>装表接电应当由供电企业专业人员实施，客户不得自行迁移、更换、开启电能计量装置或者实施其他影响计量准确性的行为。</p>
+<p><strong>第十八条</strong></p>
+<p>接电后供电企业应当现场记录表计编号、起始示数、接线方式等信息，并与客户共同确认；确认记录作为后续抄表计费的起始依据。</p>
+<hr />
+<h2 id="_6">第五章 用电变更</h2>
+<p><strong>第十九条</strong></p>
+<p>客户需变更用电的，应当向供电企业提出变更申请；变更业务包括过户、增容、减容、暂停、恢复、销户、改类、移表等。</p>
+<p><strong>第二十条</strong></p>
+<p>客户申请过户的，应当结清原户名下电费，并提供用电地址权属变更证明及新户主体身份资料；供电企业应当自受理之日起 5 个工作日内办理完毕（教学示意值）。</p>
+<p><strong>第二十一条</strong></p>
+<p>客户申请增容并涉及受电装置改造的，应当按照新装用电有关程序办理；增容后合同容量、计量方式发生变化的，双方应当变更供用电合同相关条款。</p>
+<p><strong>第二十二条</strong></p>
+<p>客户申请减容、暂停用电的，每次暂停期限不超过 6 个月（教学示意值）；暂停期满需要恢复用电的，客户应当在期满前 5 个工作日提出恢复申请（教学示意值）。</p>
+<p><strong>第二十三条</strong></p>
+<p>客户申请销户的，应当结清全部电费并交回计量装置；供电企业应当在受理之日起 3 个工作日内完成拆表销户（教学示意值）。</p>
+<hr />
+<h2 id="_7">第六章 计量与计费</h2>
+<p><strong>第二十四条</strong></p>
+<p>供电企业应当按照国家有关规定配置、安装、检定和轮换电能计量装置；计量装置的产权分界点按照国家有关规定和供用电合同约定确定。</p>
+<p><strong>第二十五条</strong></p>
+<p>客户对电能计量装置准确性有异议的，可以申请校验；供电企业应当自受理之日起 5 个工作日内安排现场校验（教学示意值）。</p>
+<p><strong>第二十六条</strong></p>
+<p>经校验电能计量装置误差超过允许范围的，供电企业应当免费更换，并依照有关规定退补相应电量电费；误差在允许范围内的，校验费用由客户承担（教学示意值）。</p>
+<p><strong>第二十七条</strong></p>
+<p>抄表周期为每月一次（教学示意值）；因客户原因不能按期抄表的，供电企业可以按照有关规定暂估电量，并在下次抄表时一并结算（教学示意值）；客户应当按照供用电合同约定的期限和方式交付电费，逾期未交付的，供电企业可以按照有关规定收取电费违约金（教学示意值）。</p>
+<hr />
+<h2 id="_8">第七章 供用电安全与违约用电</h2>
+<p><strong>第二十八条</strong></p>
+<p>供电企业应当依法开展用电检查，检查内容包括受电装置安全状况、计量装置运行状况、用电性质与合同约定是否一致等；用电检查人员应当出示有效证件（教学示意值）。</p>
+<p><strong>第二十九条</strong></p>
+<p>客户不得实施下列违约用电行为：</p>
+<p>（一）擅自改变用电类别或者超合同约定容量用电；</p>
+<p>（二）擅自迁移、更换、开启电能计量装置或者伪造、开启计量封印；</p>
+<p>（三）擅自引入、供出电源或者私自并网；</p>
+<p>（四）超合同约定容量用电且拒不整改。</p>
+<p><strong>第三十条</strong></p>
+<p>客户发生违约用电行为的，供电企业应当书面告知其整改要求；客户应当按照有关规定承担相应的违约使用电费（教学示意值）；情节严重或者拒不整改的，供电企业可以按照有关规定中止供电（教学示意值）。</p>
+<p><strong>第三十一条</strong></p>
+<p>供用电双方发生争议的，可以协商解决，也可以提请电力管理部门调解；协商、调解不成的，可以依法申请仲裁或者向人民法院提起诉讼。</p>
+<hr />
+<h2 id="_9">第八章 附则</h2>
+<p><strong>第三十二条</strong></p>
+<p>本细则由岭湾电力有限公司营销管理部门负责解释；自发布之日起施行；有效期 3 年（教学示意值）；本细则施行前已受理的用电业务，按照原规定办理。</p>
+    <div class="hb-pager"></div>
+  </main>
+  <aside class="hb-toc"><b>本章目录</b></aside>
+</div>
+<script>
+(function(){
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function addCopyButtons(){
+    document.querySelectorAll('.hb-main pre, .ov-intro pre').forEach(function(pre){
+      if (pre.querySelector('.code-copy')) return;
+      var code = pre.querySelector('code');
+      if (!code) return;
+      if (code.className && code.className.indexOf('language-mermaid') !== -1) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'code-copy'; btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.addEventListener('click', function(){
+        var text = code.innerText;
+        function done(){ btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', addCopyButtons); } else { addCopyButtons(); }
+})();
+</script>
+</body></html>

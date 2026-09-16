@@ -1,0 +1,8 @@
+# 统一换行与二进制处理，避免 Windows 检出时反复出现 CRLF 变更
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.zip binary
+*.pptx binary

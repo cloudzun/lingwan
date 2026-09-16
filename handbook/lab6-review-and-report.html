@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>实验六 · 综合证据评审与决策层汇报 · FDE 转型实战特训 岭湾实验站</title>
+<style>
+:root{
+  --indigo:#1a237e; --indigo2:#283593; --indigo3:#3949ab; --indigo-soft:#5c6bc0;
+  --amber:#ffb300; --amber-dark:#b28704; --amber-bg:rgba(255,179,0,.08);
+  --ink:#263238; --ink-soft:#546e7a; --muted:#78909c; --line:#e2e8f0;
+  --bg:#ffffff; --bg-soft:#fafbfc; --code-bg:#101f4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Roboto","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+a{color:var(--amber-dark);text-decoration:none}
+a:hover{color:var(--indigo);text-decoration:underline}
+.hb-top{background:linear-gradient(135deg,#1a237e 0%,#283593 55%,#3949ab 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb-top .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:15px}
+.hb-top .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);flex:none}
+.hb-top .brand small{font-weight:400;font-size:12px;opacity:.85;margin-left:6px}
+.hb-top a{color:#fff;font-size:13px;font-weight:500}
+.hb-top a:hover{color:var(--amber);text-decoration:none}
+.ch-nav{background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.ch-nav a{font-size:13px;font-weight:500;color:var(--muted);padding:6px 12px;border-radius:4px;white-space:nowrap;border-bottom:2px solid transparent}
+.ch-nav a:hover{color:var(--indigo);text-decoration:none;background:var(--bg-soft)}
+.ch-nav a.on{color:var(--indigo);font-weight:700;border-bottom-color:var(--amber)}
+.ch-nav a.home{margin-left:auto;color:var(--amber-dark)}
+.hb-wrap{max-width:none;margin:0;padding:28px 24px 60px;display:flex;gap:40px;align-items:flex-start;justify-content:space-between}
+.hb-main{flex:1;min-width:0;max-width:900px}
+aside.hb-toc{width:320px;flex:none;position:sticky;top:24px;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;border-left:3px solid var(--amber);padding:16px 18px;max-height:calc(100vh - 60px);overflow:auto}
+aside.hb-toc b{font-size:11.5px;color:var(--muted);display:block;margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase}
+aside.hb-toc ul{list-style:none;padding-left:0}
+aside.hb-toc a{display:block;font-size:13px;padding:5px 8px;border-radius:4px;color:var(--ink-soft);font-weight:500}
+aside.hb-toc a:hover{background:#fff;color:var(--indigo);text-decoration:none}
+aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-size:12.5px}
+.hb-main h1{color:var(--indigo);font-size:26px;line-height:1.4;margin:4px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.5px}
+.hb-main .ch-role{font-size:12px;color:var(--amber-dark);font-weight:700;letter-spacing:1.5px;margin-bottom:18px}
+.hb-main h2{color:var(--indigo);font-size:20px;margin:34px 0 12px;padding-left:12px;border-left:4px solid var(--amber);font-weight:600}
+.hb-main h3{color:var(--indigo2);font-size:17px;margin:24px 0 10px;font-weight:600}
+.hb-main h4{color:var(--indigo);font-size:15px;margin:18px 0 8px;font-weight:600}
+.hb-main p{margin:10px 0}
+.hb-main ul,.hb-main ol{margin:10px 0;padding-left:26px}
+.hb-main li{margin:5px 0}
+.hb-main strong{color:var(--indigo);font-weight:700}
+.hb-main blockquote{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--indigo-soft);border-radius:4px;padding:12px 16px;margin:14px 0;color:var(--ink-soft)}
+.hb-main blockquote p{margin:6px 0}
+.hb-main blockquote blockquote{background:#f1f3f6;border-left-color:var(--amber)}
+.hb-main code{background:var(--bg-soft);color:var(--amber-dark);padding:2px 6px;border-radius:4px;font-size:13px;font-family:"Cascadia Mono","Consolas",monospace}
+.hb-main pre{background:var(--code-bg);border-radius:6px;padding:16px;overflow:auto;margin:14px 0;line-height:1.65}
+.hb-main pre code{background:none;color:#e8eaf6;padding:0;font-size:12.8px;white-space:pre}
+.code-wrap{position:relative;margin:14px 0}
+.code-wrap pre{margin:0}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e8eaf6;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;opacity:.65;transition:opacity .15s,background .15s;font-family:"Roboto","PingFang SC",sans-serif;line-height:1.4}
+.code-copy:hover{opacity:1;background:var(--amber);border-color:var(--amber);color:#1a237e}
+.code-copy.copied{background:var(--amber);border-color:var(--amber);color:#1a237e;opacity:1}
+.hb-main table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff}
+.hb-main th{background:var(--indigo3);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.hb-main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.hb-main tr:nth-child(even) td{background:var(--bg-soft)}
+.hb-main tr:hover td{background:var(--amber-bg)}
+.hb-main hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+.hb-main img{max-width:100%;border-radius:4px}
+.hb-pager{display:flex;justify-content:space-between;gap:14px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
+.hb-pager a{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:14px 18px;color:var(--ink);font-weight:600;font-size:14px}
+.hb-pager a:hover{border-color:var(--amber);text-decoration:none}
+.hb-pager a small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hb-pager a.next{text-align:right}
+.hb-pager a .dir{color:var(--amber-dark);font-weight:700}
+.ov-hero{max-width:none;margin:0;padding:36px 28px 8px}
+.ov-hero h1{color:var(--indigo);font-size:26px;line-height:1.4;font-weight:700;letter-spacing:.5px}
+.ov-hero .tag{display:inline-block;color:var(--amber-dark);font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.ov-hero p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:900px}
+.ov-cards{max-width:none;margin:0;padding:16px 28px 46px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;display:block;color:var(--ink);transition:border-color .18s}
+.ov-card:hover{border-color:var(--amber);text-decoration:none}
+.ov-card .no{font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--amber-dark);margin-bottom:6px}
+.ov-card h3{color:var(--indigo);font-size:16px;margin-bottom:6px;line-height:1.4;font-weight:600}
+.ov-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.ov-card .meta{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.ov-card .meta span{background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-weight:500}
+.ov-card.zip-card{background:linear-gradient(180deg,#fff8e8,#fff);border-color:var(--amber)}
+.ov-card.zip-card .no{color:var(--amber-dark)}
+.ov-intro{max-width:none;margin:0;padding:6px 28px 0}
+.mermaid{text-align:center;margin:18px 0;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px}
+.mermaid svg{max-width:100%;height:auto}
+@media(max-width:760px){
+  .hb-wrap{flex-direction:column;gap:18px}
+  aside.hb-toc{width:100%;position:static;max-height:280px}
+  .hb-main h1{font-size:21px}
+}
+</style>
+<script src="../assets/vendor/mermaid.min.js"></script>
+
+<script>
+(function(){
+  function initMermaid(){
+    var blocks = document.querySelectorAll('pre code.language-mermaid');
+    if(!blocks.length || typeof mermaid === 'undefined') return;
+    blocks.forEach(function(code){
+      var div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      code.parentNode.replaceWith(div);
+    });
+    mermaid.initialize({startOnLoad:false, theme:'default', securityLevel:'loose', flowchart:{htmlLabels:true}});
+    mermaid.run({querySelector:'.mermaid'});
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+})();
+</script>
+
+</head><body>
+<header class="hb-top">
+  <div class="brand"><span class="dot"></span>FDE 转型实战特训 · 岭湾实验站<small>岭湾电力客户服务平台（教学合成案例）</small></div>
+  <a href="../index.html">实验站首页</a>
+</header>
+<div class="ch-nav"><a class="ch-nav-item" href="lab1-requirements-brainstorm.html">实验一 · 需求调研与解决方案框架</a><a class="ch-nav-item" href="lab2-classifier.html">实验二 · 诉求智能分类系统</a><a class="ch-nav-item" href="lab3-policy-rag.html">实验三 · 供电业务知识问答</a><a class="ch-nav-item" href="lab4-routing-workflow.html">实验四 · 工单分级路由工作流</a><a class="ch-nav-item" href="lab5-cooperative-agent.html">实验五 · 综合系统 Agent（进阶）</a><a class="ch-nav-item on" href="lab6-review-and-report.html">实验六 · 综合证据评审与决策层汇报</a><a class="ch-nav-item" href="lab7-migration-review.html">实验七 · 复盘真实项目（可选）</a><a class="home" href="../index.html">← 返回实验站</a></div>
+<div class="hb-wrap">
+  <main class="hb-main">
+    <div class="ch-role">🧑‍🤝‍🧑 全队 · 判断线收口　|　全队</div><h1>实验六 · 综合证据评审与决策层汇报</h1><blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+<p><strong>对应课纲：</strong> FDE 综合实操 · 实验六（全团队 · 项目收尾）<br />
+<strong>时长：</strong> 约 110 分钟<br />
+<strong>角色：</strong> <strong>Delta + Echo 全团队协作</strong>——Echo 负责需求与价值侧验收，Delta 负责技术侧评估，全团队共同做证据评审、能力回注、交付决策与决策层汇报<br />
+<strong>模式：</strong> 头脑风暴为主；<strong>关键判断必须由团队完成</strong>，AI 只能用于整理测试记录、汇总轨迹和扮演红队<br />
+<strong>核心隐喻：碎石路 → 铺装公路</strong>。同时引入<strong>交付决策（Go / Conditional Go / Continue Pilot / No-Go）</strong>。<br />
+<strong>前置：</strong> 已完成实验一至四及<strong>实验五 · 综合系统 Agent（进阶）</strong>（如选做），组内拥有：《解决方案框架》、三个单一场景 MVP（诉求分类／供电业务知识问答／工单分级路由工作流）、一个客户服务协同 Agent、每轮的《AGENTS.md》《retro.md》和验收报告</p>
+<p><strong>本手册与讲师版的区别：</strong> 本手册是超集——除正文外，还含附录 F 分钟级时间表、附录 G 常见错误一句话点破、附录 H 第二层课后验收的组织方式。讲师版是同一内容的授课脚本（主持动作、点评要点、评分表、应急预案），供讲师现场使用；两者口径一致，如有不一致以本手册正文为准。</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 实操概述</h2>
+<p>前几轮你们走完了一个完整的 FDE 交付闭环：</p>
+<ul>
+<li><strong>实验一（Echo）</strong>：把"整套智能化"拆成三个子场景，定下技术路线和验收标准</li>
+<li><strong>实验二/三/四（Delta）</strong>：做了三个单一场景 MVP——诉求分类（这是什么业务）、供电业务知识问答（依据是什么）、工单分级路由工作流（该谁办、要不要升级）</li>
+<li><strong>实验五 · 综合系统 Agent（进阶）</strong>：把三种能力组织成一个能动态选工具、主动追问、人工暂停的协同 Agent</li>
+</ul>
+<p>现在到了<strong>收尾</strong>。实验六<strong>不做新功能</strong>，而是基于全部证据做五件事：</p>
+<ol>
+<li><strong>两层验收</strong>：三个单一场景是否各自成立？协同 Agent 是否有业务闭环？</li>
+<li><strong>FDE 化生产差距</strong>：真实环境适配、业务动作闭环、客户接管、FDE 撤出</li>
+<li><strong>能力回注</strong>：哪些是"碎石路"、哪些能"铺装成公路"——覆盖工具、工作流、Agent 机制、业务语义四层</li>
+<li><strong>交付决策</strong>：分别对 A/B/C 和实验五 · 综合系统 Agent 给出 Go / Conditional Go / Continue Pilot / No-Go</li>
+<li><strong>决策层汇报</strong>：面向周主任／省公司数字化与网络安全部，讲清价值、风险、证据与下一步</li>
+</ol>
+<pre><code class="language-mermaid">flowchart TB
+    R[&quot;评审一&lt;br/&gt;两层验收&quot;] --&gt; C[&quot;评审二&lt;br/&gt;能力回注&quot;]
+    C --&gt; D[&quot;评审三&lt;br/&gt;交付决策&quot;]
+    D --&gt; P[&quot;决策层汇报&lt;br/&gt;+红队质询&quot;]
+    P --&gt;|&quot;Go / Conditional Go /&lt;br/&gt;Continue Pilot / No-Go&quot;| F[&quot;FDE 交付闭环&quot;]
+
+    classDef start fill:#E8DDD4,stroke:#6B5D4E,stroke-width:2px,color:#2D241E,font-weight:bold;
+    classDef yellow fill:#F0E8D0,stroke:#B59A4A,stroke-width:1.5px,color:#4A3A1A;
+    classDef green fill:#DCE8D8,stroke:#5A8A5A,stroke-width:1.5px,color:#1A3A2A;
+
+    class R start;
+    class C,D,P yellow;
+    class F green;
+</code></pre>
+<p><em>图 1：实验六的综合证据评审与决策汇报流程</em></p>
+<h3 id="11-ai">1.1 为什么关键判断不能交给 AI</h3>
+<p>和实验一一样——<strong>实验六训练的是 FDE 的判断力、风险判断和最终表达，不是产出力。</strong> 但和前面不同的是，实验六的问题（"需求满足了吗""能上生产吗""值不值得继续""哪些能力该回注"）<strong>没有一个有标准答案，且都是基于证据的判断</strong>。</p>
+<p>因此实验六的 AI 边界分层：</p>
+<ul>
+<li><strong>AI 可以帮你</strong>：整理测试记录、汇总 Agent 轨迹、把原始证据归类、扮演客户方红队质询、检查汇报结构、帮助匿名化表达。</li>
+<li><strong>人必须决定</strong>：价值是否成立、风险能否接受、能否交付、什么值得回注、哪些数字可以对外承诺。</li>
+</ul>
+<blockquote>
+<p>一句话：<strong>AI 能帮你把证据整理得更清楚、把风险问得更尖锐，但"该不该继续、敢不敢交付"这最后一关，必须由你们自己拍板。</strong></p>
+</blockquote>
+<h3 id="12">1.2 本实操的两层验收结构（必须先读懂）</h3>
+<p>三层能力是在<strong>不同时间点</strong>完成和验收的，实验六必须按同一个口径分别处理：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>范围</th>
+<th>完成时间</th>
+<th>验收时间</th>
+<th>课上做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>第一层</strong></td>
+<td>三个单一场景（A 诉求分类／B 供电业务知识问答／C 工单分级路由工作流）</td>
+<td>课上（实验二／三／四）</td>
+<td><strong>当场验收</strong></td>
+<td>复跑验收命令，逐条对证据，判"是否满足／生产差距在哪"</td>
+</tr>
+<tr>
+<td><strong>第二层</strong></td>
+<td>实验五 · 综合系统 Agent（进阶）</td>
+<td><strong>课后</strong>（课上只教机制与契约，不要求做完）</td>
+<td><strong>课后完成后再验收</strong></td>
+<td>只做<strong>对照讨论</strong>："如果它做成了，判定标准是什么"</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>课上的硬约束：</strong> 第一层看证据，第二层看标准。<strong>课上不得声称第二层已经验收通过</strong>；第二层的签名与结论留到课后单独组织（组织方式见讲师版，学员按组内约定时间执行）。</p>
+</blockquote>
+<p>课上以离线桩基线做对照，先看清"给定样本上最好能到什么程度"，再换各组自己的实现：</p>
+<pre><code>python 验收\evaluate.py --task all --impl stub     # 课上以离线桩基线做对照
+python 验收\evaluate.py --task all --impl src      # 各组自己的实现
+python 验收\evaluate.py --task all --impl api      # 在线模型（需 DEEPSEEK_API_KEY）
+</code></pre>
+<blockquote>
+<p>三条命令的区别只在被测实现：<code>stub</code> 是离线桩（无网络、确定性输出，用来做基线对照）；<code>src</code> 是各组自己的实现；<code>api</code> 是在线模型路径，<strong>需 DEEPSEEK_API_KEY 环境变量已设置</strong>（只检查"是否已设置"，不要回显它的值）。运行前先确认 <code>验收\evaluate.py</code> 在你们的工作目录下可按此路径解析到；若组内目录结构不同，<strong>以实际路径为准，口径不变</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="2">2. 知识背景（四个脚手架 + 核心隐喻）</h2>
+<h3 id="21-agent">2.1 脚手架一：两层验收（三个场景 + 协同 Agent）</h3>
+<p>以前实验六做的是"双视角"（Echo 看需求、Delta 看生产）。纳入协同 Agent 后，升级为<strong>两层验收</strong>：</p>
+<p><strong>第一层：三个业务场景各自是否成立</strong></p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>Echo 关注（需求侧）</th>
+<th>Delta 关注（技术侧）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 诉求分类</td>
+<td>是否减少错分和返工</td>
+<td>当前样本是否足够、未知输入如何处理</td>
+</tr>
+<tr>
+<td>B 供电业务知识问答</td>
+<td>是否降低答复答错的责任</td>
+<td>来源是否真实、无证据是否拒答</td>
+</tr>
+<tr>
+<td>C 工单分级路由工作流</td>
+<td>是否改善工单分流</td>
+<td>固定分支是否执行、敏感件是否人工</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第二层：协同 Agent 综合能力是否成闭环</strong></p>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>核心问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动态选择</td>
+<td>是否真的按需选能力，而非固定 A→B→C</td>
+</tr>
+<tr>
+<td>观察与继续</td>
+<td>工具结果不足时是否会继续判断</td>
+</tr>
+<tr>
+<td>主动追问</td>
+<td>用户补充后是否从原任务续跑</td>
+</tr>
+<tr>
+<td>人工接管</td>
+<td>敏感事项是否真实暂停</td>
+</tr>
+<tr>
+<td>业务闭环</td>
+<td>最终是否形成答复、草稿或人工接管状态</td>
+</tr>
+<tr>
+<td>展示质量</td>
+<td>非技术领导能否看懂任务状态和证据</td>
+</tr>
+<tr>
+<td>MVP 边界</td>
+<td>是否诚实说明未完成的生产能力</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-fde">2.2 脚手架二：FDE 化生产差距四问</h3>
+<p>承接前几轮的"六维差距表"（性能/可靠性/安全/合规/部署/数据），但把讨论主线聚焦到 FDE 真实关心的四件事：</p>
+<pre><code class="language-text">真实环境适配
+→ 业务动作闭环
+→ 客户责任与人工接管
+→ FDE 撤出条件
+</code></pre>
+<ol>
+<li>单一场景能力怎样接入客户真实数据和现有系统？</li>
+<li>Agent 暂停后，由哪个客户岗位接管？</li>
+<li>电价与业务规则、专业条线职责和业务规则变化后，由谁维护？</li>
+<li>FDE 离场后，客户团队能否继续运营？</li>
+</ol>
+<h3 id="23">2.3 脚手架三：能力回注四层（不止"代码"）</h3>
+<p>能力回注按四层判断，不只看代码能不能复用：</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>回注内容</th>
+<th>判断问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>内容</strong></td>
+<td>客户专属数据、知识和规则</td>
+<td>是否换客户必须全换？（通常不回注）</td>
+</tr>
+<tr>
+<td><strong>工具</strong></td>
+<td>分类、检索、查询、动作接口</td>
+<td>接口契约能否跨项目复用？</td>
+</tr>
+<tr>
+<td><strong>Workflow/Agent 机制</strong></td>
+<td>路由、追问、人工暂停、停止条件</td>
+<td>机制能否抽象成通用模式？</td>
+</tr>
+<tr>
+<td><strong>业务语义</strong></td>
+<td>对象、关系、状态、动作、治理</td>
+<td>能否建成本体/领域模型？</td>
+</tr>
+</tbody>
+</table>
+<p><strong>本体建模是本轮新增的一层。</strong> 能力回注不只整理代码，还要判断能否抽象出：</p>
+<ul>
+<li><strong>对象</strong>：客户诉求、政策条款、专业条线、服务工单、人工审核任务；</li>
+<li><strong>属性</strong>：类别、状态、敏感等级、来源、责任部门；</li>
+<li><strong>关系</strong>：诉求引用政策条款、工单分派部门、工单触发人工审核；</li>
+<li><strong>动作</strong>：查询、分派、补证、升级、办结；</li>
+<li><strong>治理</strong>：谁可查看、谁可执行、哪些动作必须人工批准。</li>
+</ul>
+<blockquote>
+<p>对象、关系、动作与治理一体化的本体可以自建领域模型、知识图谱或业务语义层实现，不绑定任何特定厂商方案。能力回注的价值在于"抽象层是否成立"，不在于用了哪套技术。</p>
+</blockquote>
+<h3 id="24">2.4 脚手架四：交付决策四种状态</h3>
+<p>对每个场景和整体项目，采用四种交付决策：</p>
+<table>
+<thead>
+<tr>
+<th>决策</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Go</strong></td>
+<td>当前证据足够，可以进入下一阶段</td>
+</tr>
+<tr>
+<td><strong>Conditional Go</strong></td>
+<td>可以推进，但必须先满足明确条件</td>
+</tr>
+<tr>
+<td><strong>Continue Pilot</strong></td>
+<td>继续试点收集证据，暂不生产上线</td>
+</tr>
+<tr>
+<td><strong>No-Go</strong></td>
+<td>价值或风险不成立，停止或重新 Discovery</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>不能因为页面漂亮就默认 Go。</strong> 每项决策必须说明：当前决策、依据证据、剩余风险、补齐责任人、下一 Gate。</p>
+</blockquote>
+<h3 id="25">2.5 核心隐喻：碎石路 → 铺装公路</h3>
+<ul>
+<li><strong>碎石路（非标定制）</strong>：应急搭出的本地可用方案——<strong>今天的三个单一场景 + 协同 Agent 就是"碎石路"</strong>（部分是岭湾专属，做完就扔）。</li>
+<li><strong>铺装公路（平台固化）</strong>：把可复用的模式、工具和机制反馈给平台团队，固化为标准能力——<strong>明天其他客户都能用的"公路"</strong>。</li>
+</ul>
+<blockquote>
+<p>实验六的回注评审，就是判断：这些 demo 里，哪些只是碎石路，哪些抽象掉岭湾的壳之后，能铺装成公路惠及更多客户。</p>
+</blockquote>
+<hr />
+<h2 id="3">3. 课前准备</h2>
+<ul>
+<li>[ ] 全组通读实验一的《解决方案框架》——尤其是三个子场景的需求定义、验收标准</li>
+<li>[ ] 全组回顾实验二/三/四和实验五的《AGENTS.md》和《retro.md》</li>
+<li>[ ] 全组回顾三个单一场景 MVP 验收报告 + 协同 Agent 的 QA 报告与轨迹证据</li>
+<li>[ ] 确认第一层验收命令可以在本组环境跑通（<code>stub</code> / <code>src</code> 两条先跑一次）</li>
+<li>[ ] 准备白板/大白纸、便签、马克笔；打印能力回注、交付决策、汇报结构模板（见附录）</li>
+<li>[ ] 可选的演示环境：客户服务协同 Agent 工作台已可启动，用于现场演示</li>
+</ul>
+<blockquote>
+<p><strong>协同 Agent 不是第四个业务场景，而是 A/B/C 三类能力的综合应用。</strong> 最终评审：先判断三个场景是否各自成立，再判断它们是否被正确组织成完整业务闭环。</p>
+</blockquote>
+<hr />
+<h2 id="4-35">4. 评审一：两层验收——需求满足了吗？能上生产吗？（35 分钟）</h2>
+<blockquote>
+<p>全团队用两层视角审视。<strong>先独立、后碰撞。</strong></p>
+</blockquote>
+<h3 id="step-110">Step 1：独立判断（10 分钟）</h3>
+<p><strong>Echo 视角（需求/价值侧）：</strong> 对每个单一场景 + 协同 Agent 各写一条判断——"它解决了当初定义的问题吗？✅/⚠️/❌，为什么？"</p>
+<ul>
+<li>对照实验一的需求定义和验收标准。</li>
+</ul>
+<p><strong>Delta 视角（技术/落地侧）：</strong> 对每个单一场景 + 协同 Agent 各写一条——"它能上生产吗？差距在哪？"</p>
+<ul>
+<li>从真实环境适配、业务动作闭环、客户接管、FDE 撤出四问想（不只六维表）。</li>
+</ul>
+<blockquote>
+<p><strong>FDE 灵魂追问：</strong> 每个 demo 验收都达标了（分类自信区 ≥85% 且转人工 ≤30%、问答准确 ≥80% 且来源可追溯 ≥90%、路由 ≥90% 且敏感件零漏判、库外 2/2 拒答），协同 Agent 也跑通了 4 条开发任务——但<strong>验收达标 = 需求满足吗？能上生产吗？</strong> 尤其协同 Agent：4 条封闭任务跑通，不等于真实话务量与工单量下的所有诉求都能处理。</p>
+</blockquote>
+<h3 id="step-212">Step 2：组内讨论（12 分钟）</h3>
+<p>把便签贴到白板，分两区：<strong>需求满足度墙</strong> + <strong>生产差距墙</strong>。</p>
+<p>讨论：</p>
+<ol>
+<li><strong>第一层对齐</strong>：三个单一场景，为什么有人标 ✅、有人标 ⚠️？分歧在哪？</li>
+<li><strong>第二层对齐</strong>：协同 Agent 是不是真的动态选工具？还是把 A→B→C 固定走了一遍？它形成业务闭环了吗？</li>
+<li><strong>Echo 与 Delta 互补</strong>：需求侧发现的问题技术侧看到了吗？技术侧的工程差距需求侧关心吗？</li>
+</ol>
+<blockquote>
+<p><strong>FDE 灵魂追问：</strong> 协同 Agent 的"动态选择、主动追问、人工暂停"——每一个都真的在代码/轨迹里成立了吗？还是只是界面看起来有？<strong>界面漂亮 ≠ 生产可用。</strong></p>
+</blockquote>
+<h3 id="step-313">Step 3：达成共识（13 分钟）</h3>
+<p>全组收敛成答题。<strong>注意本轮模板已清空预填答案，请基于你们自己的产出一栏栏填。</strong></p>
+<h4 id="1_1">输出物 1：两层验收表</h4>
+<blockquote>
+<p><strong>同源提示：</strong> 模板唯一权威为 <code>模板\两层验收表.md</code>；本表与之同源。</p>
+</blockquote>
+<pre><code class="language-markdown"># 两层验收表
+
+## 第一层：三个单一场景
+| 场景 | 当初的需求/验收标准 | 是否满足 | 生产差距 | 一句话理由 |
+|------|------------------|---------|---------|-----------|
+| A 诉求分类 | ________________ | ✅/⚠️/❌ | ________________ | ________________ |
+| B 供电业务知识问答 | ________________ | ✅/⚠️/❌ | ________________ | ________________ |
+| C 工单分级路由工作流 | ________________ | ✅/⚠️/❌ | ________________ | ________________ |
+
+## 第二层：协同 Agent 综合能力（课后验收，课上只对标准）
+| 检查项 | 判定标准是什么 | 课上对照结论 | 证据（课后补：指向哪条轨迹/报告） |
+|--------|--------------|------------|------------------------------|
+| 动态选择 | ________ | ________ | ________ |
+| 观察与继续 | ________ | ________ | ________ |
+| 主动追问 | ________ | ________ | ________ |
+| 人工接管 | ________ | ________ | ________ |
+| 业务闭环 | ________ | ________ | ________ |
+| 展示质量 | ________ | ________ | ________ |
+| MVP 边界诚实 | ________ | ________ | ________ |
+</code></pre>
+<h4 id="2fde">输出物 2：FDE 化生产差距表</h4>
+<pre><code class="language-markdown"># 生产差距（FDE 四问）
+| 对象 | 真实环境适配 | 业务动作闭环 | 客户责任/人工接管 | FDE 撤出条件 |
+|------|------------|------------|----------------|------------|
+| A 诉求分类 | ________ | ________ | ________ | ________ |
+| B 供电业务知识问答 | ________ | ________ | ________ | ________ |
+| C 工单分级路由 | ________ | ________ | ________ | ________ |
+| 协同 Agent | ________ | ________ | ________ | ________ |
+
+# 数据出域交代（必须单独列）
+需求红线：数据不出信息内网。
+我们的工程决策：____________________
+（内网侧部署的模型选型、成本、工期 → ____________________）
+</code></pre>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 每人都写了独立判断便签</li>
+<li>[ ] 白板有两层验收墙 + 生产差距墙</li>
+<li>[ ] 讨论了至少 1 个"验收达标但需求没满足"的分歧</li>
+<li>[ ] 收敛成两层验收表 + FDE 化生产差距表（含数据出域交代）</li>
+<li>[ ] 明确写出"第二层留给课后验收"的判定标准，未在课上宣称已通过</li>
+</ul>
+<h3 id="41">4.1 讨论指引：评审一问题卡</h3>
+<blockquote>
+<p>下列问题是引导，不是考题。讨论卡住时对照展开。</p>
+</blockquote>
+<p><strong>第一层（三个场景）：</strong></p>
+<ul>
+<li><strong>Q-A1 翻译检验</strong>：150 字业务语言，向周主任讲清三个场景解决了什么痛点（禁技术词）</li>
+<li><strong>Q-A2 算账</strong>：自信区 85% 准确率意味着仍有约 15% 的件不在自信区——它们该硬分还是拒答转人工？</li>
+<li><strong>Q-A3 生产差距</strong>：测过真实话务量与工单量下的并发吗？方言和口语变体呢？电价与业务规则更新吗？路由工作流和协同 Agent 的差距各自是什么？</li>
+</ul>
+<p><strong>第二层（协同 Agent 综合）：</strong></p>
+<ul>
+<li><strong>Q-B1 动态性</strong>：哪一步证明它在按需选能力，而不是固定调用 A→B→C？</li>
+<li><strong>Q-B2 追问续跑</strong>：用户补充后，它真的从原任务继续了吗？</li>
+<li><strong>Q-B3 人工接管</strong>：敏感事项是"真暂停"还是只是叫打了"转人工"标签？</li>
+</ul>
+<p><strong>全局：</strong></p>
+<ul>
+<li><strong>Q-C1 双视角冲突</strong>：Echo 觉得满足、Delta 觉得还差得远——谁对？两种视角怎么互补？</li>
+<li><strong>Q-C2 红队挑战</strong>：页面很漂亮、演示很顺，为什么仍可能是 Continue Pilot？</li>
+</ul>
+<hr />
+<h2 id="5-30">5. 评审二：能力回注——碎石路能铺成哪些公路？（30 分钟）</h2>
+<blockquote>
+<p>用"碎石路→铺装公路"隐喻 + 四层回注，判断每个 demo 哪些能沉淀成平台能力。</p>
+</blockquote>
+<h3 id="step-1-15">Step 1：识别 + 抽象（15 分钟）</h3>
+<p>对四个对象（A/B/C/协同 Agent），逐项判断：它的能力，去掉"岭湾"的壳，剩下的是什么？</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>客户特定实现（碎石路/内容）</th>
+<th>可回注能力（能铺路/机制）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 诉求分类</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+</tr>
+<tr>
+<td>B 供电业务知识问答</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+</tr>
+<tr>
+<td>C 工单分级路由工作流</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+</tr>
+<tr>
+<td>协同 Agent</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+</tr>
+<tr>
+<td>贯穿</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+<td><strong><em>_</em></strong><strong><em>_</em></strong>______</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>FDE 灵魂追问：</strong> 判断标准——换个客户，这个东西要不要全换？要换＝内容（不回注），不用换＝机制（回注）。尤其协同 Agent：岭湾的协同流程是内容，但"受控 Agent 循环、主动澄清、人工暂停、统一工具契约"这些机制是能复用的。</p>
+</blockquote>
+<h3 id="step-210">Step 2：四层回注（10 分钟）</h3>
+<p>对每个"能铺路"的候选，判断它属于哪一层、抽象成什么、在哪个第二场景验证：</p>
+<pre><code class="language-markdown"># 能力回注清单（四层）
+| 候选 | 抽象后的通用能力 | 层次（内容/工具/机制/语义） | 第二场景 | 维护人 |
+|------|----------------|--------------------------|---------|--------|
+| ________ | ________ | ________ | ________ | ________ |
+| ________ | ________ | ________ | ________ | ________ |
+
+# 业务本体（可选，若课纲涉及）
+对象：客户诉求 / 政策条款 / 专业条线 / 服务工单 / 人工审核任务
+属性：类别 / 状态 / 敏感等级 / 来源 / 责任部门
+关系：诉求→引用→政策条款；工单→分派→部门；工单→触发→人工审核
+动作：查询 / 分派 / 补证 / 升级 / 办结
+治理：谁可查看 / 谁可执行 / 哪些动作必须人工批准
+</code></pre>
+<blockquote>
+<p><strong>FDE 灵魂追问：</strong> "看起来通用"不等于能回注。每个候选都要答出：从哪个客户特定实现识别、去掉什么、抽象成什么、集成到哪、在哪个第二场景验证、谁维护。答不出这些，就不是真回注。</p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 四个对象（A/B/C/协同 Agent）都判断了碎石路/能铺路</li>
+<li>[ ] 识别出 ≥4 个回注候选，且至少覆盖工具/机制两层</li>
+<li>[ ] 每个候选有四层归属 + 第二场景验证</li>
+<li>[ ] （可选）讨论过业务本体建模</li>
+</ul>
+<h3 id="51">5.1 讨论指引：评审二问题卡</h3>
+<ul>
+<li><strong>Q-D1 内容 vs 机制</strong>：协同 Agent 里哪些是岭湾的内容（不回注）、哪些是能复用的机制（回注）？</li>
+<li><strong>Q-D2 工具契约</strong>：分类、检索依据、查询职责归属三件接口，换个客户要全改吗？还是只用换数据？</li>
+<li><strong>Q-D3 Agent 机制</strong>：受控 Agent 循环、主动澄清、人工暂停——这些是岭湾专属还是通用模式？</li>
+<li><strong>Q-D4 业务语义</strong>：你的需求材料里，"客户诉求-政策条款-专业条线-服务工单-人工审核"这套关系，换一个供电服务客户是不是也成立？这能不能沉淀成一个本体/领域模型？</li>
+<li><strong>Q-D5 优先级</strong>：只给一个团队资源，先铺哪条公路？为什么是它而不是别的？</li>
+</ul>
+<hr />
+<h2 id="6-go-conditional-go-continue-pilot-no-go15">6. 评审三：交付决策——Go / Conditional Go / Continue Pilot / No-Go（15 分钟）</h2>
+<blockquote>
+<p>这是实验六新增的、最"决策层"的一环。对每个对象 + 整体，给出明确的交付决策，<strong>不能通篇 Go</strong>。</p>
+</blockquote>
+<h3 id="61">6.1 逐项交付决策</h3>
+<pre><code class="language-markdown"># 交付决策
+
+## A 诉求分类：______（Go / Conditional Go / Continue Pilot / No-Go）
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+
+## B 供电业务知识问答：______
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+
+## C 工单分级路由工作流：______
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+
+## 综合系统 Agent（实验五）：______
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+
+## 整体：______
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+</code></pre>
+<blockquote>
+<p><strong>FDE 灵魂追问：</strong> 什么证据出现，会让你把某一项从 Go 改成 No-Go？如果答不上来，说明你的"Go"只是表态，没有风险边界。<strong>页面很漂亮、演示很顺，为什么仍可能是 Continue Pilot？</strong></p>
+</blockquote>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 四项 + 整体都给了明确决策</li>
+<li>[ ] 每项都有"依据证据 / 剩余风险 / 补齐责任人 / 下一 Gate"</li>
+<li>[ ] 至少讨论过"什么证据会让某一项变 No-Go"</li>
+<li>[ ] 没有因为界面漂亮就全部默认 Go</li>
+<li>[ ] 协同 Agent 一栏的决策写明"待课后验收补齐证据"，没有拿课上标准当验收结论</li>
+</ul>
+<hr />
+<h2 id="7-25">7. 决策层汇报与质询（25 分钟）</h2>
+<blockquote>
+<p>面向周主任（决策层）和省公司数字化与网络安全部（监管层）。汇报不是"我们做了什么"，而是"<strong>我们解决了你什么问题、值不值、该不该继续</strong>"。</p>
+</blockquote>
+<h3 id="71-10">7.1 汇报结构（10 段，金字塔提升版）</h3>
+<pre><code class="language-text">第 1 页  封面：岭湾电力客户服务平台 AI 阶段交付与决策汇报
+第 2 页  结论：三个场景与协同 Agent 的当前决策
+第 3 页  场景 A：诉求分类能力及证据
+第 4 页  场景 B：供电业务知识问答的证据及可追溯性
+第 5 页  场景 C：工单分级路由与敏感件边界
+第 6 页  协同 Agent：现场演示
+第 7 页  人机边界：主动追问、人工暂停与客户接管
+第 8 页  合规与真实环境约束
+第 9 页  能力回注与业务本体
+第 10 页 下一步：Go / Conditional Go / Continue Pilot / No-Go 请求
+</code></pre>
+<blockquote>
+<p><strong>与《收口汇报十页骨架》的关系：</strong> 那份十页骨架是同一个汇报的通用底稿（结论先行、双线汇报、ROI 与常见追问）；本 10 段结构是它在实验六这一轮的展开版，<strong>本实验以本 10 段结构为准</strong>，页序与请求位置以十页骨架的纪律为准。</p>
+</blockquote>
+<h3 id="72-agent">7.2 协同 Agent 现场演示（至少两条轨迹）</h3>
+<ol>
+<li><strong>政策问题</strong>：按需调用供电业务知识问答能力并提供来源；</li>
+<li><strong>信息不足或敏感事项</strong>：主动追问或暂停人工。</li>
+</ol>
+<p>如时间允许：3. 专业条线查询并形成工单草稿（草稿 <code>submitted</code> 恒为 false，绝不真提交）。</p>
+<p>演示时必须说明：</p>
+<ul>
+<li>为什么没有固定调用全部工具；</li>
+<li>为什么某个任务交还给人；</li>
+<li>当前只是 MVP，不覆盖生产所有诉求；</li>
+<li>哪些能力需要进入下一阶段。</li>
+</ul>
+<h3 id="73">7.3 汇报语言要求</h3>
+<ul>
+<li>全业务语言，有数字、有 ROI 框架（不给编的数字）；</li>
+<li>对周主任讲价值、对省公司数字化与网络安全部讲合规（两套话术）；</li>
+<li>主动交代数据出域 + 演示/生产分界；</li>
+<li>明确给出决策级结论（不是"我们做了三个 demo"）。</li>
+</ul>
+<p><strong>✅ 检查点：</strong></p>
+<ul>
+<li>[ ] 金字塔 + 10 段结构汇报</li>
+<li>[ ] 协同 Agent 现场演示至少两条轨迹</li>
+<li>[ ] 讲清"为什么没固定调全部工具""为什么某任务交还给人"</li>
+<li>[ ] 有 ROI 框架（不给编的数字），两套话术分清</li>
+<li>[ ] 有明确交付决策（Go/Conditional Go/Continue Pilot/No-Go）</li>
+</ul>
+<h3 id="74">7.4 讨论指引：评审四问题卡</h3>
+<ul>
+<li><strong>Q-E1 快赢</strong>（扮周主任）：先上哪个？什么时候见效？</li>
+<li><strong>Q-E2 追责</strong>（扮省公司数字化与网络安全部）：出了数据泄露谁负责？怎么降险？</li>
+<li><strong>Q-E3 失业</strong>（扮小林）：AI 会不会让我失业？"机器干重复的，人干判断的"怎么讲？</li>
+<li><strong>Q-E4 接管</strong>：协同 Agent 暂停后由哪个客户岗位接管？真人能不能操作？</li>
+<li><strong>Q-E5 撤出</strong>：FDE 撤出后，谁维护电价与业务规则、专业条线职责和业务规则？</li>
+</ul>
+<hr />
+<h2 id="8-dod">8. 完成标准（DoD）</h2>
+<ul>
+<li>[ ] <strong>评审一（两层验收）</strong>：三个单一场景 + 协同 Agent 分层验收表、FDE 化生产差距表（含数据出域交代）完成</li>
+<li>[ ] <strong>评审二（能力回注）</strong>：四个对象碎石路/能铺路判断 + ≥4 回注候选 + 四层归属 + 第二场景</li>
+<li>[ ] <strong>评审三（交付决策）</strong>：A/B/C/协同 Agent/整体五项决策，每项有四要素（证据/风险/责任人/下一 Gate）</li>
+<li>[ ] <strong>评审四（决策层汇报）</strong>：10 段结构 + 协同 Agent 现场演示至少两条轨迹，有 ROI + 合规交代</li>
+<li>[ ] <strong>两层验收时间口径正确</strong>：第一层当场验收，第二层写明"课后完成后再验收"的判定标准</li>
+<li>[ ] <strong>Workflow vs Agent 辨析</strong>：能说清实验四（固定路由）与协同 Agent（受控 Agent）的区别</li>
+<li>[ ] <strong>能力回注多层级</strong>：回注覆盖工具、Workflow/Agent 机制、业务语义（不仅是代码）</li>
+<li>[ ] <strong>人工接管责任</strong>：谁在客户侧接管、FDE 撤出条件已讨论</li>
+<li>[ ] <strong>关键判断由团队作出</strong>：AI 只用于证据整理/红队挑战，不替团队下结论</li>
+<li>[ ] <strong>AI 使用边界</strong>：价值/风险/回注/是否继续的最终判断由人完成</li>
+</ul>
+<hr />
+<h2 id="9">9. 交付物清单</h2>
+<pre><code>实验六-综合评审/
+├── 两层验收表.md            # 三个单一场景 + 协同 Agent 分层验收（含数据出域交代）
+├── 生产差距表.md             # FDE 四问（真实环境/闭环/接管/撤出）
+├── 能力回注清单.md           # 四层（内容/工具/机制/语义）+ 业务本体
+├── 交付决策.md               # 五项（A/B/C/协同 Agent/整体）Go/Conditional Go/Continue Pilot/No-Go
+├── 决策层汇报稿.md           # 10 段结构汇报
+└── 协同 Agent 演示轨迹记录.md # 至少两条轨迹（政策问答 + 追问/敏感）
+</code></pre>
+<blockquote>
+<p><strong>★ 能力回注 + 交付决策</strong> 是本实操最重要的两个产出：前者看出你能否"从项目定制到平台资产"地升华，后者看出你能否用证据做"该不该继续"的决策——这是 FDE 区别于"外包交付"的核心。</p>
+</blockquote>
+<hr />
+<h2 id="a">附录 A：能力回注四步法模板</h2>
+<blockquote>
+<p><strong>同源提示：</strong> 模板唯一权威为 <code>模板\能力回注清单.md</code>；本附录与之同源。</p>
+</blockquote>
+<pre><code class="language-markdown"># 能力回注 · 候选评估
+
+## 候选：______（来源：______）
+
+### 1. 识别（碎石路，还是能铺路？）
+- 客户特定实现（碎石路）：______
+- 可能复用场景（能铺路给谁）：______
+- 内容 or 机制：______
+
+### 2. 抽象（去掉客户特定，泛化为通用）
+- 抽象后的通用能力：______
+- 去掉了哪些客户特定逻辑：______
+- 可配置参数/接口：______
+
+### 3. 四层归属
+- 层次（内容/工具/机制/业务语义）：______
+
+### 4. 验证（第二场景）+ 维护
+- 在哪个第二场景验证：______
+- 谁负责维护：______
+</code></pre>
+<h2 id="b">附录 B：交付决策模板</h2>
+<blockquote>
+<p><strong>同源提示：</strong> 模板唯一权威为 <code>模板\交付决策单.md</code>；本附录与之同源。</p>
+</blockquote>
+<pre><code class="language-markdown">## 场景/对象：______
+- 当前决策：Go / Conditional Go / Continue Pilot / No-Go
+- 依据证据：______
+- 剩余风险：______
+- 补齐责任人：______
+- 下一 Gate：______
+</code></pre>
+<h2 id="c">附录 C：决策层汇报结构模板</h2>
+<blockquote>
+<p><strong>同源提示：</strong> 模板唯一权威为 <code>模板\决策层汇报结构.md</code>；本附录与之同源。</p>
+</blockquote>
+<pre><code class="language-markdown">1. 封面：岭湾电力客户服务平台 AI 阶段交付与决策汇报
+2. 结论（三个场景 + 协同 Agent 的当前决策）
+3. 场景 A：诉求分类能力及证据
+4. 场景 B：供电业务知识问答的证据及可追溯性
+5. 场景 C：工单分级路由与敏感件边界
+6. 协同 Agent：现场演示
+7. 人机边界：主动追问、人工暂停与客户接管
+8. 合规与真实环境约束
+9. 能力回注与业务本体
+10. 下一步：交付决策请求
+</code></pre>
+<h2 id="dfde">附录 D：FDE 灵魂追问汇总</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>环节</th>
+<th>追问</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>评审一</td>
+<td>验收达标 = 需求满足吗？协同 Agent 4 条封闭任务跑通等于能上生产吗？</td>
+</tr>
+<tr>
+<td>2</td>
+<td>评审一</td>
+<td>界面漂亮 = 生产可用吗？动态/追问/人工暂停在代码里真的成立吗？</td>
+</tr>
+<tr>
+<td>3</td>
+<td>评审二</td>
+<td>去掉岭湾的壳，协同 Agent 里哪些是内容、哪些是通用机制？</td>
+</tr>
+<tr>
+<td>4</td>
+<td>评审二</td>
+<td>"看起来通用"能回注吗？在哪个第二场景验证、谁维护？</td>
+</tr>
+<tr>
+<td>5</td>
+<td>评审三</td>
+<td>什么证据变，会让某一项从 Go 改成 No-Go？</td>
+</tr>
+<tr>
+<td>6</td>
+<td>评审三</td>
+<td>通篇 Go 说明什么？没有风险边界的决策不是决策。</td>
+</tr>
+<tr>
+<td>7</td>
+<td>评审四</td>
+<td>对周主任和省公司数字化与网络安全部，话术能一样吗？</td>
+</tr>
+<tr>
+<td>8</td>
+<td>评审四</td>
+<td>ROI 为什么只能给框架、不能给编的数字？接管与撤出谁负责？</td>
+</tr>
+</tbody>
+</table>
+<h2 id="e">附录 E：讲师引导要点</h2>
+<ul>
+<li><strong>两层验收是核心</strong>：先看三个单一场景是否各自成立，再看协同 Agent 是否有业务闭环。讲师要确认学员没把"协同 Agent 漂亮界面"当"生产可用证据"。</li>
+<li><strong>两层时间口径不能混</strong>：第一层当场验收；第二层课上只对标准、课后完成后再验收。学员若在课上宣布"第二层也过了"，要立刻纠正。</li>
+<li><strong>Workflow vs Agent 辨析</strong>：学员若说不清实验四为什么是固定 Workflow、协同 Agent 为什么是受控 Agent，说明概念没有真正迁移。</li>
+<li><strong>交付决策必须给风险边界</strong>：通篇 Go 要追问"什么证据会改成 No-Go"。页面好看不等于能交付。</li>
+<li><strong>能力回注分四层</strong>：学员容易只整理代码。引导看工具契约、Agent 机制、业务语义是否能跨项目复用。</li>
+<li><strong>AI 边界</strong>：价值/风险/回注/是否继续的最终判断必须由团队作出；AI 只能整理证据或当红队。</li>
+</ul>
+<h2 id="f110">附录 F：110 分钟分钟级时间表</h2>
+<blockquote>
+<p>本表是主持本轮评审时的时间底稿。小组内部先完成 1–4 个评审段，收口汇报按最后一段的节奏走。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>时间段</th>
+<th style="text-align: right;">分钟</th>
+<th>环节</th>
+<th>学员产出</th>
+<th>交作业点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00:00–00:05</td>
+<td style="text-align: right;">5</td>
+<td>开场定调 + 两层验收口径交底</td>
+<td>明确本轮只做判断、不做新功能</td>
+<td>—</td>
+</tr>
+<tr>
+<td>00:05–00:15</td>
+<td style="text-align: right;">10</td>
+<td>评审一 Step 1 独立判断</td>
+<td>每人 ≥4 张独立判断便签</td>
+<td>—</td>
+</tr>
+<tr>
+<td>00:15–00:27</td>
+<td style="text-align: right;">12</td>
+<td>评审一 Step 2 组内讨论</td>
+<td>需求满足度墙 + 生产差距墙</td>
+<td>—</td>
+</tr>
+<tr>
+<td>00:27–00:40</td>
+<td style="text-align: right;">13</td>
+<td>评审一 Step 3 达成共识（含现场复跑验收命令）</td>
+<td>两层验收表 + FDE 化生产差距表</td>
+<td><strong>评审一产出</strong></td>
+</tr>
+<tr>
+<td>00:40–00:55</td>
+<td style="text-align: right;">15</td>
+<td>评审二 Step 1 识别 + 抽象</td>
+<td>四个对象碎石路/能铺路判断表</td>
+<td>—</td>
+</tr>
+<tr>
+<td>00:55–01:05</td>
+<td style="text-align: right;">10</td>
+<td>评审二 Step 2 四层回注</td>
+<td>能力回注清单</td>
+<td><strong>评审二产出</strong></td>
+</tr>
+<tr>
+<td>01:05–01:20</td>
+<td style="text-align: right;">15</td>
+<td>评审三 交付决策</td>
+<td>五项决策，每项四要素</td>
+<td><strong>评审三产出</strong></td>
+</tr>
+<tr>
+<td>01:20–01:30</td>
+<td style="text-align: right;">10</td>
+<td>评审四 汇报准备 + 协同 Agent 演示筹备</td>
+<td>10 段汇报稿骨架 + 演示脚本</td>
+<td>—</td>
+</tr>
+<tr>
+<td>01:30–01:50</td>
+<td style="text-align: right;">20</td>
+<td>评审四 汇报 + 质询（每组 5 分钟：讲 3 + 问 2）</td>
+<td>汇报 + 现场应答记录</td>
+<td><strong>评审四产出</strong></td>
+</tr>
+<tr>
+<td>01:50–01:55</td>
+<td style="text-align: right;">5</td>
+<td>收口与课后验收布置</td>
+<td>组内约定课后验收时间</td>
+<td>全部产出物回收</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>时间不够时的取舍顺序（从先舍到后舍）：</strong> 1. 协同 Agent 第三条演示轨迹（专业条线查询与工单草稿）；2. 评审二的本体建模讨论；3. 汇报组数（改抽 2 组，其余交稿不现场讲）。<strong>无论怎么压缩，第一层的验收复跑、评审三的"什么证据会变 No-Go"、第二层的时间口径交底三者不能省。</strong></p>
+</blockquote>
+<h2 id="g">附录 G：常见错误一句话点破（自查用）</h2>
+<table>
+<thead>
+<tr>
+<th>常见错误</th>
+<th>一句话点破</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>把"验收达标"当成"需求满足"</td>
+<td>"样本上达标，是<strong>这套样本</strong>上达标——真实话务量与工单量下的错派率你们算得出来吗？"</td>
+</tr>
+<tr>
+<td>把协同 Agent 的漂亮界面当生产可用证据</td>
+<td>"界面演示得顺，和生产能接管，是两件事。"</td>
+</tr>
+<tr>
+<td>用"转人工"当挡箭牌</td>
+<td>"转人工不是免责——接收队列、负责人、时限、可回写、未处理告警，这七项缺一项它就是个标签。"</td>
+</tr>
+<tr>
+<td>课上直接宣布第二层通过</td>
+<td>"第二层还没做完，你们现在验收的是空气。"</td>
+</tr>
+<tr>
+<td>生产差距墙空着</td>
+<td>"空着的那面墙，恰恰是客户明天会问你的那部分。"</td>
+</tr>
+<tr>
+<td>只写"沉淀了方法论"</td>
+<td>"拿不出东西的沉淀，等于没沉淀。"</td>
+</tr>
+<tr>
+<td>把岭湾的专属口径当通用件回注</td>
+<td>"把五类口径和六条职责说法带走，等于把别人的家规当国标。"</td>
+</tr>
+<tr>
+<td>通篇 Go</td>
+<td>"什么证据出现，会让你把某一项从 Go 改成 No-Go？答不上来，你的 Go 只是态度。"</td>
+</tr>
+<tr>
+<td>决策里没有责任人</td>
+<td>"没有人名的责任人，等于没有人负责。"</td>
+</tr>
+<tr>
+<td>汇报讲成技术秀</td>
+<td>"周主任关心的是派单少错、答复有依据、坐席不背锅，不是你们用了几个模型。"</td>
+</tr>
+<tr>
+<td>对监管层大讲 ROI</td>
+<td>"他关心的是边界在哪、什么还没证明——讲价值等于答非所问。"</td>
+</tr>
+<tr>
+<td>只说"数据安全我们很重视"</td>
+<td>"把数据从哪来、到哪去、谁签字说清楚，比表态有用。"</td>
+</tr>
+<tr>
+<td>请求写得太虚</td>
+<td>"'请多支持'不是请求，'请批两周窄试点范围、指定一名口径确认人'才是。"</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h">附录 H：第二层课后验收的组织方式（必读）</h2>
+<h3 id="h1">H.1 谁来组织、什么时间</h3>
+<ul>
+<li><strong>组织者</strong>：本组 Delta 位牵头提交，Echo 位复核判断，<strong>讲师（或讲师指定的组外复核人）验收</strong>。</li>
+<li><strong>时间</strong>：课后由各组自行完成实验五，<strong>完成后向讲师报备验收时间</strong>；建议在下一模块开课前完成，逾期不补的组，第二层结论计为"未验收"，不影响第一层与整体 DoD。</li>
+<li><strong>验收形式</strong>：15 分钟/组；<strong>必须现场复跑，不接受只交截图</strong>。</li>
+</ul>
+<h3 id="h2">H.2 提交物（四项，缺一项不予验收）</h3>
+<ol>
+<li>协同 Agent 的<strong>运行轨迹记录</strong>（至少两条：政策问答类 + 追问或敏感转人类）；</li>
+<li><strong>QA 报告</strong>（含命中敏感件<strong>真暂停</strong>的证据：<code>interrupted = true</code> 之后不再继续自动流程）；</li>
+<li><strong>两层验收表第二层的完整填写版</strong>（七项检查项逐项给证据指向）；</li>
+<li><strong>交付决策单里"协同 Agent"那一栏的更新版</strong>（依据证据补齐后重新给定决策）。</li>
+</ol>
+<h3 id="h3">H.3 逐项判定标准（照此打勾）</h3>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>判定标准（必须能在提交物里指到具体位置）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动态选择</td>
+<td>轨迹里能看到"按需调用"，而非每次都固定走 A→B→C；有一步是因为不需要而未调用</td>
+</tr>
+<tr>
+<td>观察与继续</td>
+<td>工具返回不足时，能看到它继续判断或换路，而不是直接给答案</td>
+</tr>
+<tr>
+<td>主动追问</td>
+<td>信息不足时提一个澄清问题（<strong>一次只问最关键的一个</strong>），补充后<strong>从原任务续跑</strong></td>
+</tr>
+<tr>
+<td>人工接管</td>
+<td>命中敏感清单的件<strong>真暂停</strong>：<code>request_human_review</code> 返回 <code>interrupted: true</code> 后不再产出答复或草稿；人工三选一（批准草稿／要求补充／终止自动处理）后才继续</td>
+</tr>
+<tr>
+<td>业务闭环</td>
+<td>最终形成一个明确状态：答复（带 <code>evidence[]</code>）／工单草稿（<code>submitted</code> 恒为 false）／人工接管</td>
+</tr>
+<tr>
+<td>展示质量</td>
+<td>非技术听众能看懂当前任务状态与证据来源（不用讲师解释也能读懂）</td>
+</tr>
+<tr>
+<td>MVP 边界诚实</td>
+<td>主动写明未覆盖的生产能力（真实话务量与工单量、方言口语变体、知识版本台账、真实系统对接）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h4">H.4 复跑命令与口径</h3>
+<pre><code>python 验收\evaluate.py --task all --impl stub     # 课上以离线桩基线做对照
+python 验收\evaluate.py --task all --impl src      # 各组自己的实现
+python 验收\evaluate.py --task all --impl api      # 在线模型（需 DEEPSEEK_API_KEY）
+</code></pre>
+<ul>
+<li>课后验收<strong>先跑 <code>src</code></strong>；结果异常时用 <code>stub</code> 做对照（判定"是你们的实现问题还是环境问题"）；</li>
+<li>需要在线路径时跑 <code>api</code>，<strong>只检查 <code>DEEPSEEK_API_KEY</code> 是否已设置，绝不回显其值</strong>；</li>
+<li><strong>样本外部给定、不得重造</strong>——改了样本，第二层结论同样作废。</li>
+</ul>
+<h3 id="h5">H.5 判定与反馈</h3>
+<ul>
+<li><strong>通过</strong>：七项里除"人工接管"与"业务闭环"外的项目允许一项标"⚠️ 部分成立"，但<strong>人工接管与业务闭环两项必须成立</strong>；</li>
+<li><strong>不通过</strong>：常见两种——第一种是"假暂停"（打印一句已转人工后仍把答复或草稿生成了）；第二种是动态选择实为固定流水线。<strong>这两种一律不合格，给一次整改机会</strong>；</li>
+<li><strong>结果回填</strong>：验收结论回填到《两层验收表》第二层与《交付决策单》"协同 Agent"栏，作为整体决策的依据之一。</li>
+</ul>
+<hr />
+<h2 id="_1">最终提醒</h2>
+<blockquote>
+<p>实验六以前叫"三个 demo 的总结"，现在升级为<strong>综合证据评审与决策层汇报</strong>。它考的从来不是"你做了几个功能"，而是：<br />
+<strong>你能否用证据回答——这个问题值不值得继续做，能不能交付，什么值得回注回平台。</strong></p>
+<p>这也正是 FDE 交付的最后一公里：<strong>把"做出来了"变成"该不该继续、客户能不能接管、什么能沉淀成平台资产"。</strong></p>
+</blockquote>
+    <div class="hb-pager"><a class="prev" href="lab5-cooperative-agent.html"><small><span class="dir">← 上一实验</span></small>实验五 · 综合系统 Agent（进阶）</a><a class="next" href="lab7-migration-review.html"><small><span class="dir">下一实验 →</span></small>实验七 · 复盘真实项目（可选）</a></div>
+  </main>
+  <aside class="hb-toc"><b>本章目录</b><div class="toc">
+<ul>
+<li><a href="#1">1. 实操概述</a><ul>
+<li><a href="#11-ai">1.1 为什么关键判断不能交给 AI</a></li>
+<li><a href="#12">1.2 本实操的两层验收结构（必须先读懂）</a></li>
+</ul>
+</li>
+<li><a href="#2">2. 知识背景（四个脚手架 + 核心隐喻）</a><ul>
+<li><a href="#21-agent">2.1 脚手架一：两层验收（三个场景 + 协同 Agent）</a></li>
+<li><a href="#22-fde">2.2 脚手架二：FDE 化生产差距四问</a></li>
+<li><a href="#23">2.3 脚手架三：能力回注四层（不止"代码"）</a></li>
+<li><a href="#24">2.4 脚手架四：交付决策四种状态</a></li>
+<li><a href="#25">2.5 核心隐喻：碎石路 → 铺装公路</a></li>
+</ul>
+</li>
+<li><a href="#3">3. 课前准备</a></li>
+<li><a href="#4-35">4. 评审一：两层验收——需求满足了吗？能上生产吗？（35 分钟）</a><ul>
+<li><a href="#step-110">Step 1：独立判断（10 分钟）</a></li>
+<li><a href="#step-212">Step 2：组内讨论（12 分钟）</a></li>
+<li><a href="#step-313">Step 3：达成共识（13 分钟）</a><ul>
+<li><a href="#1_1">输出物 1：两层验收表</a></li>
+<li><a href="#2fde">输出物 2：FDE 化生产差距表</a></li>
+</ul>
+</li>
+<li><a href="#41">4.1 讨论指引：评审一问题卡</a></li>
+</ul>
+</li>
+<li><a href="#5-30">5. 评审二：能力回注——碎石路能铺成哪些公路？（30 分钟）</a><ul>
+<li><a href="#step-1-15">Step 1：识别 + 抽象（15 分钟）</a></li>
+<li><a href="#step-210">Step 2：四层回注（10 分钟）</a></li>
+<li><a href="#51">5.1 讨论指引：评审二问题卡</a></li>
+</ul>
+</li>
+<li><a href="#6-go-conditional-go-continue-pilot-no-go15">6. 评审三：交付决策——Go / Conditional Go / Continue Pilot / No-Go（15 分钟）</a><ul>
+<li><a href="#61">6.1 逐项交付决策</a></li>
+</ul>
+</li>
+<li><a href="#7-25">7. 决策层汇报与质询（25 分钟）</a><ul>
+<li><a href="#71-10">7.1 汇报结构（10 段，金字塔提升版）</a></li>
+<li><a href="#72-agent">7.2 协同 Agent 现场演示（至少两条轨迹）</a></li>
+<li><a href="#73">7.3 汇报语言要求</a></li>
+<li><a href="#74">7.4 讨论指引：评审四问题卡</a></li>
+</ul>
+</li>
+<li><a href="#8-dod">8. 完成标准（DoD）</a></li>
+<li><a href="#9">9. 交付物清单</a></li>
+<li><a href="#a">附录 A：能力回注四步法模板</a></li>
+<li><a href="#b">附录 B：交付决策模板</a></li>
+<li><a href="#c">附录 C：决策层汇报结构模板</a></li>
+<li><a href="#dfde">附录 D：FDE 灵魂追问汇总</a></li>
+<li><a href="#e">附录 E：讲师引导要点</a></li>
+<li><a href="#f110">附录 F：110 分钟分钟级时间表</a></li>
+<li><a href="#g">附录 G：常见错误一句话点破（自查用）</a></li>
+<li><a href="#h">附录 H：第二层课后验收的组织方式（必读）</a><ul>
+<li><a href="#h1">H.1 谁来组织、什么时间</a></li>
+<li><a href="#h2">H.2 提交物（四项，缺一项不予验收）</a></li>
+<li><a href="#h3">H.3 逐项判定标准（照此打勾）</a></li>
+<li><a href="#h4">H.4 复跑命令与口径</a></li>
+<li><a href="#h5">H.5 判定与反馈</a></li>
+</ul>
+</li>
+<li><a href="#_1">最终提醒</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<script>
+(function(){
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function addCopyButtons(){
+    document.querySelectorAll('.hb-main pre, .ov-intro pre').forEach(function(pre){
+      if (pre.querySelector('.code-copy')) return;
+      var code = pre.querySelector('code');
+      if (!code) return;
+      if (code.className && code.className.indexOf('language-mermaid') !== -1) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'code-copy'; btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.addEventListener('click', function(){
+        var text = code.innerText;
+        function done(){ btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', addCopyButtons); } else { addCopyButtons(); }
+})();
+</script>
+</body></html>

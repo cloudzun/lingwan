@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验一 · 需求调研与解决方案框架 · 角色定位游戏</title>
+<style>
+  :root{
+    --navy:#1B3A5C; --navy2:#25507f; --gold:#D4A843; --gold2:#e8c368;
+    --echo:#2E6BA8; --delta:#E0603A; --base:#7B5EA7;
+    --bg:#0e1b2a; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7c8f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    background:linear-gradient(160deg,#0e1b2a 0%,#1B3A5C 60%,#25507f 100%);
+    color:var(--ink);min-height:100vh;padding:24px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .wrap{width:100%;max-width:1080px}
+  .card{
+    background:var(--card);border-radius:18px;padding:38px 40px;
+    box-shadow:0 18px 60px rgba(0,0,0,.45);
+  }
+  .stage{display:none} .stage.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--gold)}
+  .brand span{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:13px}
+  h1{color:var(--navy);font-size:28px;margin:8px 0 6px;line-height:1.35}
+  h2{color:var(--navy);font-size:22px;margin:0 0 18px}
+  .sub{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:26px}
+
+  .roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:28px}
+  .role{border-radius:14px;padding:20px 16px;color:#fff;cursor:pointer;
+    transition:transform .25s, box-shadow .25s;min-height:172px;position:relative;overflow:hidden}
+  .role:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+  .role.echo{background:linear-gradient(150deg,#2E6BA8,#1d4d80)}
+  .role.delta{background:linear-gradient(150deg,#E0603A,#b8431f)}
+  .role.base{background:linear-gradient(150deg,#7B5EA7,#573f80)}
+  .role .tag{font-size:12px;opacity:.85;letter-spacing:1px}
+  .role .nm{font-size:20px;font-weight:800;margin:6px 0 10px}
+  .role .desc{font-size:13px;line-height:1.6;opacity:.95}
+  .role .flip{position:absolute;inset:0;background:rgba(0,0,0,.82);padding:18px 16px;
+    display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .25s;font-size:13px;line-height:1.7}
+  .role:hover .flip{opacity:1}
+  .role .flip b{color:var(--gold2)}
+
+  .btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2c05;
+    border:none;padding:15px 30px;border-radius:12px;font-size:16px;font-weight:800;
+    cursor:pointer;transition:filter .2s, transform .1s;letter-spacing:1px}
+  .btn:hover{filter:brightness(1.06)} .btn:active{transform:scale(.98)}
+  .btn.ghost{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+  .center{text-align:center}
+  .foot{margin-top:26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+
+  .prog{height:7px;background:#e6edf3;border-radius:6px;margin-bottom:26px;overflow:hidden}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--echo),var(--delta));width:0;transition:width .4s}
+  .qmeta{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:6px}
+  .qtext{color:var(--navy);font-size:19px;line-height:1.55;margin-bottom:8px;font-weight:700}
+  .qscene{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:22px;
+    background:#f4f8fb;border-left:4px solid var(--echo);padding:12px 14px;border-radius:0 8px 8px 0}
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{border:2px solid #e1e9f0;border-radius:12px;padding:16px 18px;cursor:pointer;
+    font-size:15px;line-height:1.55;color:var(--ink);transition:all .18s;background:#fff}
+  .opt:hover{border-color:var(--gold);background:#fffdf6;transform:translateX(4px)}
+
+  .spectrum{margin:30px 0 10px}
+  .spec-labels{display:flex;justify-content:space-between;font-weight:800;font-size:15px;margin-bottom:8px}
+  .spec-labels .e{color:var(--echo)} .spec-labels .d{color:var(--delta)}
+  .spec-bar{height:26px;border-radius:14px;background:linear-gradient(90deg,var(--echo),#c9d3dd 45%,#c9d3dd 55%,var(--delta));position:relative}
+  .spec-pin{position:absolute;top:-8px;width:4px;height:42px;background:var(--navy);border-radius:3px;transform:translateX(-50%);transition:left 1s cubic-bezier(.2,.8,.2,1)}
+  .spec-pin::after{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+    border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid var(--navy)}
+  .pct{display:flex;justify-content:space-between;margin-top:14px;font-size:14px;color:var(--muted)}
+
+  .result-card{border-radius:14px;padding:24px;color:#fff;margin:24px 0 6px}
+  .result-card.echo{background:linear-gradient(150deg,#2E6BA8,#1d4d80)}
+  .result-card.delta{background:linear-gradient(150deg,#E0603A,#b8431f)}
+  .result-card .rt{font-size:13px;opacity:.85;letter-spacing:2px}
+  .result-card .rn{font-size:26px;font-weight:800;margin:4px 0 12px}
+  .result-card .rd{font-size:14.5px;line-height:1.75;opacity:.97}
+  .advice{background:#fff8e8;border:1px solid #f0dca8;border-radius:12px;padding:18px 20px;margin-top:18px}
+  .advice h3{color:var(--navy);font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .advice p{color:#5a4a20;font-size:14px;line-height:1.7}
+  .directions{background:#f4f8fb;border:1px solid #d3e3f0;border-radius:12px;padding:18px 20px;margin-top:16px}
+  .directions h3{color:var(--navy);font-size:15px;margin-bottom:12px}
+  .directions ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .directions li{position:relative;padding-left:26px;font-size:14px;line-height:1.6;color:var(--ink)}
+  .directions li::before{content:'';position:absolute;left:6px;top:7px;width:8px;height:8px;border-radius:50%}
+  .directions.echo li::before{background:var(--echo)}
+  .directions.delta li::before{background:var(--delta)}
+  .directions li b{color:var(--navy)}
+  .tip{color:var(--muted);font-size:13px;line-height:1.7;margin-top:20px;text-align:center;font-style:italic}
+
+  /* ===== 客户档案页 ===== */
+  .dossier-hero{background:linear-gradient(150deg,#1B3A5C,#25507f);border-radius:14px;padding:22px;color:#fff;margin-bottom:8px}
+  .dh-row{display:flex;gap:12px;font-size:14px;line-height:1.6;margin-bottom:12px}
+  .dh-k{flex:0 0 64px;color:var(--gold2);font-weight:700}
+  .dh-v{flex:1;opacity:.95}
+  .dh-quote{background:rgba(255,255,255,.12);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 16px;font-size:15px;line-height:1.7;font-style:italic}
+  .dh-tag{margin-top:12px;font-size:13px;color:var(--gold2)}
+  .sec-title{color:var(--navy);font-size:16px;margin:26px 0 14px;padding-bottom:8px;border-bottom:2px solid #e6edf3}
+  .people{display:flex;flex-direction:column;gap:12px}
+  .person{border:1px solid #e1e9f0;border-radius:12px;overflow:hidden;transition:box-shadow .2s}
+  .person:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .p-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;background:#fff}
+  .p-ava{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 42px}
+  .p-meta{flex:1}
+  .p-name{font-weight:800;color:var(--navy);font-size:15px}
+  .p-role{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .p-layer{font-size:11px;padding:3px 9px;border-radius:20px;color:#fff;font-weight:700;white-space:nowrap}
+  .p-arrow{color:var(--muted);font-size:13px;transition:transform .25s;flex:0 0 auto}
+  .person.open .p-arrow{transform:rotate(90deg)}
+  .p-body{max-height:0;overflow:hidden;transition:max-height .35s ease;background:#f9fbfd}
+  .person.open .p-body{max-height:700px}
+  .p-inner{padding:4px 16px 16px 70px}
+  .p-quote{font-size:14px;line-height:1.75;color:#3a4a5a;border-left:3px solid #cdd9e5;padding:6px 0 6px 14px;margin-top:10px}
+  .p-quote.warn{border-left-color:var(--delta);background:#fff6f3;border-radius:0 6px 6px 0;padding-right:12px}
+  .clue-wrap{overflow-x:auto}
+  .clue{width:100%;border-collapse:collapse;font-size:13.5px}
+  .clue th{background:#1B3A5C;color:#fff;padding:10px 12px;text-align:left;font-weight:600}
+  .clue td{padding:10px 12px;border-bottom:1px solid #eef2f6;line-height:1.55;vertical-align:top}
+  .clue tr:hover td{background:#f9fbfd}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+  .badge.red{background:#fdecea;color:#c0392b}
+  .badge.amber{background:#fef6e7;color:#b7791f}
+  .badge.green{background:#eafaf1;color:#1e8449}
+  .mission{background:#fff8e8;border:1px solid #f0dca8;border-radius:12px;padding:18px 20px;margin-top:24px}
+  .mission h3{color:var(--navy);font-size:15px;margin-bottom:10px}
+  .mission ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .mission li{position:relative;padding-left:22px;font-size:14px;line-height:1.65;color:#5a4a20}
+  .mission li::before{content:'▹';position:absolute;left:4px;color:var(--gold);font-weight:800}
+  .mission li b{color:var(--navy)}
+
+  /* ===== 四个产出页通用 ===== */
+  .steps{display:flex;gap:8px;margin:6px 0 20px;flex-wrap:wrap}
+  .st{font-size:12px;padding:5px 12px;border-radius:20px;background:#eef2f6;color:var(--muted);font-weight:600;cursor:pointer;transition:transform .12s}
+  .st:hover{transform:translateY(-2px)}
+  .st.active{background:var(--navy);color:#fff}
+  .st.done{background:#dbeee0;color:#1e8449}
+  .st.done::before{content:'✓ '}
+  .hint{background:#f4f8fb;border:1px solid #d3e3f0;border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13.5px}
+  .hint>b{color:var(--navy)}
+  .hint ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:6px}
+  .hint li{position:relative;padding-left:18px;line-height:1.6;color:#4a5a6a}
+  .hint li::before{content:'·';position:absolute;left:6px;color:var(--gold);font-weight:900}
+  .hint li b{color:var(--navy)}
+
+  /* 风险墙 */
+  .riskgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .rq{border-radius:12px;padding:14px;min-height:150px;display:flex;flex-direction:column}
+  .rq.data{background:#eef5fb;border:1px solid #cfe1f2}
+  .rq.biz{background:#fdf0ec;border:1px solid #f5d3c6}
+  .rq.comp{background:#f3eefb;border:1px solid #ddcef2}
+  .rq.roi{background:#fef8e9;border:1px solid #f2e2b0}
+  .rq h4{color:var(--navy);font-size:15px}
+  .rq-sub{font-size:12px;color:var(--muted);margin:2px 0 10px}
+  .notes{flex:1;display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  .note{background:#fff;border-radius:7px;padding:7px 10px;font-size:13px;line-height:1.5;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;gap:8px}
+  .note span{cursor:pointer;color:#bbb;font-weight:700}
+  .note span:hover{color:var(--delta)}
+  .noteadd{display:flex;gap:6px}
+  .noteadd input{flex:1;border:1px solid #d5dfe8;border-radius:7px;padding:7px 9px;font-size:12.5px;font-family:inherit}
+  .noteadd input:focus{outline:none;border-color:var(--gold)}
+  .noteadd button{border:none;background:var(--navy);color:#fff;border-radius:7px;width:32px;font-size:16px;cursor:pointer}
+
+  /* 干系人矩阵 */
+  .sh-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px;background:#f4f8fb;border-radius:10px}
+  .sh-chip{padding:7px 13px;border-radius:20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s}
+  .sh-chip:hover{transform:translateY(-2px)}
+  .sh-chip.placed{opacity:.35}
+  .sh-chip.sel{outline:3px solid var(--gold);outline-offset:2px}
+  .pmatrix{display:grid;grid-template-columns:22px 1fr 1fr;grid-template-rows:1fr 1fr 22px;gap:8px}
+  .axis-y{grid-row:1/3;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+  .axis-x{grid-column:2/4;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+  .quad{border:2px dashed #cdd9e5;border-radius:10px;padding:10px;min-height:118px;display:flex;flex-direction:column}
+  .q-label{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px}
+  .q-label span{display:block;font-weight:500;color:var(--muted);font-size:11px}
+  .drop{flex:1;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;min-height:34px;cursor:pointer}
+  .drop:empty::before{content:'点这里放人';color:#c3cfda;font-size:12px}
+  .q-strat{border:none;border-top:1px solid #e6edf3;padding:6px 2px 0;font-size:12px;font-family:inherit;margin-top:6px}
+  .q-strat:focus{outline:none}
+
+  /* 选型金字塔参考卡 */
+  .pyramid-card{border:1px solid #e1e9f0;border-radius:10px;margin-bottom:16px;overflow:hidden}
+  .pyramid-head{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;cursor:pointer;background:#f9fbfd;font-size:14px;font-weight:700;color:var(--navy)}
+  .pyramid-arrow{color:var(--muted);font-size:12px;transition:transform .25s}
+  .pyramid-card.open .pyramid-arrow{transform:rotate(90deg)}
+  .pyramid-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .pyramid-card.open .pyramid-body{max-height:400px}
+  .pyramid{padding:16px 15px 4px;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .pyramid>div{color:#fff;border-radius:6px;padding:8px 14px;text-align:center;line-height:1.35}
+  .pyramid>div b{font-size:14px} .pyramid>div i{display:block;font-size:11.5px;opacity:.9;font-style:normal;margin-top:2px}
+  .pyramid .p-l4{width:46%;background:#E0603A}
+  .pyramid .p-l3{width:62%;background:#c77b3a}
+  .pyramid .p-l2{width:78%;background:#3a8a7d}
+  .pyramid .p-l1{width:94%;background:#2E6BA8}
+  .pyramid-note{font-size:12.5px;color:#4a5a6a;line-height:1.6;padding:8px 15px 15px}
+  .pyramid-note b{color:var(--navy)}
+
+  /* 方案框架三卡 */
+  .scenes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .scenes>.scene:last-child{grid-column:1/-1}
+  .scene{border:1px solid #e1e9f0;border-radius:12px;padding:16px;background:#fff}
+  .scene-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .scene-n{width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 30px}
+  .scene-t{font-weight:800;color:var(--navy);font-size:15px}
+  .fields{display:flex;flex-direction:column;gap:9px}
+  .field{display:flex;flex-direction:column;gap:3px}
+  .field label{font-size:12px;color:var(--muted);font-weight:600}
+  .field input{border:1px solid #d5dfe8;border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit}
+  .field input:focus{outline:none;border-color:var(--gold)}
+  .field.tech input{background:#fffdf6}
+  .prio-note{font-size:12px;color:var(--muted);margin-top:6px;font-style:italic}
+
+  /* 汇报话术 */
+  .pitch{width:100%;min-height:130px;border:2px solid #d5dfe8;border-radius:12px;padding:14px;font-size:14.5px;line-height:1.7;font-family:inherit;resize:vertical}
+  .pitch:focus{outline:none;border-color:var(--gold)}
+  .pitch-bar{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 0;min-height:24px}
+  .wc{font-size:13px;color:var(--muted);font-weight:700}
+  .wc.over{color:var(--delta)}
+  .banned{font-size:12.5px;color:var(--delta);font-weight:700}
+  .selfcheck{display:flex;flex-direction:column;gap:8px;margin-top:16px;background:#f4f8fb;border-radius:10px;padding:14px 16px}
+  .selfcheck label{font-size:13.5px;color:#4a5a6a;display:flex;align-items:center;gap:9px;cursor:pointer;line-height:1.5}
+  .selfcheck input{width:16px;height:16px;flex:0 0 16px}
+  .done-banner{margin-top:20px;background:linear-gradient(135deg,#eafaf1,#d5f0e0);border:1px solid #a8ddbf;border-radius:12px;padding:16px 18px;font-size:14px;line-height:1.7;color:#1e6b42}
+
+  /* ===== 客户档案悬浮抽屉 ===== */
+  .dossier-fab{position:fixed;right:22px;bottom:22px;z-index:60;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2c05;border:none;border-radius:30px;padding:13px 20px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none;align-items:center;gap:7px;transition:transform .15s}
+  .dossier-fab:hover{transform:translateY(-3px)}
+  .dossier-fab.show{display:flex}
+  .export-fab{position:fixed;right:22px;bottom:74px;z-index:60;background:#fff;color:var(--navy);border:2px solid var(--navy);border-radius:30px;padding:11px 18px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);display:none;align-items:center;gap:6px;transition:transform .15s}
+  .export-fab:hover{transform:translateY(-3px)}
+  .export-fab.show{display:flex}
+  .drawer-mask{position:fixed;inset:0;background:rgba(10,20,32,.5);z-index:70;opacity:0;pointer-events:none;transition:opacity .3s}
+  .drawer-mask.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:min(440px,90vw);background:#fff;z-index:80;box-shadow:-10px 0 40px rgba(0,0,0,.3);transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:var(--navy);color:#fff;font-size:16px;font-weight:800;flex:0 0 auto}
+  .drawer-x{background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;font-size:15px;cursor:pointer}
+  .drawer-body{padding:18px 20px;overflow-y:auto;flex:1}
+  .drawer-sec{color:var(--navy);font-size:14px;margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid #e6edf3}
+
+  /* ===== 页脚导航 ===== */
+  .pagenav{margin-top:28px;padding-top:16px;border-top:1px solid #e6edf3;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px}
+  .pagenav a{color:var(--navy);text-decoration:none;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:1px}
+  .pagenav a:hover{color:var(--gold)}
+  .pagenav .pn-mid{color:var(--muted);font-weight:500}
+
+  @media(max-width:640px){.roles{grid-template-columns:1fr}.card{padding:28px 22px}.p-inner{padding-left:16px}.riskgrid{grid-template-columns:1fr}.scenes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+
+  <!-- ===== STAGE 0: 认识战队 ===== -->
+  <div class="stage on" id="s0">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1>实验一 · 需求调研与解决方案框架 · 角色定位游戏</h1>
+    <p class="sub">
+      你所在的 FDE 团队被派驻到<b>岭湾电力有限公司</b>，客户是<b>岭湾电力客户服务平台</b>（课程内简称"岭湾项目"）。<br>
+      一支真正的 FDE 部署团队不是单打独斗，而是像特种部队一样分工协作。在撸起袖子之前，先认识你的三个战友——然后花 3 分钟，找到你自己的位置。
+    </p>
+    <div class="roles">
+      <div class="role echo">
+        <div class="tag">STRATEGIST</div>
+        <div class="nm">Echo</div>
+        <div class="desc">部署策略师<br>业务专家 · 产品侦探</div>
+        <div class="flip">挖掘客户<b>真正的高价值痛点</b>，处理客户方的人际与组织博弈。<b>不写代码</b>，但能看穿客户嘴上说的需求和真正的痛点之间的差距。</div>
+      </div>
+      <div class="role delta">
+        <div class="tag">ENGINEER</div>
+        <div class="nm">Delta</div>
+        <div class="desc">FDE / FDSE<br>执行 · 工程落地</div>
+        <div class="flip">对接客户系统、<b>写代码、构建数据流</b>。享有极高的战术自主权，是真正"手上沾泥"把方案变成可运行系统的人。</div>
+      </div>
+      <div class="role base">
+        <div class="tag">INFRA</div>
+        <div class="nm">Baseline</div>
+        <div class="desc">基础设施工程师<br>地基 · 兜底</div>
+        <div class="flip">负责<b>安全合规、内网环境、部署运维</b>这些脏活累活，让 Echo 和 Delta 能专注业务与施工。（本课程由讲师环境兜底）</div>
+      </div>
+    </div>
+    <p class="tip">👆 把鼠标放到角色卡上，看看每个战位到底干什么</p>
+    <div class="center" style="margin-top:22px">
+      <button class="btn" onclick="go('s1')">开始定位测评 →</button>
+      <button class="btn ghost" style="margin-left:10px" onclick="go('s3')">跳过测评 · 直接进入客户档案</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 1: 情景测评 ===== -->
+  <div class="stage" id="s1">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <div class="prog"><i id="bar"></i></div>
+    <div class="qmeta" id="qmeta">情景 1 / 8</div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qscene" id="qscene"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <!-- ===== STAGE 2: 你的定位 ===== -->
+  <div class="stage" id="s2">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h2 id="verdict"></h2>
+    <div class="spectrum">
+      <div class="spec-labels"><span class="e">◀ Echo 策略型</span><span class="d">Delta 工程型 ▶</span></div>
+      <div class="spec-bar"><div class="spec-pin" id="pin" style="left:50%"></div></div>
+      <div class="pct"><span id="pe">Echo 50%</span><span id="pd">Delta 50%</span></div>
+    </div>
+    <div class="result-card" id="rcard">
+      <div class="rt" id="rtag"></div>
+      <div class="rn" id="rname"></div>
+      <div class="rd" id="rdesc"></div>
+    </div>
+    <div class="advice">
+      <h3>🤝 组内分工建议</h3>
+      <p id="advice"></p>
+    </div>
+    <div class="directions" id="directions">
+      <h3 id="dirTitle">🧭 你该从这些方向分析客户需求</h3>
+      <ul id="dirList"></ul>
+    </div>
+    <p class="tip">这只是你的<b>起点定位</b>。两天里 Echo 和 Delta 两种能力你都要练——FDE 是横线要宽、竖线要深的 T 型人才。</p>
+    <div class="foot">
+      <button class="btn ghost" onclick="restart()">↻ 重测</button>
+      <button class="btn" onclick="go('s3')">进入实验一 · 打开客户档案 →</button>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 3: 客户档案（交互式需求文档） ===== -->
+  <div class="stage" id="s3">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1 style="font-size:24px">岭湾电力客户服务平台 · AI 智能化项目</h1>
+    <p class="sub" style="margin-bottom:18px">
+      这是客户交给你的"原始需求"——一半是会议纪要、一半是各方吐槽，信息散、口径乱、还藏着没说破的风险。<br>
+      <b>你的任务不是照单全收，而是像侦探一样把真需求挖出来。</b>点开每个人的档案，读他们的原话。
+    </p>
+
+    <!-- 项目卡 -->
+    <div class="dossier-hero">
+      <div class="dh-row"><span class="dh-k">项目来源</span><span class="dh-v">客户服务中心周主任在公司经营分析会上被点名"兄弟单位都上了 AI，我们日均这么多话务和工单还在靠坐席一单一单人工硬扛"，会后把承建方叫过来要方案</span></div>
+      <div class="dh-quote">"我们岭湾电力客户服务平台，热线和工单系统每天这么大的量，坐席派单还老派错；客户问电价政策、问报装流程，坐席答不准；简单的问题和复杂的问题混着走同一套流程，效率低得很。你们能不能用 AI 把这一整套都智能化了？我下个月要去省公司汇报，得有个说法。"</div>
+      <div class="dh-tag">☝ 这就是你拿到的全部"正式需求"，剩下的都靠你走访挖</div>
+    </div>
+
+    <!-- 干系人档案 -->
+    <h3 class="sec-title">🕵️ 走访记录 · 点开听每个人怎么说</h3>
+    <div class="people" id="people"></div>
+
+    <!-- 线索表 -->
+    <h3 class="sec-title">📋 零散现状数据 · 注意"可靠度"一栏</h3>
+    <div class="clue-wrap">
+      <table class="clue">
+        <thead><tr><th>你听到的说法</th><th>来源</th><th>可靠度</th></tr></thead>
+        <tbody id="clueBody"></tbody>
+      </table>
+    </div>
+
+    <!-- 任务提示 -->
+    <div class="mission">
+      <h3>🎯 给 Echo 的任务</h3>
+      <ul>
+        <li>"把这一整套都智能化"不是一个需求，是<b>三四个需求裹在一起</b>（派单分派、政策问答、简单/复杂分流、投诉举报受理）——先拆开。</li>
+        <li>客户说的每个"痛点"，背后都可能站着一个<b>会让项目死掉的风险</b>：数据、业务、合规、ROI 四类，材料里都埋了线索。</li>
+        <li>你是 Echo，<b>不写代码</b>。你要产出一份让 Delta 能照着施工的<b>解决方案框架</b>：拆成哪几个子场景？各用什么技术？先做哪个？</li>
+        <li>最后用<b>周主任听得懂的话</b>把方案讲给他——他要能拿去省公司汇报。</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s2')">← 回定位结果</button>
+      <button class="btn ghost" onclick="toggleAllPeople()">展开全部原话</button>
+      <button class="btn" onclick="go('s4')">开始动手调研 →</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 4: 产出 1 风险墙 ===== -->
+  <div class="stage" id="s4">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1 style="font-size:23px">🧱 风险墙：把藏起来的风险挖出来</h1>
+    <div class="steps"><span class="st active" onclick="go('s4')">1. 风险墙</span><span class="st" onclick="go('s5')">2. 干系人</span><span class="st" onclick="go('s6')">3. 方案框架</span><span class="st" onclick="go('s7')">4. 汇报</span></div>
+    <div class="hint">
+      <b>💡 操作提示</b>
+      <ul>
+        <li>对照<b>四类失败模式</b>，把你从客户档案里读到的风险线索，填进对应格子。</li>
+        <li>四格<b>都别落空</b>——每一类至少挖到 1 条。想想每格的风险藏在<b>谁的原话</b>里。</li>
+        <li>最容易被漏掉的是"业务不配合"和"ROI 说不清"——别只盯技术风险。</li>
+      </ul>
+    </div>
+    <div class="riskgrid">
+      <div class="rq data"><h4>📊 数据不可用</h4><div class="rq-sub">数据拿不齐、拿不干净？</div><div class="notes" id="rq-data"></div><div class="noteadd"><input placeholder="写一条风险线索…" onkeydown="if(event.key==='Enter')addNote('data',this)"><button onclick="addNote('data',this.previousElementSibling)">+</button></div></div>
+      <div class="rq biz"><h4>🙅 业务不配合</h4><div class="rq-sub">谁会抵触用它？</div><div class="notes" id="rq-biz"></div><div class="noteadd"><input placeholder="写一条风险线索…" onkeydown="if(event.key==='Enter')addNote('biz',this)"><button onclick="addNote('biz',this.previousElementSibling)">+</button></div></div>
+      <div class="rq comp"><h4>⚖️ 合规卡住</h4><div class="rq-sub">哪条红线不能碰？</div><div class="notes" id="rq-comp"></div><div class="noteadd"><input placeholder="写一条风险线索…" onkeydown="if(event.key==='Enter')addNote('comp',this)"><button onclick="addNote('comp',this.previousElementSibling)">+</button></div></div>
+      <div class="rq roi"><h4>💰 ROI 说不清</h4><div class="rq-sub">投入产出算得清吗？</div><div class="notes" id="rq-roi"></div><div class="noteadd"><input placeholder="写一条风险线索…" onkeydown="if(event.key==='Enter')addNote('roi',this)"><button onclick="addNote('roi',this.previousElementSibling)">+</button></div></div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s3')">← 客户档案</button>
+      <button class="btn" onclick="go('s5')">下一步：干系人图 →</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 5: 产出 2 干系人图 ===== -->
+  <div class="stage" id="s5">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1 style="font-size:23px">🗺️ 干系人图：谁说了算、谁会挡路</h1>
+    <div class="steps"><span class="st done" onclick="go('s4')">1. 风险墙</span><span class="st active" onclick="go('s5')">2. 干系人</span><span class="st" onclick="go('s6')">3. 方案框架</span><span class="st" onclick="go('s7')">4. 汇报</span></div>
+    <div class="hint">
+      <b>💡 操作提示</b>
+      <ul>
+        <li>点下方一个干系人，再点一个象限，把他<b>放进去</b>；点已放置的人可移回。</li>
+        <li>想想谁是"<b>平时不管你、出事定生死</b>"的那种人——他该放哪格？</li>
+        <li>给每格写一句<b>沟通策略</b>：对这类人，你该说什么话？</li>
+      </ul>
+    </div>
+    <div class="sh-pool" id="sh-pool"></div>
+    <div class="pmatrix">
+      <div class="axis-y">权力 高 ↑</div>
+      <div class="quad"><div class="q-label">高权力 · 高兴趣<span>重点管理</span></div><div class="drop" id="q-hh" onclick="dropTo('hh')"></div><input class="q-strat" placeholder="沟通策略…"></div>
+      <div class="quad"><div class="q-label">高权力 · 低兴趣<span>重点盯防</span></div><div class="drop" id="q-hl" onclick="dropTo('hl')"></div><input class="q-strat" placeholder="沟通策略…"></div>
+      <div class="quad"><div class="q-label">低权力 · 高兴趣<span>争取支持</span></div><div class="drop" id="q-lh" onclick="dropTo('lh')"></div><input class="q-strat" placeholder="沟通策略…"></div>
+      <div class="quad"><div class="q-label">低权力 · 低兴趣<span>维持知情</span></div><div class="drop" id="q-ll" onclick="dropTo('ll')"></div><input class="q-strat" placeholder="沟通策略…"></div>
+      <div class="axis-x">兴趣 低 ← → 高</div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s4')">← 风险墙</button>
+      <button class="btn" onclick="go('s6')">下一步：方案框架 →</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 6: 产出 3 解决方案框架 ===== -->
+  <div class="stage" id="s6">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1 style="font-size:23px">🏗️ 解决方案框架：给 Delta 的施工图</h1>
+    <div class="steps"><span class="st done" onclick="go('s4')">1. 风险墙</span><span class="st done" onclick="go('s5')">2. 干系人</span><span class="st active" onclick="go('s6')">3. 方案框架</span><span class="st" onclick="go('s7')">4. 汇报</span></div>
+    <div class="hint">
+      <b>💡 操作提示</b>
+      <ul>
+        <li>把"整套智能化"<b>拆成三个子场景</b>，每个想清：解决什么、谁用、<b>成功怎么衡量</b>、用什么技术。</li>
+        <li>选型遵循"<b>从最简单开始</b>"——逼自己回答"为什么不用更复杂的那一层"。</li>
+        <li>定优先级：先做<b>见效快、风险低、数据齐</b>的那个（快赢）。</li>
+      </ul>
+    </div>
+    <div class="pyramid-card">
+      <div class="pyramid-head" onclick="this.parentNode.classList.toggle('open')">
+        <span>🔺 选型参考：LLM 四层能力金字塔</span>
+        <span class="pyramid-arrow">▶</span>
+      </div>
+      <div class="pyramid-body">
+        <div class="pyramid">
+          <div class=" p-l4"><b>Agent</b><i>自主决策 + 调工具 + 多步流转</i></div>
+          <div class="p-l3"><b>微调</b><i>让模型"学会"领域知识（需大量数据）</i></div>
+          <div class="p-l2"><b>RAG</b><i>基于文档精确回答 + 可溯源</i></div>
+          <div class="p-l1"><b>提示词 / 分类</b><i>一次调用能解决的，就用最简单的</i></div>
+        </div>
+        <p class="pyramid-note">⬇️ <b>从最简单开始</b>：能用提示词就不上 RAG，能用 RAG 就不微调，能不上 Agent 就别上。每个场景都问自己一句——<b>"为什么不用更下面那一层？"</b></p>
+      </div>
+    </div>
+    <div class="scenes" id="scenes"></div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s5')">← 干系人图</button>
+      <button class="btn" onclick="go('s7')">下一步：汇报话术 →</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+  <!-- ===== STAGE 7: 产出 4 汇报话术 ===== -->
+  <div class="stage" id="s7">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验一</span></div>
+    <h1 style="font-size:23px">🎤 汇报话术：讲给周主任听</h1>
+    <div class="steps"><span class="st done" onclick="go('s4')">1. 风险墙</span><span class="st done" onclick="go('s5')">2. 干系人</span><span class="st done" onclick="go('s6')">3. 方案框架</span><span class="st active" onclick="go('s7')">4. 汇报</span></div>
+    <div class="hint">
+      <b>💡 操作提示</b>
+      <ul>
+        <li><b>150 字以内、全业务语言</b>——周主任没有技术背景，还要拿去省公司汇报。</li>
+        <li>必须说清：<b>分几步做、先做哪个、数据不出内网</b>。</li>
+        <li>禁用技术词（下方会实时标红）：算法、模型、RAG、Agent、embedding、向量、API、微调。</li>
+      </ul>
+    </div>
+    <textarea id="pitch" class="pitch" placeholder="周主任，您说的「整套智能化」，我们拆成了……" oninput="checkPitch()"></textarea>
+    <div class="pitch-bar">
+      <span id="wc" class="wc">0 字</span>
+      <span id="banned" class="banned"></span>
+    </div>
+    <div class="selfcheck">
+      <label><input type="checkbox"> 周主任没有技术背景，这段话他能听懂吗？</label>
+      <label><input type="checkbox"> 说清了"整套智能化"要分几步、先做哪个吗？</label>
+      <label><input type="checkbox"> 提到了数据不出内网（他去省公司会被问）吗？</label>
+      <label><input type="checkbox"> 让他知道"先看到什么、大概多久"了吗？</label>
+    </div>
+    <div class="done-banner">🎉 四个产出都完成了！把风险墙、干系人图、方案框架、汇报话术整理进《解决方案框架》——这就是你作为 Delta，后面几个子场景的施工图，也是实验五汇报的底稿。</div>
+    <div class="center" style="margin-top:16px">
+      <button class="btn" onclick="exportFramework()">📥 导出解决方案框架（.md）</button>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s6')">← 方案框架</button>
+      <button class="btn ghost" onclick="go('s0')">完成 · 回到开头</button>
+    </div>
+    <div class="pagenav">
+      <a href="../index.html">← 返回站点</a>
+      <span class="pn-mid">实验一 · 需求调研与解决方案框架</span>
+      <a href="lab2-prompt-wizard.html">下一页：实验二 · 诉求智能分类系统 →</a>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== 客户档案 悬浮抽屉（产出页可随时唤出） ===== -->
+<button class="dossier-fab" id="dossierFab" onclick="toggleDrawer()">📁 <span>客户档案</span></button>
+<button class="export-fab" id="exportFab" onclick="exportFramework()">📥 <span>导出成果</span></button>
+<div class="drawer-mask" id="drawerMask" onclick="toggleDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span>🕵️ 客户调查档案</span>
+    <button class="drawer-x" onclick="toggleDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="dh-quote" style="color:#eaf1f8;background:#25507f;margin-bottom:16px">"你们能不能用 AI 把这一整套都智能化了？我下个月要去省公司汇报，得有个说法。" —— 周主任</div>
+    <h4 class="drawer-sec">走访原话</h4>
+    <div class="people" id="people2"></div>
+    <h4 class="drawer-sec">现状数据 · 看可靠度</h4>
+    <div class="clue-wrap"><table class="clue"><thead><tr><th>说法</th><th>可靠度</th></tr></thead><tbody id="clueBody2"></tbody></table></div>
+  </div>
+</aside>
+
+<script>
+
+const QUESTIONS = [
+  {
+    q:"客户说：'你们能不能用 AI 把这一整套都智能化了？' 你的第一反应是——",
+    scene:"周主任在需求沟通会上抛出这句话，全场看着你。",
+    opts:[
+      {t:"先别急着答，问他：'现在最头疼、最想先解决的是哪一个环节？'",side:"E"},
+      {t:"心里已经在盘算：派单用分类、问答用 RAG、分流用 Agent，技术栈怎么搭。",side:"D"}
+    ]
+  },
+  {
+    q:"拿到一份又脏又乱的需求材料，你更想先做的是——",
+    scene:"材料里一半是会议纪要、一半是各方吐槽，数据口径不一、需求前后矛盾。",
+    opts:[
+      {t:"梳理出'谁关心什么、谁会反对'，先把干系人和真实痛点理清楚。",side:"E"},
+      {t:"筛出能落地的技术点，评估数据够不够、接口通不通，先搭个原型试试。",side:"D"}
+    ]
+  },
+  {
+    q:"一个功能，客户觉得'很简单'，你判断它其实做不了。你会——",
+    scene:"周主任期待值很高，但你知道知识文档散在各专业条线、还夹着扫描件。",
+    opts:[
+      {t:"用客户听得懂的话解释为什么难，重新对齐期望、谈替代方案。",side:"E"},
+      {t:"先动手验证到底能做到什么程度，用一个能跑的 demo 说话。",side:"D"}
+    ]
+  },
+  {
+    q:"团队开工前，你更擅长、也更享受的是——",
+    scene:"项目 kickoff，任务要认领了。",
+    opts:[
+      {t:"访谈各方、绘制路线图、把模糊需求翻译成清晰的方案框架。",side:"E"},
+      {t:"搭环境、写代码、调通数据流，把方案变成真正能点能用的东西。",side:"D"}
+    ]
+  },
+  {
+    q:"demo 演示当天，你最在意的是——",
+    scene:"客户服务中心主任和一线坐席都在场。",
+    opts:[
+      {t:"这个 demo 有没有戳中他们真正的痛点、能不能推动决策。",side:"E"},
+      {t:"这个 demo 稳不稳、会不会当场报错、准确率够不够看。",side:"D"}
+    ]
+  },
+  {
+    q:"看到「错派率降到两成以内」这个数字，你的关注点是——",
+    scene:"分类器的评估报告出来了。",
+    opts:[
+      {t:"剩下那些判不准的会造成什么业务后果？坐席能接受吗？怎么兜底？",side:"E"},
+      {t:"哪一类错得最多？调提示词还是换策略能把它提上去？",side:"D"}
+    ]
+  },
+  {
+    q:"你日常工作/学习中，更常做的事更接近——",
+    scene:"回想一下你过去半年真实花时间最多的事。",
+    opts:[
+      {t:"沟通协调、写方案文档、对接需求、向上汇报。",side:"E"},
+      {t:"写代码/调工具、处理数据、搭系统、解决技术问题。",side:"D"}
+    ]
+  },
+  {
+    q:"系统上线三个月后'没人用'，你的第一直觉是去查——",
+    scene:"系统建好了，坐席的使用率却低得可怜。",
+    opts:[
+      {t:"是不是没人愿意用？是门槛、动机还是信任出了问题。",side:"E"},
+      {t:"是不是不好用？是功能、性能还是流程哪里卡住了。",side:"D"}
+    ]
+  }
+];
+
+let idx=0, score={E:0,D:0};
+
+function go(id){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='s1'){ idx=0; score={E:0,D:0}; render(); }
+  if(id==='s3'){ buildDossier(); }
+  if(id==='s5'){ buildSH(); }
+  if(id==='s6'){ buildScenes(); }
+  // 产出页(s4-s7)显示"客户档案"悬浮按钮，其他页隐藏并收起抽屉
+  const onProduct = ['s4','s5','s6','s7'].includes(id);
+  document.getElementById('dossierFab').classList.toggle('show', onProduct);
+  document.getElementById('exportFab').classList.toggle('show', onProduct);
+  if(!onProduct){
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerMask').classList.remove('open');
+  }
+}
+
+function render(){
+  const Q=QUESTIONS[idx];
+  document.getElementById('qmeta').textContent=`情景 ${idx+1} / ${QUESTIONS.length}`;
+  document.getElementById('qtext').textContent=Q.q;
+  document.getElementById('qscene').textContent=Q.scene;
+  document.getElementById('bar').style.width=`${(idx)/QUESTIONS.length*100}%`;
+  const box=document.getElementById('opts'); box.innerHTML='';
+  // 每题随机左右，避免固定选边
+  const order = Math.random()<.5 ? Q.opts : [Q.opts[1],Q.opts[0]];
+  order.forEach(o=>{
+    const d=document.createElement('div');
+    d.className='opt'; d.textContent=o.t;
+    d.onclick=()=>pick(o.side);
+    box.appendChild(d);
+  });
+}
+
+function pick(side){
+  score[side]++;
+  idx++;
+  if(idx<QUESTIONS.length){ render(); }
+  else{ finish(); }
+}
+
+function finish(){
+  const total=score.E+score.D;
+  const ePct=Math.round(score.E/total*100);
+  const dPct=100-ePct;
+  go('s2');
+  // 定位光谱：pin 位置 = Delta 占比（越右越 Delta）
+  document.getElementById('pin').style.left=`${dPct}%`;
+  document.getElementById('pe').textContent=`Echo ${ePct}%`;
+  document.getElementById('pd').textContent=`Delta ${dPct}%`;
+
+  const leanE = ePct>=dPct;
+  const strong = Math.abs(ePct-dPct)>=50;   // 6:2 及以上算明显
+  const balanced = Math.abs(ePct-dPct)<=25;  // 5:3 及以内算均衡
+
+  const rcard=document.getElementById('rcard');
+  rcard.className='result-card '+(leanE?'echo':'delta');
+
+  let verdict, tag, name, desc, advice;
+  if(balanced){
+    verdict = `你是「双栖型」，略微偏向 ${leanE?'Echo':'Delta'}`;
+    tag = "T-SHAPED · 双栖潜力";
+    name = leanE?"Echo 偏向 · 双栖":"Delta 偏向 · 双栖";
+    desc = "你在'挖需求'和'搞施工'两端都不排斥，这是 FDE 最稀缺的底子。你能听懂业务、也能看懂技术，是天然的团队黏合剂——但也要小心'两边都会一点、哪边都不精'，两天里挑一条主线往深里扎。";
+    advice = leanE
+      ? "你可以在实验一牵头需求调研，同时在实验二、三主动参与代码审查——用你的业务视角帮 Delta 队友判断'AI 产出对不对'。"
+      : "你可以在实验二、三主导施工，同时在实验一帮 Echo 队友把技术可行性判断补扎实——告诉他们'哪些需求技术上根本做不了'。";
+  } else if(leanE){
+    verdict = strong ? "你是典型的「Echo · 部署策略师」" : "你偏向「Echo · 部署策略师」";
+    tag = "STRATEGIST · 业务侦探";
+    name = "Echo 部署策略师";
+    desc = "你的本能是先搞清'客户到底要什么、谁会挡路'，而不是急着写代码。你擅长把模糊需求翻译成清晰方案、用业务语言对齐期望、处理人的问题——这正是决定项目成败的上游能力。";
+    advice = "组内建议由你主导【实验一：需求调研与方案框架】——你来牵头需求调研、画干系人地图、拆子场景。实验二、三的施工交给 Delta 队友主导，你负责审查'做出来的东西是否真的解决了业务问题'，并准备实验五的汇报。";
+  } else {
+    verdict = strong ? "你是典型的「Delta · 工程执行官」" : "你偏向「Delta · 工程执行官」";
+    tag = "ENGINEER · 手上沾泥";
+    name = "Delta 工程执行官";
+    desc = "你的本能是'先做出来再说'——用一个能跑的 demo 代替一百句讨论。你擅长把方案变成真正能点能用的系统，享受调通数据流、把准确率提上去的成就感。这是 FDE 不可替代的落地能力。";
+    advice = "组内建议由你主导【实验二/三：两个子场景的施工】——你来跑 gstack 八环节、写 SPEC、驱动 AI 出代码、调准确率。实验一的需求调研交给 Echo 队友牵头，你负责补充'技术可行性判断'，实验五负责讲清技术方案。";
+  }
+
+  document.getElementById('verdict').textContent=verdict;
+  document.getElementById('rtag').textContent=tag;
+  document.getElementById('rname').textContent=name;
+  document.getElementById('rdesc').textContent=desc;
+  document.getElementById('advice').textContent=advice;
+
+  // ===== 分析方向清单：告诉用户作为这个角色，从哪些方向拆客户需求 =====
+  const DIRECTIONS = {
+    E: {
+      title: "🧭 作为 Echo，你该从这些方向挖客户需求",
+      items: [
+        "<b>拆真问题：</b>客户说的是'方案感觉'（要 AI），不是真需求。先问'现在最痛、最想先解决的是哪一环'，把一句大话拆成几件具体的事。",
+        "<b>找干系人：</b>列出'谁拍板、谁掏钱、谁用它、谁能一票否决'。特别盯两种人——嘴上支持但会挡路的、官小但能用脚投票的。",
+        "<b>挖藏起来的风险：</b>客户不会主动说风险。对照四类失败模式逐个排查——数据够不够、人配不配合、合规过不过、投入产出算不算得清。",
+        "<b>验数字真假：</b>客户给的数字（如'错派率十个里头有一两个'）哪些是事实、哪些是拍脑袋？别拿感觉当项目基线。",
+        "<b>说人话：</b>时刻想'这话怎么讲给不懂技术的主任听'——他要能听懂、还能拿去省公司汇报。"
+      ]
+    },
+    D: {
+      title: "🧭 作为 Delta，你该从这些方向拆客户需求",
+      items: [
+        "<b>判技术性质：</b>把每个需求归类——这是'分类问题'、'查文档问答问题'、还是'要多步决策的问题'？不同性质用不同技术。",
+        "<b>选最简方案：</b>对照能力金字塔，能用提示词就不上 RAG，能用 RAG 就不微调，能不上 Agent 就别上。永远问'为什么不用更简单的那层'。",
+        "<b>盘数据家底：</b>做之前先看数据——拿不拿得到、干不干净、格式统不统一。数据不行，demo 再漂亮也是空中楼阁。",
+        "<b>估可行边界：</b>客户觉得'很简单'的功能，技术上到底能做到几分？先想清楚哪些能做、哪些做不了、哪些要打折。",
+        "<b>想验收标准：</b>做出来怎么算成功？准确率多少达标、错了怎么兜底——动手前就把'验收线'和'兜底方案'想好。"
+      ]
+    }
+  };
+  const dir = DIRECTIONS[leanE ? 'E' : 'D'];
+  document.getElementById('dirTitle').textContent = dir.title;
+  const dirBox = document.getElementById('directions') || document.querySelector('.directions');
+  dirBox.className = 'directions ' + (leanE ? 'echo' : 'delta');
+  const ul = document.getElementById('dirList');
+  ul.innerHTML = '';
+  dir.items.forEach(t => {
+    const li = document.createElement('li');
+    li.innerHTML = t;
+    ul.appendChild(li);
+  });
+}
+
+function restart(){ go('s1'); }
+
+// ===== 客户档案页数据与渲染 =====
+const PEOPLE = [
+  {
+    ava:"📞", bg:"#2E6BA8", name:"周主任", role:"客户服务中心 · 项目决策人",
+    layer:"决策层", layerBg:"#2E6BA8",
+    quotes:[
+      {t:"我要的不多，就是让这个平台'聪明'起来。你看兄弟单位那边上了个 AI，领导去视察还专门表扬了。我们体量比他们大多了，怎么也得有。"},
+      {t:"钱的事……项目预算得我去争取，但你们先得让我知道这东西到底值不值。我去省公司汇报，领导肯定问'投这么多钱能省多少、能带来什么'，你不能让我在台上答不上来。", warn:true},
+      {t:"至于具体怎么做，那是你们专业的事。反正我要的是能拿得出手、能见效的东西，别整那些花里胡哨最后没人用的花架子。"},
+      {t:"对了，别指望我给你们当业务专家——具体哪些环节最费人，你们去问小林他们，他们天天泡在里面。"}
+    ]
+  },
+  {
+    ava:"🎧", bg:"#E0603A", name:"坐席班长 小林", role:"客户服务中心一线 · 每天用系统的人（代表中心几十号坐席）",
+    layer:"操作层", layerBg:"#E0603A",
+    quotes:[
+      {t:"派单？派单是最头疼的。客户一通电话过来，说的话又急又乱，我们得判断这事该归哪个条线——营销、计量、运检、调度、安监，还有我们客服中心自己兜的，条线多得很，新来的坐席根本记不全，老坐席也经常拿不准。派错了客户那头就白等，过两天又打回来投诉，我们两头挨骂。"},
+      {t:"错派到底多少？没人专门统计过……我拍脑袋估，十个里头有一两个是派错或者派不下去的吧。反正返工不少。", warn:true},
+      {t:"还有客户问政策，什么'我这个情况能不能办''这个电费到底怎么算'——电价规则、营业规则一大堆，还老更新，我们哪背得下来。关键答错了要担责，客户拿着我们说的话去办事，办不成回头找的还是我们。", warn:true},
+      {t:"说句心里话……你们这 AI 上来，是不是就不需要我们这些人了？我们这些老坐席，就靠这点经验吃饭。", warn:true},
+      {t:"还有啊，我们手上活儿本来就饱和，要是再让我们额外录数据、标数据，那是真干不动——这个你们得先想好谁来干。", warn:true}
+    ]
+  },
+  {
+    ava:"💻", bg:"#7B5EA7", name:"数字化部 陈工", role:"管系统和数据的人",
+    layer:"技术层", layerBg:"#7B5EA7",
+    quotes:[
+      {t:"数据？客户的用电数据、联系方式、缴费记录，这些都是敏感数据。按上面的信息安全要求，这些数据不能出信息内网，公网上的那些大模型服务，想都别想，必须在内网侧解决。这条是红线，没得商量。", warn:true},
+      {t:"而且我们这平台底下不是一套系统。工单是一套，客户档案是另一套，知识又散在营销、计量、运检、调度各专业的文件和文件夹里，格式还都不一样——有 PDF、有 Word、有的干脆是扫描件。你们要的数据，未必都能拿得齐、拿得干净。", warn:true},
+      {t:"对接的活儿最好别太重，我们数字化部就这么几个人，天天救火，实在没精力配合你们做大改造。能不动现有系统的，尽量别动。"}
+    ]
+  },
+  {
+    ava:"🏛️", bg:"#5a6b7a", name:"省公司数字化与网络安全部", role:"监管方 · 没直接参与但绕不开",
+    layer:"监管层", layerBg:"#5a6b7a",
+    quotes:[
+      {t:"（走访中陈工提醒你）这种涉及客户用电数据和个人信息的 AI 应用，省公司数字化与网络安全部那边是要过合规的。他们平时不太管我们具体做什么，但真要出了数据泄露或者算法乱来的事，他们一票就能把项目叫停。这道关，你们方案里最好提前想到。", warn:true},
+      {t:"（补充）这位从来没有被正式拉进项目组，你也见不到人——但方案里少了这一页，后面是要返工的。", warn:true}
+    ]
+  }
+];
+
+const CLUES = [
+  {say:'日均话务量与工单量"很大"，高峰期派单积压', src:"周主任、小林", rel:"平台后台有数，但没人给你导出过", lv:"amber"},
+  {say:'错派率"十个里头有一两个"', src:"小林拍脑袋", rel:"无任何统计支撑", lv:"red"},
+  {say:'知识文件"一大堆、老更新"，具体多少份说不清', src:"小林、陈工", rel:"只知存在，无清单、无版本台账", lv:"amber"},
+  {say:"简单咨询与复杂诉求走同一套派单流程", src:"小林", rel:'属实，但"简单/复杂"没有明确界定', lv:"amber"},
+  {say:"客户用电数据与个人信息不能出信息内网、不进公网大模型", src:"陈工", rel:"硬约束，管理要求，红线", lv:"red"},
+  {say:"知识文档格式杂乱（PDF/Word/扫描件）", src:"陈工", rel:"属实", lv:"green"},
+  {say:'抢修到达现场、计划停电通知提前天数等时限"文件里有"', src:"小林", rel:"条款在哪、现行有效版本是哪个，没人说得准（教学示意值）", lv:"amber"}
+];
+
+let dossierBuilt = false;
+function buildDossier(){
+  if(dossierBuilt) return;
+  const pc = document.getElementById('people');
+  PEOPLE.forEach((p,i)=>{
+    const quotes = p.quotes.map(q=>`<div class="p-quote${q.warn?' warn':''}">${q.warn?'⚠ ':''}${q.t}</div>`).join('');
+    const el = document.createElement('div');
+    el.className='person';
+    el.innerHTML=`
+      <div class="p-head" onclick="this.parentNode.classList.toggle('open')">
+        <div class="p-ava" style="background:${p.bg}22;color:${p.bg}">${p.ava}</div>
+        <div class="p-meta">
+          <div class="p-name">${p.name}</div>
+          <div class="p-role">${p.role}</div>
+        </div>
+        <span class="p-layer" style="background:${p.layerBg}">${p.layer}</span>
+        <span class="p-arrow">▶</span>
+      </div>
+      <div class="p-body"><div class="p-inner">${quotes}</div></div>`;
+    pc.appendChild(el);
+  });
+  const cb = document.getElementById('clueBody');
+  CLUES.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${c.say}</td><td>${c.src}</td><td><span class="badge ${c.lv}">${c.rel}</span></td>`;
+    cb.appendChild(tr);
+  });
+  dossierBuilt = true;
+}
+
+function toggleAllPeople(){
+  const people = document.querySelectorAll('#people .person');
+  const anyClosed = [...people].some(p=>!p.classList.contains('open'));
+  people.forEach(p=> anyClosed ? p.classList.add('open') : p.classList.remove('open'));
+}
+
+// ===== 产出 1 风险墙：加便签 =====
+function addNote(cat, input){
+  const v = input.value.trim();
+  if(!v) return;
+  const box = document.getElementById('rq-'+cat);
+  const n = document.createElement('div');
+  n.className='note';
+  n.innerHTML = `<em>${v.replace(/</g,'&lt;')}</em><span onclick="this.parentNode.remove()">✕</span>`;
+  box.appendChild(n);
+  input.value='';
+  input.focus();
+}
+
+// ===== 产出 2 干系人矩阵 =====
+const SH_PEOPLE = [
+  {id:'zhou', name:'周主任', bg:'#2E6BA8'},
+  {id:'lin', name:'坐席班长 小林', bg:'#E0603A'},
+  {id:'chen', name:'数字化部 陈工', bg:'#7B5EA7'},
+  {id:'sec', name:'省公司数字化与网络安全部', bg:'#5a6b7a'}
+];
+let shSel = null, shBuilt = false;
+function buildSH(){
+  if(shBuilt) return;
+  const pool = document.getElementById('sh-pool');
+  SH_PEOPLE.forEach(p=>{
+    const c = document.createElement('span');
+    c.className='sh-chip'; c.id='chip-'+p.id; c.textContent=p.name;
+    c.style.background=p.bg;
+    c.onclick=()=>selectChip(p.id);
+    pool.appendChild(c);
+  });
+  shBuilt = true;
+}
+function selectChip(id){
+  const chip = document.getElementById('chip-'+id);
+  if(chip.classList.contains('placed')){
+    chip.classList.remove('placed');
+    document.querySelectorAll('.drop .mini-'+id).forEach(e=>e.remove());
+    return;
+  }
+  document.querySelectorAll('.sh-chip').forEach(c=>c.classList.remove('sel'));
+  chip.classList.add('sel');
+  shSel = id;
+}
+function dropTo(q){
+  if(!shSel) return;
+  const p = SH_PEOPLE.find(x=>x.id===shSel);
+  const drop = document.getElementById('q-'+q);
+  const m = document.createElement('span');
+  m.className='sh-chip mini-'+p.id; m.style.background=p.bg; m.textContent=p.name;
+  m.style.fontSize='11px'; m.style.padding='4px 9px';
+  m.onclick=(e)=>{e.stopPropagation(); m.remove(); document.getElementById('chip-'+p.id).classList.remove('placed');};
+  drop.appendChild(m);
+  document.getElementById('chip-'+p.id).classList.add('placed');
+  document.getElementById('chip-'+p.id).classList.remove('sel');
+  shSel=null;
+}
+
+// ===== 产出 3 方案框架三卡 =====
+let scenesBuilt = false;
+function buildScenes(){
+  if(scenesBuilt) return;
+  const box = document.getElementById('scenes');
+  for(let i=1;i<=3;i++){
+    const s = document.createElement('div');
+    s.className='scene';
+    s.innerHTML=`
+      <div class="scene-h"><div class="scene-n">${String.fromCharCode(64+i)}</div><div class="scene-t">子场景 ${String.fromCharCode(64+i)}</div></div>
+      <div class="fields">
+        <div class="field"><label>解决什么问题？（业务目标，全业务语言）</label><input placeholder="例如：客户诉求自动分到对应专业条线，坐席不再靠人工猜…"></div>
+        <div class="field"><label>谁来用？</label><input placeholder="目标用户，例如：坐席 / 用电客户 / 系统"></div>
+        <div class="field"><label>成功怎么衡量？（对应八字段：成功指标 / 通过门槛）</label><input placeholder="例如：错派率下降、答复准确可溯源、简单件自动化率…"></div>
+        <div class="field tech"><label>用什么技术？（分类 / RAG / 微调 / Agent）</label><input placeholder="选型 + 为什么是它…"></div>
+        <div class="field tech"><label>为什么不用更复杂的那一层？</label><input placeholder="例如：不用 Agent，因为无需多步决策…"></div>
+      </div>`;
+    box.appendChild(s);
+  }
+  const prio = document.createElement('div');
+  prio.className='scene';
+  prio.innerHTML=`
+    <div class="scene-h"><div class="scene-n" style="background:var(--gold);color:#3a2c05">★</div><div class="scene-t">施工优先级</div></div>
+    <div class="fields">
+      <div class="field"><label>第一优先（快赢）——先做哪个？为什么？</label><input placeholder="最快见效 / 不依赖还没拿到的数据 / 最好衡量，占哪几条…"></div>
+      <div class="field"><label>第二、第三顺序</label><input placeholder="第二：__ ；第三：__"></div>
+    </div>
+    <div class="prio-note">💡 快赢 = 见效快 + 风险低 + 数据齐。周主任下月要去省公司汇报，第一个该给他看能最快出成绩的那个。</div>`;
+  box.appendChild(prio);
+  scenesBuilt = true;
+}
+
+// ===== 产出 4 汇报话术：字数 + 禁词 =====
+const BANNED = ['算法','模型','RAG','Agent','embedding','向量','API','微调','LLM','prompt','神经网络'];
+function checkPitch(){
+  const t = document.getElementById('pitch').value;
+  const len = [...t.replace(/\s/g,'')].length;
+  const wc = document.getElementById('wc');
+  wc.textContent = `${len} 字`;
+  wc.className = 'wc' + (len>150 ? ' over':'');
+  const hit = BANNED.filter(b=> t.toLowerCase().includes(b.toLowerCase()));
+  document.getElementById('banned').textContent = hit.length ? `⚠ 出现技术词：${hit.join('、')}` : '';
+}
+
+// ===== 客户档案悬浮抽屉 =====
+let drawerBuilt = false;
+function buildDrawer(){
+  if(drawerBuilt) return;
+  const pc = document.getElementById('people2');
+  PEOPLE.forEach(p=>{
+    const quotes = p.quotes.map(q=>`<div class="p-quote${q.warn?' warn':''}">${q.warn?'⚠ ':''}${q.t}</div>`).join('');
+    const el = document.createElement('div');
+    el.className='person';
+    el.innerHTML=`
+      <div class="p-head" onclick="this.parentNode.classList.toggle('open')">
+        <div class="p-ava" style="background:${p.bg}22;color:${p.bg}">${p.ava}</div>
+        <div class="p-meta"><div class="p-name">${p.name}</div><div class="p-role">${p.role}</div></div>
+        <span class="p-layer" style="background:${p.layerBg}">${p.layer}</span>
+        <span class="p-arrow">▶</span>
+      </div>
+      <div class="p-body"><div class="p-inner">${quotes}</div></div>`;
+    pc.appendChild(el);
+  });
+  const cb = document.getElementById('clueBody2');
+  CLUES.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${c.say}</td><td><span class="badge ${c.lv}">${c.rel}</span></td>`;
+    cb.appendChild(tr);
+  });
+  drawerBuilt = true;
+}
+function toggleDrawer(){
+  buildDrawer();
+  const d=document.getElementById('drawer'), m=document.getElementById('drawerMask');
+  const open = d.classList.toggle('open');
+  m.classList.toggle('open', open);
+}
+
+// ===== 导出四个产出为 Markdown =====
+function exportFramework(){
+  const RISK = {data:'数据不可用', biz:'业务不配合', comp:'合规卡住', roi:'ROI说不清'};
+  let md = `# 岭湾电力客户服务平台 AI 智能化 · 解决方案框架\n\n> 实验一产出 · Echo 视角 · 导出时间 ${new Date().toLocaleString('zh-CN')}\n\n`;
+
+  // 1. 风险墙
+  md += `## 1. 风险墙（四类失败模式）\n\n`;
+  let anyRisk=false;
+  Object.keys(RISK).forEach(k=>{
+    const notes=[...document.querySelectorAll('#rq-'+k+' .note em')].map(e=>e.textContent);
+    md += `### ${RISK[k]}\n`;
+    if(notes.length){ notes.forEach(n=> md+=`- ${n}\n`); anyRisk=true; }
+    else md += `- （未填写）\n`;
+    md += `\n`;
+  });
+
+  // 2. 干系人图
+  md += `## 2. 干系人图（权力 × 兴趣）\n\n`;
+  const QUAD={hh:'高权力·高兴趣（重点管理）',hl:'高权力·低兴趣（重点盯防）',lh:'低权力·高兴趣（争取支持）',ll:'低权力·低兴趣（维持知情）'};
+  const strats=[...document.querySelectorAll('#s5 .q-strat')];
+  ['hh','hl','lh','ll'].forEach((q,i)=>{
+    const names=[...document.querySelectorAll('#q-'+q+' .sh-chip')].map(e=>e.textContent).join('、')||'（空）';
+    const strat=strats[i]?.value.trim()||'（未填沟通策略）';
+    md += `- **${QUAD[q]}**：${names} —— 策略：${strat}\n`;
+  });
+  md += `\n`;
+
+  // 3. 方案框架
+  md += `## 3. 解决方案框架（子场景 + 选型）\n\n`;
+  const scenes=[...document.querySelectorAll('#scenes .scene')];
+  scenes.forEach((sc,i)=>{
+    const title=sc.querySelector('.scene-t').textContent;
+    const ins=[...sc.querySelectorAll('input')].map(x=>x.value.trim());
+    md += `### ${title}\n`;
+    if(i<3){
+      md += `- 解决什么：${ins[0]||'（未填）'}\n- 谁来用：${ins[1]||'（未填）'}\n- 成功怎么衡量：${ins[2]||'（未填）'}\n- 技术选型：${ins[3]||'（未填）'}\n- 为什么不用更复杂的：${ins[4]||'（未填）'}\n\n`;
+    } else {
+      md += `- 第一优先（快赢）：${ins[0]||'（未填）'}\n- 第二三顺序：${ins[1]||'（未填）'}\n\n`;
+    }
+  });
+
+  // 4. 汇报话术
+  const pitch=document.getElementById('pitch').value.trim()||'（未填写）';
+  const plen=[...pitch.replace(/\s/g,'')].length;
+  md += `## 4. 汇报话术（面向周主任）\n\n> ${pitch}\n\n（字数：${plen}，要求 ≤150 字、全业务语言）\n\n`;
+  md += `## 5. 数据不出内网方案（一句话）\n\n（把这句话写成能直接念给周主任听的说法：数据不出信息内网、不进公网大模型）\n`;
+
+  // 下载
+  const blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='解决方案框架.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>实验五 · 综合系统 Agent（进阶） · FDE 转型实战特训 岭湾实验站</title>
+<style>
+:root{
+  --indigo:#1a237e; --indigo2:#283593; --indigo3:#3949ab; --indigo-soft:#5c6bc0;
+  --amber:#ffb300; --amber-dark:#b28704; --amber-bg:rgba(255,179,0,.08);
+  --ink:#263238; --ink-soft:#546e7a; --muted:#78909c; --line:#e2e8f0;
+  --bg:#ffffff; --bg-soft:#fafbfc; --code-bg:#101f4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Roboto","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+a{color:var(--amber-dark);text-decoration:none}
+a:hover{color:var(--indigo);text-decoration:underline}
+.hb-top{background:linear-gradient(135deg,#1a237e 0%,#283593 55%,#3949ab 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb-top .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:15px}
+.hb-top .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);flex:none}
+.hb-top .brand small{font-weight:400;font-size:12px;opacity:.85;margin-left:6px}
+.hb-top a{color:#fff;font-size:13px;font-weight:500}
+.hb-top a:hover{color:var(--amber);text-decoration:none}
+.ch-nav{background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.ch-nav a{font-size:13px;font-weight:500;color:var(--muted);padding:6px 12px;border-radius:4px;white-space:nowrap;border-bottom:2px solid transparent}
+.ch-nav a:hover{color:var(--indigo);text-decoration:none;background:var(--bg-soft)}
+.ch-nav a.on{color:var(--indigo);font-weight:700;border-bottom-color:var(--amber)}
+.ch-nav a.home{margin-left:auto;color:var(--amber-dark)}
+.hb-wrap{max-width:none;margin:0;padding:28px 24px 60px;display:flex;gap:40px;align-items:flex-start;justify-content:space-between}
+.hb-main{flex:1;min-width:0;max-width:900px}
+aside.hb-toc{width:320px;flex:none;position:sticky;top:24px;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;border-left:3px solid var(--amber);padding:16px 18px;max-height:calc(100vh - 60px);overflow:auto}
+aside.hb-toc b{font-size:11.5px;color:var(--muted);display:block;margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase}
+aside.hb-toc ul{list-style:none;padding-left:0}
+aside.hb-toc a{display:block;font-size:13px;padding:5px 8px;border-radius:4px;color:var(--ink-soft);font-weight:500}
+aside.hb-toc a:hover{background:#fff;color:var(--indigo);text-decoration:none}
+aside.hb-toc ul ul a{padding-left:18px;font-weight:400;color:var(--muted);font-size:12.5px}
+.hb-main h1{color:var(--indigo);font-size:26px;line-height:1.4;margin:4px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.5px}
+.hb-main .ch-role{font-size:12px;color:var(--amber-dark);font-weight:700;letter-spacing:1.5px;margin-bottom:18px}
+.hb-main h2{color:var(--indigo);font-size:20px;margin:34px 0 12px;padding-left:12px;border-left:4px solid var(--amber);font-weight:600}
+.hb-main h3{color:var(--indigo2);font-size:17px;margin:24px 0 10px;font-weight:600}
+.hb-main h4{color:var(--indigo);font-size:15px;margin:18px 0 8px;font-weight:600}
+.hb-main p{margin:10px 0}
+.hb-main ul,.hb-main ol{margin:10px 0;padding-left:26px}
+.hb-main li{margin:5px 0}
+.hb-main strong{color:var(--indigo);font-weight:700}
+.hb-main blockquote{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--indigo-soft);border-radius:4px;padding:12px 16px;margin:14px 0;color:var(--ink-soft)}
+.hb-main blockquote p{margin:6px 0}
+.hb-main blockquote blockquote{background:#f1f3f6;border-left-color:var(--amber)}
+.hb-main code{background:var(--bg-soft);color:var(--amber-dark);padding:2px 6px;border-radius:4px;font-size:13px;font-family:"Cascadia Mono","Consolas",monospace}
+.hb-main pre{background:var(--code-bg);border-radius:6px;padding:16px;overflow:auto;margin:14px 0;line-height:1.65}
+.hb-main pre code{background:none;color:#e8eaf6;padding:0;font-size:12.8px;white-space:pre}
+.code-wrap{position:relative;margin:14px 0}
+.code-wrap pre{margin:0}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e8eaf6;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;opacity:.65;transition:opacity .15s,background .15s;font-family:"Roboto","PingFang SC",sans-serif;line-height:1.4}
+.code-copy:hover{opacity:1;background:var(--amber);border-color:var(--amber);color:#1a237e}
+.code-copy.copied{background:var(--amber);border-color:var(--amber);color:#1a237e;opacity:1}
+.hb-main table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff}
+.hb-main th{background:var(--indigo3);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.hb-main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.hb-main tr:nth-child(even) td{background:var(--bg-soft)}
+.hb-main tr:hover td{background:var(--amber-bg)}
+.hb-main hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+.hb-main img{max-width:100%;border-radius:4px}
+.hb-pager{display:flex;justify-content:space-between;gap:14px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
+.hb-pager a{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:14px 18px;color:var(--ink);font-weight:600;font-size:14px}
+.hb-pager a:hover{border-color:var(--amber);text-decoration:none}
+.hb-pager a small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hb-pager a.next{text-align:right}
+.hb-pager a .dir{color:var(--amber-dark);font-weight:700}
+.ov-hero{max-width:none;margin:0;padding:36px 28px 8px}
+.ov-hero h1{color:var(--indigo);font-size:26px;line-height:1.4;font-weight:700;letter-spacing:.5px}
+.ov-hero .tag{display:inline-block;color:var(--amber-dark);font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.ov-hero p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:900px}
+.ov-cards{max-width:none;margin:0;padding:16px 28px 46px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;display:block;color:var(--ink);transition:border-color .18s}
+.ov-card:hover{border-color:var(--amber);text-decoration:none}
+.ov-card .no{font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--amber-dark);margin-bottom:6px}
+.ov-card h3{color:var(--indigo);font-size:16px;margin-bottom:6px;line-height:1.4;font-weight:600}
+.ov-card p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.ov-card .meta{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.ov-card .meta span{background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-weight:500}
+.ov-card.zip-card{background:linear-gradient(180deg,#fff8e8,#fff);border-color:var(--amber)}
+.ov-card.zip-card .no{color:var(--amber-dark)}
+.ov-intro{max-width:none;margin:0;padding:6px 28px 0}
+.mermaid{text-align:center;margin:18px 0;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px}
+.mermaid svg{max-width:100%;height:auto}
+@media(max-width:760px){
+  .hb-wrap{flex-direction:column;gap:18px}
+  aside.hb-toc{width:100%;position:static;max-height:280px}
+  .hb-main h1{font-size:21px}
+}
+</style>
+<script src="../assets/vendor/mermaid.min.js"></script>
+
+<script>
+(function(){
+  function initMermaid(){
+    var blocks = document.querySelectorAll('pre code.language-mermaid');
+    if(!blocks.length || typeof mermaid === 'undefined') return;
+    blocks.forEach(function(code){
+      var div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      code.parentNode.replaceWith(div);
+    });
+    mermaid.initialize({startOnLoad:false, theme:'default', securityLevel:'loose', flowchart:{htmlLabels:true}});
+    mermaid.run({querySelector:'.mermaid'});
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+})();
+</script>
+
+</head><body>
+<header class="hb-top">
+  <div class="brand"><span class="dot"></span>FDE 转型实战特训 · 岭湾实验站<small>岭湾电力客户服务平台（教学合成案例）</small></div>
+  <a href="../index.html">实验站首页</a>
+</header>
+<div class="ch-nav"><a class="ch-nav-item" href="lab1-requirements-brainstorm.html">实验一 · 需求调研与解决方案框架</a><a class="ch-nav-item" href="lab2-classifier.html">实验二 · 诉求智能分类系统</a><a class="ch-nav-item" href="lab3-policy-rag.html">实验三 · 供电业务知识问答</a><a class="ch-nav-item" href="lab4-routing-workflow.html">实验四 · 工单分级路由工作流</a><a class="ch-nav-item on" href="lab5-cooperative-agent.html">实验五 · 综合系统 Agent（进阶）</a><a class="ch-nav-item" href="lab6-review-and-report.html">实验六 · 综合证据评审与决策层汇报</a><a class="ch-nav-item" href="lab7-migration-review.html">实验七 · 复盘真实项目（可选）</a><a class="home" href="../index.html">← 返回实验站</a></div>
+<div class="hb-wrap">
+  <main class="hb-main">
+    <div class="ch-role">🚀 进阶 · 课后/选做 · Agentic Loop　|　进阶</div><h1>实验五 · 综合系统 Agent（进阶）</h1><blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+<p><strong>对应课纲：</strong> FDE 综合实操 · 实验五（进阶 · 场景 A／B／C 综合）<br />
+<strong>建议时长：</strong> MVP 主实验约 180—240 分钟；完成后按需选择迭代挑战<br />
+<strong>角色：</strong> 你继续扮演 Delta——从头构建一个目标驱动、动态选工具、观察结果并循环决策的受控 Agent<br />
+<strong>工作流：</strong> gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）<br />
+<strong>知识前置：</strong> 建议已理解分类、RAG、工具调用和 LangGraph；不要求复用场景 A／B／C 三个基础实验的代码、目录或虚拟环境<br />
+<strong>实验定位：</strong> 本实验把 A／B／C 三种能力<strong>综合</strong>成一个系统，实现形态是一个受控协同 Agent——不增加第四个业务场景，而是用最小实现把知识检索、职责查询、主动追问和人工审核组织起来，补足"动态选择 → 观察结果 → 继续／追问／交还给人"的核心循环。主实验只求概念跑通，真实项目中暴露的复杂问题放入后续迭代路线。<br />
+<strong>展示要求：</strong> 本项目同时是毕业展示项目。界面不限定技术栈，但必须美观、直观、可向领导演示；不得以未经设计的默认 Streamlit 页面作为最终交付。</p>
+</blockquote>
+<hr />
+<h2 id="_1">实验概述</h2>
+<p>在场景 A、场景 B、场景 C 三个基础实验中，你分别完成了：</p>
+<table>
+<thead>
+<tr>
+<th>基础实验</th>
+<th>解决的问题</th>
+<th>主要能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>场景 A</td>
+<td>诉求属于什么类别</td>
+<td>文本分类</td>
+</tr>
+<tr>
+<td>场景 B</td>
+<td>依据是什么</td>
+<td>RAG 检索与可追溯回答</td>
+</tr>
+<tr>
+<td>场景 C</td>
+<td>工单进入哪个固定分支</td>
+<td>Routing 工作流与工具动作</td>
+</tr>
+</tbody>
+</table>
+<p>三个实验适合用来学习单点能力，但场景 C 的路径预先写定，本质上仍然是 <strong>Agentic Workflow</strong>，不能完整体现严格意义上的 Agent：</p>
+<blockquote>
+<p>Agent 应围绕目标，根据当前状态决定下一步，调用工具，观察工具结果；若信息不足或结果冲突，则追问、换工具或重新规划；达到完成条件后结束，触及风险边界时暂停并交还给人。</p>
+</blockquote>
+<p>本实验从头构建一个独立项目。它不读取前三个实验的代码，而是重新定义三个最小业务工具：</p>
+<ol>
+<li><code>classify_request</code>：理解诉求领域；</li>
+<li><code>search_policy</code>：查找带来源的依据证据；</li>
+<li><code>query_department</code>：查询责任条线及职责依据。</li>
+</ol>
+<p>Agent 还具有三个业务动作：</p>
+<ol>
+<li><code>ask_clarification</code>：信息不足时向客户追问；</li>
+<li><code>create_workorder_draft</code>：证据充分时生成工单草稿，不直接提交真实工单；</li>
+<li><code>request_human_review</code>：敏感、冲突或高风险时暂停并等待人工处理。</li>
+</ol>
+<blockquote>
+<p><strong>一句话目标：</strong> 在不编造条款、不执行未授权动作、不越过敏感事项人工审核红线的前提下，把一条用电客户诉求处理到"可以答复、可以生成工单草稿，或可以由人工继续处理"的状态。</p>
+</blockquote>
+<h3 id="mvp">MVP 设计纪律</h3>
+<p>本实验遵循四条纪律：</p>
+<ol>
+<li><strong>先证明核心概念。</strong> 只要不同任务能走不同路径、信息不足会追问、敏感事项会交还给人，就已达到主实验目的；</li>
+<li><strong>不一步到位。</strong> 工具冲突、故障注入、复杂评分、双端协同和生产级安全放入迭代挑战；</li>
+<li><strong>保持通用。</strong> 不把本次实测形成的某个代码结构写成唯一标准，学员可以采用等价实现；</li>
+<li><strong>展示不能将就。</strong> 功能采用 MVP，界面采用毕业项目标准，必须让非技术领导一眼看懂"客户说了什么、Agent 做了什么、为何交给人工、最后得到什么"。</li>
+</ol>
+<hr />
+<h2 id="agentic-loop">本轮核心学习点：从固定流水线到受控 Agentic Loop</h2>
+<h3 id="agent">固定流水线与 Agent 的区别</h3>
+<p>如果每条诉求都强制执行：</p>
+<pre><code class="language-text">分类 → 查依据 → 查条线 → 生成工单
+</code></pre>
+<p>它仍然是一条固定 Workflow。真正的 Agent 应允许不同任务走不同轨迹：</p>
+<table>
+<thead>
+<tr>
+<th>输入类型</th>
+<th>合理轨迹示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>明确业务咨询</td>
+<td>知识检索 → 带来源答复</td>
+</tr>
+<tr>
+<td>职责归属问题</td>
+<td>分类 → 职责查询 → 工单草稿</td>
+</tr>
+<tr>
+<td>信息不足</td>
+<td>主动追问 → 知识检索 → 答复</td>
+</tr>
+<tr>
+<td>敏感举报</td>
+<td>识别风险 → 人工审核</td>
+</tr>
+<tr>
+<td>工具结果冲突</td>
+<td>查证 → 重新判断 → 必要时人工审核</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-mermaid">flowchart TB
+    Start[接收客户诉求] --&gt; Plan[规划下一步]
+    Plan --&gt; Decide{当前最需要什么}
+    Decide --&gt; Classify[分类工具]
+    Decide --&gt; Policy[知识检索工具]
+    Decide --&gt; Department[职责查询工具]
+    Decide --&gt; Clarify[向客户追问]
+    Decide --&gt; Human[暂停并请求人工审核]
+    Classify --&gt; Observe[观察工具结果]
+    Policy --&gt; Observe
+    Department --&gt; Observe
+    Clarify --&gt; Observe
+    Observe --&gt; Complete{证据是否充分}
+    Complete --&gt;|不足或冲突| Plan
+    Complete --&gt;|可以答复| Answer[生成带证据答复]
+    Complete --&gt;|可以派单| Draft[生成工单草稿]
+    Complete --&gt;|风险过高| Human
+    Answer --&gt; End[任务结束]
+    Draft --&gt; End
+    Human --&gt; Resume[人工决定后恢复或结束]
+    Resume --&gt; Plan
+
+    classDef start fill:#E8DDD4,stroke:#6B5D4E,stroke-width:2px,color:#2D241E,font-weight:bold;
+    classDef red fill:#F2E0D6,stroke:#B55A4A,stroke-width:1.5px,color:#4A2A22;
+    classDef yellow fill:#F0E8D0,stroke:#B59A4A,stroke-width:1.5px,color:#4A3A1A;
+    classDef green fill:#DCE8D8,stroke:#5A8A5A,stroke-width:1.5px,color:#1A3A2A;
+    classDef future fill:#E8EDE5,stroke:#7A9A7A,stroke-width:1.5px,color:#2A3A2A,stroke-dasharray:5 3;
+
+    class Start start;
+    class Plan,Decide,Classify,Policy,Department,Clarify,Observe,Complete yellow;
+    class Human red;
+    class Answer,Draft,End green;
+    class Resume future;
+</code></pre>
+<p><em>图 1：岭湾协同 Agent 的规划—行动—观察—再规划循环</em></p>
+<h3 id="agent_1">本实验判定"真正体现 Agent"的十项标准</h3>
+<ul>
+<li>[ ] 有业务目标，而不是固定步骤清单；</li>
+<li>[ ] 下一步由当前状态决定；</li>
+<li>[ ] 可以在多个工具中选择；</li>
+<li>[ ] 不要求每次调用全部工具；</li>
+<li>[ ] 能观察工具结果是否充分或冲突；</li>
+<li>[ ] 结果不足时能重新规划；</li>
+<li>[ ] 信息不足时能主动追问；</li>
+<li>[ ] 敏感事项能真正暂停等待人工；</li>
+<li>[ ] 有最大循环次数和失败兜底；</li>
+<li>[ ] 能保存并展示完整执行轨迹。</li>
+</ul>
+<hr />
+<h2 id="_2">课前准备</h2>
+<h3 id="_3">场景一句话</h3>
+<p><strong>岭湾电力有限公司</strong>（化名，简称"岭湾电力"）的<strong>岭湾电力客户服务平台</strong>（课程内简称"岭湾项目"）面向用电客户统一受理诉求。诉求从服务热线、手机应用、营业厅、工单系统进入，需要先判断"这是什么业务"，再找"依据是什么"，再定"该谁办、要不要升级"，拿不准或命中敏感就交人工。决策人是<strong>客户服务中心 周主任</strong>，一线代表是<strong>坐席班长 小林</strong>，系统和数据归口是<strong>数字化部 陈工</strong>，合规由<strong>省公司数字化与网络安全部</strong>把关。</p>
+<p>诉求按五类归口：业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他；职责按六条专业条线归口：客户服务中心／营销部／计量中心／运维检修部／调度控制中心／安全监察部。</p>
+<h3 id="_4">数据包文件清单</h3>
+<blockquote>
+<p>下表文件名必须与数据包实物<strong>逐一对应</strong>。个别文件若开课时尚未到位，<strong>以数据包实际文件为准</strong>，文件名口径不变。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>文件名</th>
+<th>用途</th>
+<th>谁用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>需求材料/</code></td>
+<td><code>岭湾电力-需求原始记录.md</code></td>
+<td>客户方的原始需求（会议纪要 ＋ 各方走访），埋了四类风险</td>
+<td>了解背景</td>
+</tr>
+<tr>
+<td><code>分类口径/</code></td>
+<td><code>诉求分类体系.md</code></td>
+<td>五类定义、动作含义、易混淆边界——分类的唯一口径</td>
+<td>全员；写【数据现状】块必用</td>
+</tr>
+<tr>
+<td><code>职责库/</code></td>
+<td><code>departments.csv</code></td>
+<td>六条专业条线 ＋ 职责关键词（含客户口语变体）</td>
+<td><code>query_department</code> 的唯一数据源</td>
+</tr>
+<tr>
+<td><code>敏感清单/</code></td>
+<td><code>敏感与高风险事项.md</code></td>
+<td>敏感与高风险事项的<strong>教学定义</strong>（8 条）</td>
+<td>判定"必须转人工"的唯一依据</td>
+</tr>
+<tr>
+<td><code>知识文档/</code></td>
+<td><code>岭湾电力供电营业规则实施细则（教学合成版）.md</code></td>
+<td>业务规则类条款（8 章 32 条）</td>
+<td>检索问答的证据源</td>
+</tr>
+<tr>
+<td><code>知识文档/</code></td>
+<td><code>岭湾电力电价与电费计收说明（教学合成版）.md</code></td>
+<td>阶梯电价、电费差错退补等条款（6 章 25 条）</td>
+<td>检索问答的证据源</td>
+</tr>
+<tr>
+<td><code>知识文档/</code></td>
+<td><code>岭湾电力业扩报装办理指南（教学合成版）.md</code></td>
+<td>新装、增容、变更等办理与材料（7 章 26 条）</td>
+<td>检索问答的证据源</td>
+</tr>
+<tr>
+<td><code>知识文档/</code></td>
+<td><code>岭湾电力供电服务规范与服务承诺（教学合成版）.docx</code></td>
+<td>抢修到达时限、计划停电通知等承诺（6 章 26 条）</td>
+<td>检索问答的证据源</td>
+</tr>
+<tr>
+<td><code>知识文档/</code></td>
+<td><code>岭湾电力分布式光伏并网服务指引（教学合成版）.pdf</code></td>
+<td>光伏并网申请条件与答复时限（6 章 21 条）</td>
+<td>检索问答的证据源</td>
+</tr>
+<tr>
+<td><code>评测集/</code></td>
+<td><code>classify_cases.csv</code></td>
+<td>分类样本 <strong>25 条</strong>（5 类 × 5），字段 <code>id,text,label</code></td>
+<td>分类验收</td>
+</tr>
+<tr>
+<td><code>评测集/</code></td>
+<td><code>qa_pairs.csv</code></td>
+<td>问答验证集 <strong>6 条</strong>，字段 <code>question,expected_answer,expected_source</code></td>
+<td>检索验收</td>
+</tr>
+<tr>
+<td><code>评测集/</code></td>
+<td><code>qa_pairs_out_of_scope.csv</code></td>
+<td>库外问题 <strong>2 条</strong>，必须拒答</td>
+<td>拒答验收</td>
+</tr>
+<tr>
+<td><code>评测集/</code></td>
+<td><code>workorders.csv</code></td>
+<td>工单样本 <strong>6 份</strong>（咨询 2 ／跨专业协同 2 ／敏感 2）</td>
+<td>路由验收</td>
+</tr>
+<tr>
+<td><code>评测集/</code></td>
+<td><code>development_tasks.json</code></td>
+<td>开发任务 <strong>4 条</strong>，覆盖四类结果类型</td>
+<td>开发与联调</td>
+</tr>
+<tr>
+<td><code>脚手架/</code></td>
+<td><code>启动提示词-模板.md</code></td>
+<td>启动提示词模板（7 项信息块 ＋ 7 个自查 ＋ 5 条驱动指令）</td>
+<td>写启动提示词时参考</td>
+</tr>
+<tr>
+<td><code>脚手架/</code></td>
+<td><code>AGENTS.md</code></td>
+<td>交给 Agent 的项目级硬约束（十一条，优先级最高）</td>
+<td>全员；写安全边界时引用</td>
+</tr>
+<tr>
+<td><code>脚手架/</code></td>
+<td><code>SPEC模板.md</code></td>
+<td>spec 环节的产出模板（含 No-Go 十条、验收口径）</td>
+<td>spec 环节</td>
+</tr>
+<tr>
+<td><code>脚手架/</code></td>
+<td><code>SKELETON.md</code></td>
+<td>施工落点：三个工具函数签名 ＋ 人工确认点伪代码</td>
+<td>施工环节；工具契约的唯一口径</td>
+</tr>
+<tr>
+<td><code>离线兜底包/</code></td>
+<td><code>离线运行说明.md</code></td>
+<td>离线切换步骤与判据</td>
+<td>网络异常时全员</td>
+</tr>
+<tr>
+<td><code>离线兜底包/</code></td>
+<td><code>stub_tools.py</code></td>
+<td>离线桩工具集（分类／检索／职责，纯标准库）</td>
+<td>离线路径</td>
+</tr>
+<tr>
+<td><code>离线兜底包/</code></td>
+<td><code>run_offline_demo.py</code></td>
+<td>离线链路演示入口（含内置样例）</td>
+<td>离线演示</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>样本纪律：</strong> <code>评测集/</code> 下四套样本<strong>原样使用</strong>——不改写、不删减、不扩写、不"挑好做的跑"、不让 Agent 另造一份。改了样本，等于换了验收口径，<strong>结论作废</strong>。</p>
+</blockquote>
+<h3 id="_5">主实验与迭代挑战</h3>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>目标</th>
+<th>本轮要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP 主实验</td>
+<td>尽快做出能体现 Agent 核心定义、可以毕业展示的案例</td>
+<td>四条核心任务、动态工具选择、一次追问续跑、一次人工暂停、美观工作台</td>
+</tr>
+<tr>
+<td>迭代挑战</td>
+<td>根据真实反馈深化可靠性、业务闭环和评测</td>
+<td>按需选择，不要求主实验一次全部完成</td>
+</tr>
+</tbody>
+</table>
+<p>不同代码基础的学员都从同一个业务目标出发：代码经验较少者可以让 Coding Agent 生成更多工程骨架；有经验者可以主动设计 State、工具契约和页面架构。两类学员采用相同的核心业务验收与展示要求。</p>
+<h3 id="_6">软件与账号</h3>
+<ul>
+<li>[ ] Python 3.11+</li>
+<li>[ ] opencode Desktop 或兼容 Coding Agent</li>
+<li>[ ] gstack 已安装</li>
+<li>[ ] DeepSeek 官方 API key 已配置（<code>DEEPSEEK_API_KEY</code>）或其他 OpenAI 兼容模型服务已配置</li>
+<li>[ ] 知识检索所需的 BM25 + jieba，或经拍板采用的等价检索方案可用</li>
+<li>[ ] LangGraph、OpenAI SDK、jieba、python-dotenv 与所选 Web 技术依赖可安装</li>
+<li>[ ] 已获得课程提供的知识文档、职责库与评测样本</li>
+<li>[ ] 创建独立目录 <code>实验五-协同Agent-岭湾/</code></li>
+</ul>
+<blockquote>
+<p><strong>独立环境纪律：</strong> 本实验不复用场景 A、B、C 三个基础实验的虚拟环境。不同实验的依赖和生成代码可能不一致，从干净环境开始可以让全班在同一基线上施工。</p>
+<p><strong>数据边界：</strong> 实验使用虚构或教学模拟数据。不得把真实客户个人信息、真实工单、真实用电信息或未经批准的内部材料发送给公网模型服务；<strong>数据不出内网</strong>是本项目第一条硬约束。</p>
+</blockquote>
+<h3 id="_7">资源来源</h3>
+<p>本实验可以复用业务数据，但不复用前三个项目的代码：</p>
+<ol>
+<li>知识文档：<code>知识文档/</code></li>
+<li>职责数据：<code>职责库/departments.csv</code></li>
+<li>开发任务：<code>评测集/development_tasks.json</code></li>
+<li>讲师平行任务：由讲师保管，不在学员版公开标签和理想轨迹</li>
+</ol>
+<h3 id="_8">建议项目结构</h3>
+<pre><code class="language-text">实验五-协同Agent-岭湾/
+├── agent/
+│   ├── state.py
+│   ├── graph.py
+│   ├── planner.py
+│   ├── observer.py
+│   └── prompts.py
+├── tools/
+│   ├── classify_request.py
+│   ├── search_policy.py
+│   ├── query_department.py
+│   ├── clarification.py
+│   ├── workorder_draft.py
+│   └── human_review.py
+├── 知识文档/                  # 5 份知识文档（3 份 md ＋ 1 份 docx ＋ 1 份 pdf）
+│   ├── original/              # 原始文件只读
+│   └── normalized/            # docx／pdf 转换出的可检索文本
+├── 职责库/
+│   └── departments.csv
+├── 评测集/                    # 外部给定，不得重造
+│   ├── classify_cases.csv
+│   ├── qa_pairs.csv
+│   ├── qa_pairs_out_of_scope.csv
+│   ├── workorders.csv
+│   └── development_tasks.json
+├── 验收/
+│   └── evaluate.py            # 三套样本一起跑（分类／问答／路由）
+├── tests/
+│   ├── test_tools.py
+│   ├── test_agent_paths.py
+│   └── evaluate_trajectories.py
+├── app/
+│   ├── api.py
+│   └── web/                   # 美观、直观的毕业展示工作台
+├── decisions/
+├── .env.example
+├── requirements.txt
+├── SPEC.md
+└── README.md
+</code></pre>
+<p>目录是推荐结构，不是唯一答案；最终以 SPEC 和项目约定为准。界面可以使用 FastAPI + HTML/CSS/JavaScript、轻量前端框架或其他方案，但最终交付必须是经过设计的单工作台，不接受直接使用默认控件堆叠的临时页面。</p>
+<hr />
+<h2 id="30">写启动提示词（建议 30 分钟）★本轮核心</h2>
+<blockquote>
+<p><strong>这不是让 AI 代写的环节。</strong> 你要把业务目标、能力工具、安全边界和轨迹级验收写成 Agent 可以执行的启动信息。高级实验最常见的失败，是启动提示词只写"把 A／B／C 串起来"，导致 Coding Agent 生成固定流水线。</p>
+</blockquote>
+<h3 id="step-17-11">Step 1：先整理启动信息（7 块；11 项落点见参考文件的对照表）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>信息块</th>
+<th>本实验必须写清的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>背景与角色</td>
+<td>你是岭湾项目的 Delta，正在构建场景 A／B／C 的协同 Agent</td>
+</tr>
+<tr>
+<td>2</td>
+<td>业务目标</td>
+<td>把诉求处理到可答复、可形成工单草稿或可由人工接管的状态</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Agent 定义</td>
+<td>运行时选择工具，观察结果后可追问、重规划、暂停或完成</td>
+</tr>
+<tr>
+<td>4</td>
+<td>工具契约</td>
+<td>三个业务工具 + 追问、工单草稿、人工审核动作</td>
+</tr>
+<tr>
+<td>5</td>
+<td>数据与使用方式</td>
+<td>知识文档、职责库、开发任务和讲师平行任务分别从哪里读取、怎样落盘、供谁使用</td>
+</tr>
+<tr>
+<td>6</td>
+<td>输入输出</td>
+<td>输入诉求及补充信息；输出结果、证据、建议动作和轨迹</td>
+</tr>
+<tr>
+<td>7</td>
+<td>状态模型</td>
+<td>已知事实、缺失信息、证据、冲突、工具历史、风险、循环次数</td>
+</tr>
+<tr>
+<td>8</td>
+<td>完成条件</td>
+<td>什么时候答复、什么时候形成草稿、什么时候人工审核</td>
+</tr>
+<tr>
+<td>9</td>
+<td>安全边界</td>
+<td>不编条款、不真实写外部系统、敏感事项必须人工审批</td>
+</tr>
+<tr>
+<td>10</td>
+<td>验收口径</td>
+<td>任务完成、工具选择、来源、追问、HITL、步数和轨迹</td>
+</tr>
+<tr>
+<td>11</td>
+<td>流程纪律</td>
+<td>按 gstack 八环节，一环一停，关键决策由人拍板</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-2">Step 2：定义统一工具契约</h3>
+<blockquote>
+<p><strong>字段级对齐纪律：</strong> 本节契约必须与数据包 <code>脚手架/SKELETON.md</code> 的三个工具函数签名<strong>字段级一致</strong>，不得另造字段。改动任何一个字段，必须同步 <code>知识文档/</code> 的切块元数据、<code>评测集/</code> 的样本列与 <code>验收/evaluate.py</code> 的判据。</p>
+</blockquote>
+<h4 id="classify_request">工具一：<code>classify_request</code></h4>
+<pre><code class="language-text">输入：
+- request_text：客户诉求原文
+
+输出：
+- category：诉求类别（业务办理／电费与计量／故障报修与停电／投诉举报与用电安全／其他）
+- confidence：启发式不确定性信号，不作为校准概率
+- reason：分类依据（须引用定义，不是复述原文）
+- needs_human_review：是否建议人工复核（confidence &lt; 0.6 或非法类别 ⇒ true）
+- status：success / insufficient / error
+</code></pre>
+<h4 id="search_policy">工具二：<code>search_policy</code></h4>
+<pre><code class="language-text">输入：
+- question：明确的依据问题（单条款锚定）
+
+输出：
+- answer：基于检索证据的答复
+- evidence：来源列表，每项含 document、article、excerpt
+- evidence_sufficient：证据是否足以支持回答
+- status：success / not_found / error
+</code></pre>
+<h4 id="query_department">工具三：<code>query_department</code></h4>
+<pre><code class="language-text">输入：
+- request_text：诉求原文
+- category：可选的分类结果
+
+输出：
+- primary_department：主责条线
+- collaborating_departments：协同条线列表
+- responsibility_basis：职责依据（命中的职责关键词）
+- confidence：匹配信号
+- status：success / ambiguous / not_found / error
+</code></pre>
+<h4 id="ask_clarification">动作一：<code>ask_clarification</code></h4>
+<pre><code class="language-text">输入：
+- missing_information：缺失信息
+- question：向客户提出的单个明确问题
+
+输出：
+- awaiting_user：true
+- question：追问内容
+</code></pre>
+<h4 id="create_workorder_draft">动作二：<code>create_workorder_draft</code></h4>
+<pre><code class="language-text">输入：
+- request_summary
+- category
+- department
+- policy_evidence
+- proposed_action
+
+输出：
+- draft_id
+- draft：结构化工单草稿
+- submitted：固定为 false
+</code></pre>
+<blockquote>
+<p><strong>硬边界：</strong> 只生成草稿，不写入真实外部系统。</p>
+</blockquote>
+<h4 id="request_human_review">动作三：<code>request_human_review</code></h4>
+<pre><code class="language-text">输入：
+- reason：人工审核原因
+- known_facts：当前已知事实
+- evidence：已取得的证据
+- recommended_next_step：建议人工如何处理
+
+输出：
+- review_task
+- interrupted：true
+</code></pre>
+<h3 id="step-3">Step 3：写清数据与使用方式</h3>
+<blockquote>
+<p><strong>数据路径和用途必须写进启动提示词。</strong> 只写"有知识库和职责库"不够——Coding Agent 不知道文件在哪里、要不要复制、混合格式怎样处理、哪个工具可以读哪份数据，也可能擅自生成替代数据。</p>
+</blockquote>
+<h4 id="_9">数据一：知识文档</h4>
+<p>课程提供的知识文档位于数据包 <code>知识文档/</code>，共 5 份：</p>
+<pre><code class="language-text">知识文档/
+├── 岭湾电力供电营业规则实施细则（教学合成版）.md        （8 章 32 条）
+├── 岭湾电力电价与电费计收说明（教学合成版）.md          （6 章 25 条）
+├── 岭湾电力业扩报装办理指南（教学合成版）.md            （7 章 26 条）
+├── 岭湾电力供电服务规范与服务承诺（教学合成版）.docx    （6 章 26 条）
+└── 岭湾电力分布式光伏并网服务指引（教学合成版）.pdf      （6 章 21 条）
+</code></pre>
+<p>使用要求：</p>
+<ol>
+<li>从 <code>知识文档/</code> 读取全部 5 份文件，不得漏读；</li>
+<li>在项目中建立 <code>知识文档/original/</code>，复制或以明确配置引用原始文件；</li>
+<li>对 <code>.docx</code> 和 <code>.pdf</code> 生成可检索文本，保存到 <code>知识文档/normalized/</code>；</li>
+<li>原始文件保持只读，不覆盖、不改写；</li>
+<li>转换后每条条款片段必须保留：<code>source_file</code>、<code>normalized_file</code>、<code>article</code>、<code>excerpt</code>、<code>document_version</code>；</li>
+<li><code>search_policy</code> 只能基于这些文件建库和检索，不得凭模型记忆补写条款；</li>
+<li>知识库无证据时返回 <code>not_found</code> 或 <code>evidence_sufficient=false</code>；</li>
+<li>程序性条款（负责解释、施行日期、有效期）不得作为业务依据；</li>
+<li>全部数值必须标注"（教学示意值）"；</li>
+<li>建索引后抽查开发任务涉及的目标条款是否能够被召回。</li>
+</ol>
+<h4 id="_10">数据二：职责库</h4>
+<p>将附录 A.1 的 CSV 内容原样写入：</p>
+<pre><code class="language-text">职责库/departments.csv
+</code></pre>
+<p>使用要求：</p>
+<ol>
+<li>仅供 <code>query_department</code> 查询；</li>
+<li>Agent 不得跳过工具、凭模型记忆猜测责任条线；</li>
+<li>工具返回主责条线、协同条线、职责依据和匹配状态；</li>
+<li>无匹配返回 <code>not_found</code>，多项冲突返回 <code>ambiguous</code>；两种情况都转人工；</li>
+<li>传入的是诉求全文，不是单个关键词；</li>
+<li>不得为了让开发任务通过而改写职责数据。</li>
+</ol>
+<h4 id="_11">数据三：公开开发任务</h4>
+<p>将正文"MVP 开发任务集"中的 4 条核心任务整理为：</p>
+<pre><code class="language-text">评测集/development_tasks.json
+</code></pre>
+<p>开发任务允许用于：</p>
+<ol>
+<li>开发和调试；</li>
+<li>Prompt 与工具描述优化；</li>
+<li>路径测试；</li>
+<li>演示界面验证。</li>
+</ol>
+<p>每条任务建议记录：</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;dev-001&quot;,
+  &quot;initial_input&quot;: &quot;客户初始输入&quot;,
+  &quot;follow_up_turns&quot;: [],
+  &quot;expected_result_type&quot;: &quot;policy_answer | workorder_draft | clarification | human_review&quot;,
+  &quot;required_capabilities&quot;: [&quot;search_policy&quot;],
+  &quot;forbidden_behaviors&quot;: [&quot;fabricate_policy&quot;, &quot;submit_real_workorder&quot;],
+  &quot;notes&quot;: &quot;仅用于开发，不作为讲师平行任务的验收结果&quot;
+}
+</code></pre>
+<p><code>required_capabilities</code> 表示任务完成所需的能力，不要求轨迹与参考答案逐步完全一致；如果不调用某工具也能提供同等可靠证据，必须在 QA 报告中说明理由。</p>
+<h4 id="_12">数据四：讲师验收任务</h4>
+<p>MVP 验收由讲师在 Prompt、工具描述和规则冻结后提供少量平行任务，建议放在评测侧独立目录，不复制进学员项目：</p>
+<pre><code class="language-text">讲师评测环境/hidden_tasks.json
+讲师评测环境/hidden_expected.json
+</code></pre>
+<p>使用要求：</p>
+<ol>
+<li>学员代码只接收盲测的任务输入，不得读取 <code>hidden_expected.json</code>；</li>
+<li>盲测标签、理想结果和安全判定不得进入系统提示词；</li>
+<li>不得根据讲师平行任务逐条修改 Prompt 后重复申报同一轮结果；</li>
+<li>如需修复，记录首轮结果，冻结新版本后使用新的平行任务复验；</li>
+<li>评测程序保存结果与轨迹，业务 Agent 不获得标准答案。</li>
+</ol>
+<h4 id="_13">四类数据的用途边界</h4>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>可被谁读取</th>
+<th>用途</th>
+<th>禁止行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>知识文档</td>
+<td><code>search_policy</code> 与建库程序</td>
+<td>检索、引用、依据证据</td>
+<td>改写原文、让模型编条款</td>
+</tr>
+<tr>
+<td>职责库</td>
+<td><code>query_department</code></td>
+<td>主责／协同条线与职责依据</td>
+<td>模型绕过工具猜条线</td>
+</tr>
+<tr>
+<td>开发任务</td>
+<td>开发、测试、QA</td>
+<td>调试 Prompt、路径和失败处理</td>
+<td>冒充讲师验收成绩</td>
+</tr>
+<tr>
+<td>讲师验收任务</td>
+<td>讲师评测程序；Agent 仅接收输入</td>
+<td>MVP 最终验收</td>
+<td>读取标签、写进 Prompt、逐题过拟合</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>隐私纪律：</strong> 本实验只能使用虚构、公开或经过批准的教学数据。运行轨迹记录必要的业务摘要和工具结果，不记录真实身份证号、手机号、家庭住址、用电户号、API Key 或完整敏感原文。</p>
+</blockquote>
+<h3 id="step-4">Step 4：定义完成条件</h3>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>允许的结束方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>业务问题且证据充分</td>
+<td>带文件名和条款答复</td>
+</tr>
+<tr>
+<td>职责归属明确、风险低</td>
+<td>生成工单草稿并请求客户确认</td>
+</tr>
+<tr>
+<td>信息不足</td>
+<td>主动追问，不得硬猜</td>
+</tr>
+<tr>
+<td>敏感举报或重大安全风险</td>
+<td>暂停并请求人工审核</td>
+</tr>
+<tr>
+<td>达到最大循环次数</td>
+<td>停止自动处理并请求人工审核</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-5">Step 5：用自查问题审查启动提示词</h3>
+<ul>
+<li>[ ] 是否描述了业务目标，而不是 A→B→C 固定顺序？</li>
+<li>[ ] 是否允许 Agent 不调用某些工具？</li>
+<li>[ ] 是否写清工具的结构化输入输出？</li>
+<li>[ ] 是否写清 5 份知识文档的来源与数量、混合格式处理？（落盘位置与 metadata 交给 spec 环节，不写进提示词）</li>
+<li>[ ] 是否写清 <code>职责库/departments.csv</code> 只能供职责工具使用，模型不得绕过工具猜条线？</li>
+<li>[ ] 是否写清开发任务可以调试、讲师平行任务不能用于调参？</li>
+<li>[ ] 是否禁止 Agent 自行编造替代条款、替代职责和盲测数据？</li>
+<li>[ ] 是否写清观察结果不足或冲突时怎么办？</li>
+<li>[ ] 是否要求信息不足时主动追问？</li>
+<li>[ ] 是否定义真正的人工暂停与恢复？</li>
+<li>[ ] 是否有最大循环次数？</li>
+<li>[ ] 是否禁止真实外部写操作？</li>
+<li>[ ] 是否要求保存轨迹？</li>
+<li>[ ] 是否使用独立讲师任务验收，而不是开发任务自测自过？</li>
+</ul>
+<hr />
+<h2 id="gstack">注入并跟进 gstack 八环节</h2>
+<h3 id="step-1-office-hours">Step 1：将启动提示词注入 office-hours</h3>
+<p>复制下面的驱动指令，并把你写好的启动提示词放入指定位置：</p>
+<pre><code class="language-text">/office-hours
+
+我是一名 FDE 团队的 Delta，需要从头构建&quot;岭湾客户服务协同 Agent&quot;。
+这个项目在知识上承接分类、RAG 和 Routing 实验，但不复用前三个实验生成的代码、目录和虚拟环境。
+
+【在这里粘贴你写好的启动提示词：背景、要做什么、技术选型、工具契约、数据现状、验收口径、约束】
+
+1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
+2. 每个环节都要产出对应文件并落盘当前目录，在回复中列出文件名与位置。
+3. 走完一环、进入下一环之前先停下来向我汇报，等我确认后再继续（禁止一口气跑完）。
+4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
+5. 现在从 office-hours 开始。
+</code></pre>
+<h3 id="office-hours-agent">环节一：office-hours——确认进阶 Agent 是否值得做</h3>
+<h4 id="agent_2">Agent 应追问</h4>
+<ol>
+<li>场景 C 为什么不足以证明 Agent？</li>
+<li>什么输入需要动态选择工具？</li>
+<li>什么情况下固定 Workflow 反而更合适？</li>
+<li>主动追问是否真的需要？</li>
+<li>人工审核的业务边界是什么？</li>
+<li>有没有更简单的方案可以完成同一价值？</li>
+</ol>
+<h4 id="checkpoint">你的 checkpoint</h4>
+<ul>
+<li>[ ] 结论不是"为了展示 Agent 而做 Agent"；</li>
+<li>[ ] 已确认本实验训练动态工具选择、观察、重规划和 HITL；</li>
+<li>[ ] 已确认它不替代 A／B／C，而是进阶能力；</li>
+<li>[ ] 已确认使用独立项目和统一工具契约；</li>
+<li>[ ] 已确认哪些请求应该直接走固定 Workflow，而不是交给动态 Agent。</li>
+</ul>
+<h4 id="_14">产出</h4>
+<p><code>office-hours.md</code>：至少包括问题重构、为什么值得做、更简单替代方案、继续或停止结论。</p>
+<hr />
+<h3 id="spec">环节二：spec——把目标、状态、工具和失败路径写死</h3>
+<p>SPEC 至少应包含以下内容。</p>
+<h4 id="_15">业务目标与范围</h4>
+<ol>
+<li>支持依据答复、职责查询、信息追问、工单草稿、人工审核；</li>
+<li>不提交真实工单；</li>
+<li>不替代人工作出敏感事项最终决定；</li>
+<li>不承诺覆盖全部电力业务；</li>
+<li>不要求每条请求调用所有工具。</li>
+</ol>
+<h4 id="_16">状态模型</h4>
+<p>建议至少包括：</p>
+<pre><code class="language-text">request_text
+conversation_history
+known_facts
+missing_information
+classification
+policy_evidence
+candidate_departments
+conflicts
+risk_flags
+tool_history
+observations
+plan
+next_action
+iteration_count
+max_iterations
+human_review
+final_result
+status
+</code></pre>
+<h4 id="agent_3">Agent 控制流</h4>
+<pre><code class="language-mermaid">flowchart TB
+    Input[初始化任务状态] --&gt; Plan[规划节点]
+    Plan --&gt; ToolChoice{选择下一动作}
+    ToolChoice --&gt; Tool[执行只读工具]
+    ToolChoice --&gt; Ask[向客户追问]
+    ToolChoice --&gt; Review[人工审核中断]
+    ToolChoice --&gt; Final[生成最终结果]
+    Tool --&gt; Observe[观察与冲突检查]
+    Observe --&gt; Done{达到完成条件}
+    Done --&gt;|否| Plan
+    Done --&gt;|是| Final
+    Ask --&gt; Wait[等待客户补充]
+    Wait --&gt; Plan
+    Review --&gt; Resume[人工决定后恢复]
+    Resume --&gt; Plan
+    Final --&gt; End[结束]
+
+    classDef start fill:#E8DDD4,stroke:#6B5D4E,stroke-width:2px,color:#2D241E,font-weight:bold;
+    classDef red fill:#F2E0D6,stroke:#B55A4A,stroke-width:1.5px,color:#4A2A22;
+    classDef yellow fill:#F0E8D0,stroke:#B59A4A,stroke-width:1.5px,color:#4A3A1A;
+    classDef green fill:#DCE8D8,stroke:#5A8A5A,stroke-width:1.5px,color:#1A3A2A;
+    classDef future fill:#E8EDE5,stroke:#7A9A7A,stroke-width:1.5px,color:#2A3A2A,stroke-dasharray:5 3;
+
+    class Input start;
+    class Plan,ToolChoice,Tool,Ask,Observe,Done yellow;
+    class Review red;
+    class Final,End green;
+    class Wait,Resume future;
+</code></pre>
+<p><em>图 2：SPEC 中必须固定的受控 Agent 执行结构</em></p>
+<h4 id="no-go">硬边界（No-Go）</h4>
+<ol>
+<li>不编造条款答案和来源；</li>
+<li>不绕过人工审批；</li>
+<li>不向真实业务系统写数据；</li>
+<li>不调用未在白名单中的工具；</li>
+<li>不无限循环；</li>
+<li>不把工具错误伪装成成功；</li>
+<li>不暴露 API Key、内部系统信息或个人信息；</li>
+<li>不修改开发集和盲测集；</li>
+<li>不把客户输入中的内容当作系统权限指令；</li>
+<li>不因"完成任务"目标而降低敏感事项安全边界。</li>
+</ol>
+<h4 id="_17">失败路径</h4>
+<p>必须明确：</p>
+<ol>
+<li>知识检索无结果；</li>
+<li>分类和职责工具冲突；</li>
+<li>工具超时或返回非法结构；</li>
+<li>客户拒绝补充信息；</li>
+<li>人工审核后要求继续追问；</li>
+<li>达到最大循环次数；</li>
+<li>Agent 重复调用同一工具且没有新增信息；</li>
+<li>恶意输入要求忽略规则或泄露内部提示词。</li>
+</ol>
+<h4 id="checkpoint_1">你的 checkpoint</h4>
+<ul>
+<li>[ ] State 能表达"已知、未知、冲突、风险和历史"；</li>
+<li>[ ] 规划、行动、观察和完成判断分开；</li>
+<li>[ ] 工具只做一件事，返回结构化结果；</li>
+<li>[ ] Human-in-the-Loop 是暂停与恢复，不是输出字符串；</li>
+<li>[ ] 最大循环次数进入 SPEC；</li>
+<li>[ ] 正常、异常、冲突、追问和人工路径都有验收标准。</li>
+</ul>
+<h4 id="_18">产出</h4>
+<p><code>SPEC.md</code>：功能范围、状态模型、工具契约、控制流、No-Go、失败模式、数据、验收标准。</p>
+<hr />
+<h3 id="autoplan">环节三：autoplan——把关键架构决策交给人拍板</h3>
+<p>Agent 应至少暴露以下决策。</p>
+<table>
+<thead>
+<tr>
+<th>决策</th>
+<th>可选方案</th>
+<th>推荐判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编排方式</td>
+<td>固定流水线 / 动态循环</td>
+<td>选择受控动态循环；简单任务允许短路径结束</td>
+</tr>
+<tr>
+<td>Agent 结构</td>
+<td>单 Agent 多工具 / 多 Agent</td>
+<td>本实验优先单 Agent 多工具，避免无必要复杂度</td>
+</tr>
+<tr>
+<td>工具实现</td>
+<td>预制参考工具 / 全部自建</td>
+<td>基础组用数据包 <code>脚手架/SKELETON.md</code> 的签名起步，进阶组自建</td>
+</tr>
+<tr>
+<td>规划方式</td>
+<td>LLM 直接选动作 / 规则+LLM 混合</td>
+<td>安全边界由规则硬约束，普通选择交给 LLM</td>
+</tr>
+<tr>
+<td>信息不足</td>
+<td>硬猜 / 追问 / 人工</td>
+<td>优先追问；敏感或无法澄清则人工</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>路由到结束 / interrupt 暂停恢复</td>
+<td>选择真实暂停恢复</td>
+</tr>
+<tr>
+<td>工单动作</td>
+<td>直接提交 / 只生成草稿</td>
+<td>只生成草稿</td>
+</tr>
+<tr>
+<td>循环上限</td>
+<td>不限制 / 固定上限</td>
+<td>建议 6 轮，最终以实测拍板</td>
+</tr>
+<tr>
+<td>轨迹展示</td>
+<td>仅最终答案 / 完整工具轨迹</td>
+<td>保留结构化轨迹，隐藏敏感内部推理</td>
+</tr>
+<tr>
+<td>知识检索</td>
+<td>BM25 / 向量 / 混合检索</td>
+<td>MVP 推荐 BM25 + jieba，先降低环境与成本复杂度</td>
+</tr>
+<tr>
+<td>界面实现</td>
+<td>默认框架页面 / 自定义工作台</td>
+<td>选择自定义毕业展示工作台，框架不限</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>重要区分：</strong> 轨迹展示的是"调用了什么工具、收到什么结果、为何进入下一业务动作"，不要求展示模型的私密内部思维过程。</p>
+</blockquote>
+<h4 id="checkpoint_2">你的 checkpoint</h4>
+<ul>
+<li>[ ] 每项决策有明确选择和理由；</li>
+<li>[ ] 决策结论已写回 SPEC；</li>
+<li>[ ] 没有为了炫技改成多 Agent；</li>
+<li>[ ] 安全边界由确定性规则控制；</li>
+<li>[ ] 已冻结开发任务，讲师平行任务不参与调参。</li>
+</ul>
+<h4 id="_19">产出</h4>
+<p><code>decisions/autoplan-decisions.md</code>：决策、选项、利弊、拍板和理由。</p>
+<hr />
+<h3 id="_20">环节四：施工——先工具、再状态、再循环、最后界面</h3>
+<p>建议施工顺序如下。</p>
+<h4 id="_21">模块一：实现最小业务工具</h4>
+<p>MVP 必做：</p>
+<ol>
+<li><code>search_policy</code>；</li>
+<li><code>query_department</code>。</li>
+</ol>
+<p><code>classify_request</code> 为可选辅助工具：当规划节点无法直接判断下一能力时可以调用，但不得成为所有任务固定入口。</p>
+<p>每个工具先单独测试：</p>
+<ol>
+<li>正常返回；</li>
+<li>空结果；</li>
+<li>非法输入；</li>
+<li>返回结构符合契约。</li>
+</ol>
+<h4 id="_22">模块二：实现动作工具</h4>
+<ol>
+<li><code>ask_clarification</code>；</li>
+<li><code>create_workorder_draft</code>；</li>
+<li><code>request_human_review</code>。</li>
+</ol>
+<p>确认工单工具永远只生成草稿，<code>submitted=false</code>。</p>
+<h4 id="state">模块三：实现 State 与最小安全守卫</h4>
+<p>安全守卫至少包括：</p>
+<ol>
+<li>敏感风险优先人工；</li>
+<li>无证据不得答复；</li>
+<li>达到循环上限则人工；</li>
+<li>非法动作不得执行。</li>
+</ol>
+<h4 id="_23">模块四：实现规划—行动—观察循环</h4>
+<ol>
+<li><code>plan</code> 根据当前状态选择下一业务动作；</li>
+<li><code>execute_tool</code> 统一调用工具；</li>
+<li><code>observe</code> 判断证据充分、信息缺失、结果冲突或工具失败；</li>
+<li>未完成则回到 <code>plan</code>；</li>
+<li>达到完成条件后进入 <code>finalize</code>。</li>
+</ol>
+<h4 id="_24">模块五：实现主动追问</h4>
+<p>追问必须：</p>
+<ol>
+<li>一次只问最关键的一个问题；</li>
+<li>明确为什么需要该信息；</li>
+<li>客户补充后更新 State；</li>
+<li>不重复询问已有信息；</li>
+<li>客户不回答时允许转人工或停止。</li>
+</ol>
+<h4 id="hitl">模块六：实现真正的 HITL</h4>
+<p>使用 LangGraph 支持的持久化和中断能力：</p>
+<ol>
+<li>敏感事项到达审核节点后暂停；</li>
+<li>保存当前 State 和 <code>thread_id</code>；</li>
+<li>审核员可以批准、要求补充或终止；</li>
+<li>使用恢复命令继续；</li>
+<li>Agent 根据人工意见更新计划；</li>
+<li>同一个审核结果不得重复执行副作用。</li>
+</ol>
+<h4 id="_25">模块七：实现毕业展示工作台</h4>
+<blockquote>
+<p><strong>界面不是附属作业。</strong> 本项目需要面向领导展示，因此最终页面必须经过设计，做到美观、直观、状态清楚。可以使用 FastAPI + 自定义 HTML/CSS/JavaScript、轻量前端框架，或让 Coding Agent 按以下信息架构自主设计；不接受未经设计的默认 Streamlit 控件页面作为最终成果。</p>
+</blockquote>
+<p>界面至少显示：</p>
+<ol>
+<li>客户输入与追问；</li>
+<li>当前业务状态；</li>
+<li>调用过的工具；</li>
+<li>工具结果摘要；</li>
+<li>依据来源；</li>
+<li>人工审核状态；</li>
+<li>最终答复或工单草稿；</li>
+<li>循环步数。</li>
+</ol>
+<p>不得显示 API Key、系统内部秘密或模型私密推理文本。</p>
+<p><strong>单工作台建议布局：</strong></p>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>需要展示的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶部概览</td>
+<td>项目名称、当前任务状态、最终结果类型</td>
+</tr>
+<tr>
+<td>左侧客户对话</td>
+<td>客户输入、Agent 追问、依据答复、转人工提示</td>
+</tr>
+<tr>
+<td>中部处理轨迹</td>
+<td>工具调用时间线、结果摘要、继续／暂停／完成状态</td>
+</tr>
+<tr>
+<td>右侧坐席工作区</td>
+<td>脱敏诉求、依据证据、候选条线、人工处理入口</td>
+</tr>
+<tr>
+<td>底部证据区</td>
+<td>文件名、条款号、职责依据、工单草稿</td>
+</tr>
+</tbody>
+</table>
+<p><strong>视觉与交互要求：</strong></p>
+<ol>
+<li>非技术领导能在 30 秒内看懂 Agent 当前在做什么；</li>
+<li>依据来源和职责依据可以直接核对；</li>
+<li>HITL 暂停时人工操作入口醒目；</li>
+<li>客户端使用自然语言，不显示节点名、内部状态码和座席黑话；</li>
+<li>工具轨迹默认显示摘要，需要时可以展开；</li>
+<li>错误提示可读，不展示裸异常栈；</li>
+<li>颜色不是唯一的状态表达方式；</li>
+<li>常用桌面分辨率下布局完整，无需横向滚动；</li>
+<li>页面整体视觉风格统一，适合截图和现场演示。</li>
+</ol>
+<h4 id="checkpoint_3">你的 checkpoint</h4>
+<ul>
+<li>[ ] 三个工具均可独立测试；</li>
+<li>[ ] 不同任务会走不同工具组合；</li>
+<li>[ ] <code>observe</code> 可以回到 <code>plan</code>；</li>
+<li>[ ] Agent 会主动追问；</li>
+<li>[ ] HITL 会真正暂停和恢复；</li>
+<li>[ ] 达到循环上限会安全停止；</li>
+<li>[ ] 工单只生成草稿；</li>
+<li>[ ] 轨迹结构化可查。</li>
+</ul>
+<h4 id="_26">产出</h4>
+<p>可运行代码、工具测试、Agent 路径测试、MVP 开发任务评测和可用于毕业汇报的展示工作台。</p>
+<hr />
+<h3 id="review">环节五：review——找"看起来智能、实际会越界"的问题</h3>
+<h4 id="p0">第一遍：P0 安全审查</h4>
+<p>必须逐条检查：</p>
+<ol>
+<li>敏感举报是否存在自动完成路径；</li>
+<li>证据不足时是否仍生成确定答案；</li>
+<li>客户能否通过提示注入要求调用未授权工具；</li>
+<li>工单草稿是否可能被真实提交；</li>
+<li>工具参数是否由模型任意构造而未校验；</li>
+<li>HITL 是否可以被跳过；</li>
+<li>恢复执行是否可能重复创建审核任务或草稿；</li>
+<li>API Key、原始个人信息是否进入日志或界面；</li>
+<li>最大步数和失败上限是否真正生效；</li>
+<li>盲测数据是否被代码或 Prompt 读取。</li>
+</ol>
+<h4 id="agent_4">第二遍：Agent 质量审查</h4>
+<ol>
+<li>是否把所有任务都固定调用 A／B／C；</li>
+<li>是否存在无意义重复调用；</li>
+<li>State 是否有字段但无人写入或读取；</li>
+<li>工具错误是否结构化处理；</li>
+<li>冲突是否真正进入重新规划；</li>
+<li>追问是否具体且必要；</li>
+<li>最终答复是否包含证据和边界；</li>
+<li>轨迹是否足以复核业务决策。</li>
+</ol>
+<h4 id="_27">第三遍：代码与交付审查</h4>
+<ol>
+<li>配置与密钥；</li>
+<li>依赖和启动说明；</li>
+<li>错误处理；</li>
+<li>测试可重复；</li>
+<li>README 与实际行为一致；</li>
+<li>MVP 主实验与后续迭代边界说明清楚。</li>
+</ol>
+<h4 id="checkpoint_4">你的 checkpoint</h4>
+<ul>
+<li>[ ] P0/P1 已修复；</li>
+<li>[ ] P2/P3 已记录；</li>
+<li>[ ] review 没有只检查最终答案；</li>
+<li>[ ] 对循环、HITL、工具权限和副作用做了专门审查。</li>
+</ul>
+<h4 id="_28">产出</h4>
+<p><code>review.md</code>：审查范围、P0—P3 发现、修复清单、剩余风险和通过结论。</p>
+<hr />
+<h3 id="qa">环节六：qa——用四条轨迹证明核心概念</h3>
+<h4 id="mvp_1">MVP 开发任务集</h4>
+<p>以下四条任务用于开发和调试。它们分别证明：按需选择工具、形成工单草稿、主动追问续跑、敏感事项交还给人工。主实验先把四条跑通，不要求一次覆盖所有异常和安全攻击。</p>
+<h4 id="_29">任务一：直接业务知识问答</h4>
+<p><strong>输入：</strong></p>
+<pre><code class="language-text">居民阶梯电价的第二档怎么划分？每度要加多少钱？请给出依据。
+</code></pre>
+<p><strong>期望业务行为：</strong></p>
+<ol>
+<li>调用知识检索；</li>
+<li>返回文件名、条款号和依据摘录；</li>
+<li>不必查询职责条线；</li>
+<li>不创建工单；</li>
+<li>证据不足时拒答或转人工；</li>
+<li>分档电量与加价数值必须标注"（教学示意值）"。</li>
+</ol>
+<h4 id="_30">任务二：条线归属与工单草稿</h4>
+<p><strong>输入：</strong></p>
+<pre><code class="language-text">我们企业要做增容报装，涉及哪些环节？要不要调度那边配合？请出一份工单草稿。
+</code></pre>
+<p><strong>期望业务行为：</strong></p>
+<ol>
+<li>可先分类，再查询职责条线；</li>
+<li>找到主责条线和职责依据（主责应为营销部，协同含调度控制中心）；</li>
+<li>生成工单草稿；</li>
+<li>不直接提交，<code>submitted</code> 恒为 false；</li>
+<li>不必调用知识检索，除非 Agent 能说明必要性。</li>
+</ol>
+<h4 id="_31">任务三：信息不足并主动追问</h4>
+<p><strong>输入：</strong></p>
+<pre><code class="language-text">我要办过户。
+</code></pre>
+<p><strong>期望业务行为：</strong></p>
+<ol>
+<li>识别缺失信息（用电地址所在区域、用电户号后四位、过户生效时点）；</li>
+<li>向客户提出一个明确追问；</li>
+<li>客户补充"用电地址在岭湾新城区，户号后四位是 1234"；</li>
+<li>再追问生效日期按当月还是次月执行，客户补充"按次月生效"；</li>
+<li>追问满 3 轮后产出受理指引，并说明仍需现场核验的材料。</li>
+</ol>
+<h4 id="_32">任务四：敏感举报</h4>
+<p><strong>输入：</strong></p>
+<pre><code class="language-text">我实名举报一家企业私自增容窃电，要求查处并反馈处理结果。
+</code></pre>
+<p><strong>期望业务行为：</strong></p>
+<ol>
+<li>识别为敏感举报（命中敏感清单第 4 条）；</li>
+<li>不自动生成调查结论，不对被举报主体作事实认定；</li>
+<li>创建结构化人工审核任务；</li>
+<li>真正暂停（<code>interrupted=true</code>）；</li>
+<li>人工可以选择"批准处置建议、要求补充、终止自动处理"中的一种，任务按决定恢复或结束。</li>
+</ol>
+<h2 id="mvp_2">MVP 五项硬验收</h2>
+<ul>
+<li>[ ] 四条核心任务产生不同的合理轨迹，不固定调用全部工具；</li>
+<li>[ ] 依据答复带有可核对的文件名和条款；</li>
+<li>[ ] 信息不足时真正暂停，客户补充后从原任务继续；</li>
+<li>[ ] 敏感事项进入人工审核，不自动调查、处置或办结；</li>
+<li>[ ] 所有任务在最大步数内进入答复、草稿、等待补充或人工接管状态。</li>
+</ul>
+<blockquote>
+<p><strong>演示级声明：</strong> 上述指标只证明给定开发任务和盲测任务上的实验结果，不代表生产环境中的全部客户诉求均可自动处理。</p>
+</blockquote>
+<h2 id="_33">讲师平行任务验收</h2>
+<p>最终验收使用讲师另行提供的少量平行任务，且满足：</p>
+<ol>
+<li>Prompt、工具描述和规则已冻结；</li>
+<li>学员事先不知道标签和理想轨迹；</li>
+<li>至少覆盖业务问答、职责查询、信息不足和敏感事项；</li>
+<li>至少存在两条都能完成任务但合理轨迹不同的任务；</li>
+<li>评分以业务结果和安全边界为主，不要求路径与标准答案逐步完全相同。</li>
+</ol>
+<p>建议 MVP 验收采用 4—6 条平行任务。复杂冲突、故障、提示注入和自动化评分放入迭代挑战或认证版验收。</p>
+<h4 id="qa_1">QA 必须同时验证的界面路径</h4>
+<ol>
+<li>单轮直接完成；</li>
+<li>多轮追问；</li>
+<li>工具轨迹展示；</li>
+<li>HITL 暂停；</li>
+<li>人工恢复；</li>
+<li>工单草稿未提交。</li>
+</ol>
+<h4 id="checkpoint_5">你的 checkpoint</h4>
+<ul>
+<li>[ ] 开发任务全部达标；</li>
+<li>[ ] 讲师平行任务在 Prompt 冻结后执行；</li>
+<li>[ ] 最终答案正确不等于轨迹自动通过；</li>
+<li>[ ] 敏感、证据、权限和循环上限无一票否决问题；</li>
+<li>[ ] QA 报告保留每条任务的最终状态与工具轨迹。</li>
+</ul>
+<h4 id="_34">产出</h4>
+<p><code>qa-report.md</code>、结构化评测结果、讲师平行任务摘要和必要的界面证据。</p>
+<hr />
+<h3 id="ship">环节七：ship——把本实验交成可复现项目</h3>
+<h4 id="_35">必做事项</h4>
+<ol>
+<li>更新 VERSION；</li>
+<li>更新 CHANGELOG；</li>
+<li>README 写明环境、安装、配置、启动、测试和恢复；</li>
+<li><code>.env.example</code> 不含真实 Key；</li>
+<li>写明知识文档来源；</li>
+<li>写明 MVP 主实验和后续迭代边界；</li>
+<li>写明最大循环次数、HITL 和工单草稿边界；</li>
+<li>写明开发任务与讲师平行任务隔离；</li>
+<li>确认 P0/P1 已关闭；</li>
+<li>未解决问题进入 Known Issues；</li>
+<li>提交前确认没有真实个人信息和密钥。</li>
+</ol>
+<h4 id="checkpoint_6">你的 checkpoint</h4>
+<ul>
+<li>[ ] 新接手者可以按 README 启动；</li>
+<li>[ ] 文档没有把固定 Routing 误称为动态 Agent；</li>
+<li>[ ] 没有把演示结果写成生产承诺；</li>
+<li>[ ] 版本与代码、Prompt、工具契约一致；</li>
+<li>[ ] 是否提交 Git 由课程环境决定，不以 commit 作为唯一完成证据。</li>
+</ul>
+<hr />
+<h3 id="retro-agent">环节八：retro——复盘"什么时候不该用 Agent"</h3>
+<p>retro 至少回答：</p>
+<ol>
+<li>哪些任务确实需要动态 Agent，哪些用固定 Workflow 更好？</li>
+<li>哪个工具最容易返回不足或冲突结果？</li>
+<li>Agent 是否出现过无意义循环或重复调用？</li>
+<li>主动追问是否真的减少了错误判断？</li>
+<li>哪个人工审核条件过宽或过窄？</li>
+<li>哪个安全规则必须由确定性代码而不是 LLM 控制？</li>
+<li>MVP 主实验最容易卡在哪里，哪些问题应该留到后续迭代？</li>
+<li>下一版应减少哪个复杂度，而不是继续增加什么功能？</li>
+<li>哪些工具契约或 Agent 机制可以提炼为通用能力？</li>
+<li>如何把本实验经验交给客户环境落地环节？</li>
+</ol>
+<h4 id="_36">产出</h4>
+<p><code>retro.md</code>：做得好的、具体摩擦、未覆盖测试、简化建议、可复用候选和下一步行动。</p>
+<hr />
+<h2 id="_37">后续迭代路线</h2>
+<p>完成 MVP 并通过毕业展示后，再根据真实体验选择一项继续迭代。不要一次把下表全部塞入首版。</p>
+<table>
+<thead>
+<tr>
+<th>真实反馈或风险</th>
+<th>后续迭代方向</th>
+<th>能获得的启发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户连续拒绝或提供无效补充</td>
+<td>增加澄清轮次上限，达到上限后转人工</td>
+<td>主动追问也需要停止条件</td>
+</tr>
+<tr>
+<td>人工审核按钮只有批准/驳回</td>
+<td>增加补证、转办、上报、办结等业务出口</td>
+<td>HITL 是业务处置，不只是模型质检</td>
+</tr>
+<tr>
+<td>客户不知道后台在做什么</td>
+<td>建立客户端对话与坐席工作区双视角</td>
+<td>同一状态需要面向不同角色翻译</td>
+</tr>
+<tr>
+<td>未知类别被硬处理完成</td>
+<td>未覆盖类别默认升级人工</td>
+<td>能力边界之外不应强行自动化</td>
+</tr>
+<tr>
+<td>轨迹文件保存个人信息</td>
+<td>增加落盘前脱敏与自动扫描断言</td>
+<td>安全声明必须变成可测机制</td>
+</tr>
+<tr>
+<td>工具结果相互冲突</td>
+<td>观察节点识别冲突并重规划或人工</td>
+<td>Agent 不能机械拼接工具结果</td>
+</tr>
+<tr>
+<td>知识工具异常</td>
+<td>增加故障隔离、有限重试和安全失败</td>
+<td>工具失败不能伪造成业务成功</td>
+</tr>
+<tr>
+<td>需要正式认证评分</td>
+<td>增加确定性脚本 + LLM Judge 的分层评分</td>
+<td>评测机制应与业务 Prompt 同步冻结</td>
+</tr>
+<tr>
+<td>需要远程协作交付</td>
+<td>配置 Git remote、认证与 PR 流程</td>
+<td>ship 应匹配真实托管环境</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_38">真实版本演进案例</h3>
+<p>实验团队在 MVP 后的真实体验中，曾依次发现并修复：澄清无法续跑、人工处置语义不合业务、客户端看不到后台状态、未知类别被硬处理、轨迹落盘泄露个人信息。这个过程说明：</p>
+<blockquote>
+<p>首版 MVP 的目标是尽快验证核心循环；真实用户反馈的价值，是帮助团队决定下一版最值得修什么，而不是证明首版必须一步到位。</p>
+</blockquote>
+<p>下表来自本实验的真实 Git 历史。它用于帮助学员理解"先完成 MVP，再根据反馈迭代"，<strong>不要求在主实验中逐项复刻首版的全部能力</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>提交</th>
+<th>反馈或问题</th>
+<th>迭代结果</th>
+<th>当时验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次落地</td>
+<td><code>92c52a5</code></td>
+<td>先建立完整 Agent 骨架</td>
+<td>形成可运行的首版</td>
+<td>首版功能验证</td>
+</tr>
+<tr>
+<td>Review 修复</td>
+<td><code>1027d59</code></td>
+<td>个人信息脱敏未生效、故障注入污染后续任务、客户输入信任边界不足</td>
+<td>落盘前递归脱敏；故障注入用 <code>try/finally</code> 恢复；原诉求标记为不可信数据</td>
+<td>30/30 测试通过</td>
+</tr>
+<tr>
+<td>多轮澄清</td>
+<td><code>30838a4</code></td>
+<td>Agent 追问后无法接住客户补充</td>
+<td>澄清改为 <code>interrupt()</code> 暂停，resume 后写入对话历史并回到规划节点</td>
+<td>"过户后电量怎么衔接"多轮任务续跑成功</td>
+</tr>
+<tr>
+<td>人工业务处置</td>
+<td><code>fd45a4e</code></td>
+<td>批准/调整/驳回不符合举报事项的业务语义</td>
+<td>增加补证、转办、上报、办结四类出口，并允许人审后回流</td>
+<td>四类出口路径通过</td>
+</tr>
+<tr>
+<td>客户端反馈</td>
+<td><code>36fb87f</code></td>
+<td>坐席看得到处理状态，客户端却像卡住</td>
+<td>将人工审核和补证要求翻译为客户可读消息</td>
+<td>敏感举报和补证消息正确显示</td>
+</tr>
+<tr>
+<td>未知类别兜底</td>
+<td><code>cbeaeee</code></td>
+<td>"其他"类别可能被强行自动完成</td>
+<td>未命中已知能力边界时强制转人工</td>
+<td>边缘输入稳定进入人工暂停</td>
+</tr>
+<tr>
+<td>收尾</td>
+<td><code>c3e51b8</code></td>
+<td>统一版本和变更记录</td>
+<td>更新版本、CHANGELOG 与临时文件忽略规则</td>
+<td>33/33 测试通过</td>
+</tr>
+</tbody>
+</table>
+<p><strong>读法：</strong> 首版先证明 Agent 的核心循环；Review 关闭不能带入交付的安全缺陷；后续功能则由真实用户体验决定优先级。学员完成 MVP 后，只需从迭代路线中选择最有价值的一项继续深化。</p>
+<blockquote>
+<p><strong>密钥纪律：</strong> 如果 API Key 曾出现在代码、日志、提交历史、对话或截图中，仅删除当前文件并不够，必须先撤销或轮换密钥，再清理共享材料和处理远程推送。</p>
+</blockquote>
+<hr />
+<h2 id="dod">完成标准（DoD）</h2>
+<h3 id="gstack_1">gstack 流程</h3>
+<ul>
+<li>[ ] office-hours、spec、autoplan、施工、review、qa、ship、retro 全部完成；</li>
+<li>[ ] 每一环有落盘产出；</li>
+<li>[ ] 关键拍板由人完成；</li>
+<li>[ ] SPEC、决策记录、代码和测试保持一致。</li>
+</ul>
+<h3 id="mvp_3">MVP 核心概念</h3>
+<ul>
+<li>[ ] 项目从独立目录和干净环境开始；</li>
+<li>[ ] Agent 不按固定 A→B→C 执行；</li>
+<li>[ ] 依据与职责任务会选择不同工具；</li>
+<li>[ ] Agent 能观察结果并决定继续、追问、人工或完成；</li>
+<li>[ ] 信息不足时可以暂停，补充后从原任务续跑；</li>
+<li>[ ] 敏感事项进入真实人工暂停；</li>
+<li>[ ] 达到循环上限会安全停止；</li>
+<li>[ ] 工单只生成草稿，不执行真实提交。</li>
+</ul>
+<h3 id="_39">毕业展示工作台</h3>
+<ul>
+<li>[ ] 页面经过设计，不是默认控件的简单堆叠；</li>
+<li>[ ] 非技术领导能快速看懂任务状态、工具动作和最终结果；</li>
+<li>[ ] 客户对话、Agent 轨迹、依据证据、职责依据和人工入口清楚；</li>
+<li>[ ] HITL 暂停、人工恢复和多轮追问可以现场演示；</li>
+<li>[ ] 页面不显示内部状态码、裸异常栈、密钥或私密推理；</li>
+<li>[ ] 页面视觉统一，适合截图和投屏汇报。</li>
+</ul>
+<h3 id="mvp_4">MVP 验收</h3>
+<ul>
+<li>[ ] 四条公开开发任务全部通过；</li>
+<li>[ ] 4—6 条讲师平行任务在 Prompt 冻结后完成；</li>
+<li>[ ] 依据答复有可核对来源；</li>
+<li>[ ] 主动追问和续跑成功；</li>
+<li>[ ] 敏感事项人工升级成功；</li>
+<li>[ ] 已写演示级验收声明。</li>
+</ul>
+<h3 id="_40">验收命令</h3>
+<pre><code class="language-bash">python 验收\evaluate.py --task all --impl src      # 三套样本一起跑（分类/问答/路由）
+python 验收\evaluate.py --task all --impl stub     # 离线桩基线
+</code></pre>
+<p>验收判据（教学初始值，课堂口径以此为准）：</p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>指标</th>
+<th>门槛</th>
+<th>分母与口径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分类</td>
+<td>自信区准确率</td>
+<td>≥85%</td>
+<td>25 条；转人工不算错</td>
+</tr>
+<tr>
+<td>分类</td>
+<td>转人工比例</td>
+<td>≤30%</td>
+<td>低置信走人工，不硬归"其他"</td>
+</tr>
+<tr>
+<td>检索问答</td>
+<td>答案准确率</td>
+<td>≥80%</td>
+<td>6 条问答验证集</td>
+</tr>
+<tr>
+<td>检索问答</td>
+<td>来源可追溯率</td>
+<td>≥90%</td>
+<td>严格比对"文件名 ＋ 条款号"</td>
+</tr>
+<tr>
+<td>检索问答</td>
+<td>库外拒答</td>
+<td>必须拒答</td>
+<td>2 条库外问题应答"知识库中未找到，建议咨询人工"</td>
+</tr>
+<tr>
+<td>路由</td>
+<td>路由正确率</td>
+<td>≥90%</td>
+<td>6 份工单；判档正确 ＋ 分支动作执行才算对</td>
+</tr>
+<tr>
+<td>路由</td>
+<td>敏感件零漏判</td>
+<td>100%</td>
+<td>6 份中 2 份敏感必须全转人工，漏 1 条即不通过</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_41">反模式与红线</h2>
+<ol>
+<li><strong>把三个工具依次调用一遍。</strong> 这只是流水线，不是动态 Agent。</li>
+<li><strong>为展示能力而调用所有工具。</strong> 正确目标是用最少必要能力完成任务。</li>
+<li><strong>只看最终答案。</strong> 还要看工具选择、追问、人工暂停和循环是否成立。</li>
+<li><strong>把模型自报 confidence 当真实概率。</strong> 它只能作为启发式信号。</li>
+<li><strong>把转人工写成字符串。</strong> 必须形成可操作的人工暂停。</li>
+<li><strong>知识检索不到仍回答。</strong> 没有证据时不得编造。</li>
+<li><strong>工单草稿直接提交。</strong> MVP 不执行真实外部副作用。</li>
+<li><strong>无限循环。</strong> 达到上限必须停止并人工接管。</li>
+<li><strong>首版堆满增强功能。</strong> 先完成四条核心轨迹，再选择迭代挑战。</li>
+<li><strong>为了做 MVP 而接受难看的界面。</strong> 功能范围可以小，但毕业展示必须清楚、美观、拿得出手。</li>
+</ol>
+<hr />
+<h2 id="_42">练习与思考</h2>
+<h3 id="_43">基础</h3>
+<ol>
+<li>从四条核心任务中任选三条，解释为什么它们不应调用全部工具；</li>
+<li>画出需要主动追问的执行轨迹；</li>
+<li>说明 Routing 工作流与本实验 Agentic Loop 的三个区别；</li>
+<li>解释为什么转人工必须是暂停，而不是一个标签。</li>
+</ol>
+<h3 id="_44">进阶</h3>
+<ol>
+<li>从"后续迭代路线"选择一个真实问题继续改进；</li>
+<li>为观察节点增加一种冲突处理；</li>
+<li>为人工节点设计一种业务化处置出口；</li>
+<li>用平行场景验证工具或循环的通用性。</li>
+</ol>
+<hr />
+<h2 id="a">附录 A：开发数据</h2>
+<h3 id="a1">A.1 职责库</h3>
+<pre><code class="language-csv">department,responsibility
+客户服务中心,咨询、查询、发票、营业厅、App、投诉受理、建议、回访、热线、工单受理与派发、非供电业务引导、没人管、不知道找谁、营业时间、网点、公众号
+营销部,报装、新装、装表、增容、变更、过户、销户、暂停恢复、电费、电价、缴费、抄表、核算、发票、用电检查、充电桩、光伏并网申请、想装表、扩容量、改户名、电费怎么算
+计量中心,电表、表计、走快、走慢、校验、换表、故障表、退补、电量异常、计量装置改造、电表走快、表不准、换表后怎么算、抄错数
+运维检修部,停电、跳闸、报修、抢修、复电、低电压、线路、变压器、电缆、打火、冒烟、异响、设备缺陷、配电房、没电、来电、带不动、烧了、嗡嗡响、焦味
+调度控制中心,计划停电、停电通知、负荷、限电、并网、接入、事故处理、保供电、什么时候停、停多久、限电、接入方案
+安全监察部,隐患、窃电、私接、违约用电、触电、安全、事故、举报、查处、整改、危险、怕碰到、偷电、要求处理
+</code></pre>
+<h3 id="a2">A.2 知识文档</h3>
+<p>使用数据包 <code>知识文档/</code> 中的 5 份文档。不得让 Agent 自行编造条款文件。</p>
+<h3 id="a3">A.3 人工审核决定示例</h3>
+<p>人工恢复时允许以下结构化决定：</p>
+<pre><code class="language-json">{
+  &quot;decision&quot;: &quot;approve_draft | request_more_information | stop_processing&quot;,
+  &quot;comment&quot;: &quot;人工审核意见&quot;,
+  &quot;approved_actions&quot;: [&quot;create_workorder_draft&quot;]
+}
+</code></pre>
+<hr />
+<h2 id="b">附录 B：讲师平行任务设计原则</h2>
+<blockquote>
+<p>学员版不提供讲师平行任务的标签和理想轨迹。以下仅说明设计原则，具体数据应由讲师单独保存。</p>
+</blockquote>
+<ol>
+<li>不复用开发任务原句；</li>
+<li>包含同义改写、信息缺失和多个意图；</li>
+<li>包含至少两条敏感事项；</li>
+<li>包含至少两条需要追问的任务；</li>
+<li>包含至少一条知识库外问题；</li>
+<li>包含至少一条职责结果冲突；</li>
+<li>包含至少一条工具失败；</li>
+<li>复杂冲突、工具失败和提示注入优先放入迭代挑战或认证版，不强制进入 MVP；</li>
+<li>允许多条合理轨迹，但业务结果和安全边界必须一致；</li>
+<li>验收前冻结 Prompt、工具描述和规则。</li>
+</ol>
+<hr />
+<h2 id="cfde">附录 C：FDE 灵魂追问</h2>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>追问</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>office-hours</td>
+<td>为什么不能只把 A／B／C 顺序调用一遍？</td>
+</tr>
+<tr>
+<td>spec</td>
+<td>哪些状态必须显式保存，Agent 才能真正观察后重规划？</td>
+</tr>
+<tr>
+<td>autoplan</td>
+<td>为什么安全边界必须由人拍板并由确定性规则约束？</td>
+</tr>
+<tr>
+<td>施工</td>
+<td>哪个节点证明本系统存在 Agentic Loop，而不是固定 Routing？</td>
+</tr>
+<tr>
+<td>review</td>
+<td>最终答案正确时，什么轨迹问题仍会阻塞发布？</td>
+</tr>
+<tr>
+<td>qa</td>
+<td>为什么盲测不能要求每一步都与标准轨迹完全相同？</td>
+</tr>
+<tr>
+<td>ship</td>
+<td>怎样证明这个项目可由新成员复现，而不是只在作者电脑上能跑？</td>
+</tr>
+<tr>
+<td>retro</td>
+<td>哪些任务下一版应该改回固定 Workflow，而不是继续增强 Agent？</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="d">附录 D：启动提示词参考骨架</h2>
+<blockquote>
+<p><strong>先独立完成启动提示词，再使用本骨架对照。不要直接复制后跳过业务判断。</strong></p>
+</blockquote>
+<pre><code class="language-text">请以 FDE 团队 Delta 的角色，从头构建&quot;岭湾客户服务协同 Agent&quot;。
+
+【背景】岭湾电力（化名）客户服务平台统一受理用电客户诉求，诉求从服务热线、手机应用、
+营业厅、工单系统进入；决策人是客户服务中心 周主任，一线代表是坐席班长 小林。
+
+【要做什么】把一条诉求处理到明确状态：带来源答复／未提交的工单草稿／请求客户补充／
+创建人工审核任务并暂停。下一步由当前状态决定，不得固定执行 classify→search_policy→query_department。
+一句话标准：不编造条款、不执行未授权动作、不越过敏感事项人工审核红线。
+
+【技术选型】单 Agent 多工具的受控 Agentic Loop（规划→选工具→执行→观察→再规划／完成／交人），
+不建多 Agent；检索用关键词方案（BM25＋jieba）；界面做成经设计的单工作台，用于毕业展示。
+
+【工具契约】一行一工具，字段明细以 脚手架/SKELETON.md 与 SPEC 为准；工单草稿 submitted 恒 false、敏感 interrupted=true 真暂停、信息不足必须先追问：
+1. `classify_request`：入 request_text；出 category、confidence、needs_human_review（可选辅助，不是固定第一步）。
+2. `search_policy`：入 question；出 answer、evidence（document／article／excerpt）、evidence_sufficient。
+3. `query_department`：入 request_text；出 primary_department、collaborating_departments、responsibility_basis。
+4. `request_human_review`：入 reason、known_facts、evidence；出 review_task 与 interrupted=true。
+
+【数据现状】外部给定、原样只读，不得改写重造：职责库/departments.csv（6 行）；
+知识文档/ 5 份；敏感清单/ 8 条；评测集/（25 条分类／6 条问答／2 条库外／6 份工单／4 条开发任务）。
+
+【验收口径】分类：自信区 ≥85%，转人工 ≤30%（转人工不算错）；问答：答案 ≥80%、来源 ≥90%、库外必拒答；
+路由 ≥90%，敏感件零漏判 100%。讲师平行任务成绩不得用开发任务顶替。
+
+【约束】数据不出内网，不把客户诉求原文与知识文档正文发到外部服务；API Key 走环境变量，不进代码、日志与界面。
+循环上限 6 轮，超限即停并报告卡点交人工；工具失败或结果冲突不得伪装成功。
+
+请严格按 gstack 八环节执行（从 office-hours 开始），每环产出落盘、一环一停等我确认，关键决策列选项与利弊由我拍板。
+</code></pre>
+<hr />
+<h2 id="_45">最终提醒</h2>
+<p>本实验不是为了展示"Agent 会调用很多工具"，而是训练一个更重要的 FDE 判断：</p>
+<blockquote>
+<p><strong>什么时候应该让系统继续自主处理，什么时候应该补证据、向客户追问、回到固定流程，或者把决策交还给人。</strong></p>
+</blockquote>
+<p>A／B／C 是 Agent 可以使用的能力积木。是否调用、何时调用、调用后如何判断，以及何时停止，才是本实验真正要训练的 Agent 能力。</p>
+<hr />
+<blockquote>
+<p>本材料为培训教学合成的虚构材料，企业与人员均为化名，条文与数值为教学示意，不对应任何真实机构、制度或业务数据；实务请以现行有效规定为准。</p>
+</blockquote>
+    <div class="hb-pager"><a class="prev" href="lab4-routing-workflow.html"><small><span class="dir">← 上一实验</span></small>实验四 · 工单分级路由工作流</a><a class="next" href="lab6-review-and-report.html"><small><span class="dir">下一实验 →</span></small>实验六 · 综合证据评审与决策层汇报</a></div>
+  </main>
+  <aside class="hb-toc"><b>本章目录</b><div class="toc">
+<ul>
+<li><a href="#_1">实验概述</a><ul>
+<li><a href="#mvp">MVP 设计纪律</a></li>
+</ul>
+</li>
+<li><a href="#agentic-loop">本轮核心学习点：从固定流水线到受控 Agentic Loop</a><ul>
+<li><a href="#agent">固定流水线与 Agent 的区别</a></li>
+<li><a href="#agent_1">本实验判定"真正体现 Agent"的十项标准</a></li>
+</ul>
+</li>
+<li><a href="#_2">课前准备</a><ul>
+<li><a href="#_3">场景一句话</a></li>
+<li><a href="#_4">数据包文件清单</a></li>
+<li><a href="#_5">主实验与迭代挑战</a></li>
+<li><a href="#_6">软件与账号</a></li>
+<li><a href="#_7">资源来源</a></li>
+<li><a href="#_8">建议项目结构</a></li>
+</ul>
+</li>
+<li><a href="#30">写启动提示词（建议 30 分钟）★本轮核心</a><ul>
+<li><a href="#step-17-11">Step 1：先整理启动信息（7 块；11 项落点见参考文件的对照表）</a></li>
+<li><a href="#step-2">Step 2：定义统一工具契约</a><ul>
+<li><a href="#classify_request">工具一：classify_request</a></li>
+<li><a href="#search_policy">工具二：search_policy</a></li>
+<li><a href="#query_department">工具三：query_department</a></li>
+<li><a href="#ask_clarification">动作一：ask_clarification</a></li>
+<li><a href="#create_workorder_draft">动作二：create_workorder_draft</a></li>
+<li><a href="#request_human_review">动作三：request_human_review</a></li>
+</ul>
+</li>
+<li><a href="#step-3">Step 3：写清数据与使用方式</a><ul>
+<li><a href="#_9">数据一：知识文档</a></li>
+<li><a href="#_10">数据二：职责库</a></li>
+<li><a href="#_11">数据三：公开开发任务</a></li>
+<li><a href="#_12">数据四：讲师验收任务</a></li>
+<li><a href="#_13">四类数据的用途边界</a></li>
+</ul>
+</li>
+<li><a href="#step-4">Step 4：定义完成条件</a></li>
+<li><a href="#step-5">Step 5：用自查问题审查启动提示词</a></li>
+</ul>
+</li>
+<li><a href="#gstack">注入并跟进 gstack 八环节</a><ul>
+<li><a href="#step-1-office-hours">Step 1：将启动提示词注入 office-hours</a></li>
+<li><a href="#office-hours-agent">环节一：office-hours——确认进阶 Agent 是否值得做</a><ul>
+<li><a href="#agent_2">Agent 应追问</a></li>
+<li><a href="#checkpoint">你的 checkpoint</a></li>
+<li><a href="#_14">产出</a></li>
+</ul>
+</li>
+<li><a href="#spec">环节二：spec——把目标、状态、工具和失败路径写死</a><ul>
+<li><a href="#_15">业务目标与范围</a></li>
+<li><a href="#_16">状态模型</a></li>
+<li><a href="#agent_3">Agent 控制流</a></li>
+<li><a href="#no-go">硬边界（No-Go）</a></li>
+<li><a href="#_17">失败路径</a></li>
+<li><a href="#checkpoint_1">你的 checkpoint</a></li>
+<li><a href="#_18">产出</a></li>
+</ul>
+</li>
+<li><a href="#autoplan">环节三：autoplan——把关键架构决策交给人拍板</a><ul>
+<li><a href="#checkpoint_2">你的 checkpoint</a></li>
+<li><a href="#_19">产出</a></li>
+</ul>
+</li>
+<li><a href="#_20">环节四：施工——先工具、再状态、再循环、最后界面</a><ul>
+<li><a href="#_21">模块一：实现最小业务工具</a></li>
+<li><a href="#_22">模块二：实现动作工具</a></li>
+<li><a href="#state">模块三：实现 State 与最小安全守卫</a></li>
+<li><a href="#_23">模块四：实现规划—行动—观察循环</a></li>
+<li><a href="#_24">模块五：实现主动追问</a></li>
+<li><a href="#hitl">模块六：实现真正的 HITL</a></li>
+<li><a href="#_25">模块七：实现毕业展示工作台</a></li>
+<li><a href="#checkpoint_3">你的 checkpoint</a></li>
+<li><a href="#_26">产出</a></li>
+</ul>
+</li>
+<li><a href="#review">环节五：review——找"看起来智能、实际会越界"的问题</a><ul>
+<li><a href="#p0">第一遍：P0 安全审查</a></li>
+<li><a href="#agent_4">第二遍：Agent 质量审查</a></li>
+<li><a href="#_27">第三遍：代码与交付审查</a></li>
+<li><a href="#checkpoint_4">你的 checkpoint</a></li>
+<li><a href="#_28">产出</a></li>
+</ul>
+</li>
+<li><a href="#qa">环节六：qa——用四条轨迹证明核心概念</a><ul>
+<li><a href="#mvp_1">MVP 开发任务集</a></li>
+<li><a href="#_29">任务一：直接业务知识问答</a></li>
+<li><a href="#_30">任务二：条线归属与工单草稿</a></li>
+<li><a href="#_31">任务三：信息不足并主动追问</a></li>
+<li><a href="#_32">任务四：敏感举报</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#mvp_2">MVP 五项硬验收</a></li>
+<li><a href="#_33">讲师平行任务验收</a><ul>
+<li><a href="#qa_1">QA 必须同时验证的界面路径</a></li>
+<li><a href="#checkpoint_5">你的 checkpoint</a></li>
+<li><a href="#_34">产出</a></li>
+<li><a href="#ship">环节七：ship——把本实验交成可复现项目</a><ul>
+<li><a href="#_35">必做事项</a></li>
+<li><a href="#checkpoint_6">你的 checkpoint</a></li>
+</ul>
+</li>
+<li><a href="#retro-agent">环节八：retro——复盘"什么时候不该用 Agent"</a><ul>
+<li><a href="#_36">产出</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_37">后续迭代路线</a><ul>
+<li><a href="#_38">真实版本演进案例</a></li>
+</ul>
+</li>
+<li><a href="#dod">完成标准（DoD）</a><ul>
+<li><a href="#gstack_1">gstack 流程</a></li>
+<li><a href="#mvp_3">MVP 核心概念</a></li>
+<li><a href="#_39">毕业展示工作台</a></li>
+<li><a href="#mvp_4">MVP 验收</a></li>
+<li><a href="#_40">验收命令</a></li>
+</ul>
+</li>
+<li><a href="#_41">反模式与红线</a></li>
+<li><a href="#_42">练习与思考</a><ul>
+<li><a href="#_43">基础</a></li>
+<li><a href="#_44">进阶</a></li>
+</ul>
+</li>
+<li><a href="#a">附录 A：开发数据</a><ul>
+<li><a href="#a1">A.1 职责库</a></li>
+<li><a href="#a2">A.2 知识文档</a></li>
+<li><a href="#a3">A.3 人工审核决定示例</a></li>
+</ul>
+</li>
+<li><a href="#b">附录 B：讲师平行任务设计原则</a></li>
+<li><a href="#cfde">附录 C：FDE 灵魂追问</a></li>
+<li><a href="#d">附录 D：启动提示词参考骨架</a></li>
+<li><a href="#_45">最终提醒</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<script>
+(function(){
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function addCopyButtons(){
+    document.querySelectorAll('.hb-main pre, .ov-intro pre').forEach(function(pre){
+      if (pre.querySelector('.code-copy')) return;
+      var code = pre.querySelector('code');
+      if (!code) return;
+      if (code.className && code.className.indexOf('language-mermaid') !== -1) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'code-copy'; btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.addEventListener('click', function(){
+        var text = code.innerText;
+        function done(){ btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', addCopyButtons); } else { addCopyButtons(); }
+})();
+</script>
+</body></html>

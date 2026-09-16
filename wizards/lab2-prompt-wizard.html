@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验二 · 诉求智能分类系统 · 启动提示词向导</title>
+<style>
+  :root{
+    --navy:#1B3A5C; --navy2:#25507f; --gold:#D4A843; --gold2:#e8c368;
+    --echo:#2E6BA8; --delta:#E0603A;
+    --bg:#0e1b2a; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7c8f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    background:linear-gradient(160deg,#0e1b2a 0%,#1B3A5C 60%,#25507f 100%);
+    color:var(--ink);min-height:100vh;padding:24px;
+    display:flex;align-items:flex-start;justify-content:center;
+  }
+  .wrap{width:100%;max-width:880px}
+  .card{background:var(--card);border-radius:18px;padding:34px 38px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+  .stage{display:none} .stage.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--gold)}
+  .brand span{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:13px}
+  h1{color:var(--navy);font-size:24px;margin:8px 0 6px;line-height:1.35}
+  h2{color:var(--navy);font-size:19px;margin:0 0 14px}
+  .sub{color:var(--muted);font-size:14.5px;line-height:1.7;margin-bottom:22px}
+  code{background:#eef2f6;padding:2px 5px;border-radius:4px;color:var(--navy);font-family:"Cascadia Mono","Consolas",monospace;font-size:12.5px}
+
+  .prog{height:7px;background:#e6edf3;border-radius:6px;margin-bottom:22px;overflow:hidden}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--echo),var(--delta));width:0;transition:width .4s}
+  .qmeta{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:1px;margin-bottom:6px}
+  .qtext{color:var(--navy);font-size:18px;line-height:1.55;margin-bottom:10px;font-weight:700}
+  .qhelp{color:var(--muted);font-size:13.5px;line-height:1.65;margin-bottom:18px;background:#f4f8fb;border-left:4px solid var(--echo);padding:10px 14px;border-radius:0 8px 8px 0}
+
+  label.lbl{display:block;font-size:12.5px;color:var(--muted);font-weight:600;margin-bottom:5px}
+  input[type=text],textarea{width:100%;border:1.5px solid #d5dfe8;border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;transition:border-color .2s}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+  textarea{resize:vertical;line-height:1.6}
+
+  .ref-toggle{margin-top:14px;border-top:1px dashed #e1e9f0;padding-top:12px}
+  .ref-toggle button{background:none;border:none;color:var(--echo);font-size:13px;font-weight:700;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:5px}
+  .ref-toggle button:hover{color:var(--navy)}
+  .ref-box{display:none;margin-top:8px;background:#fff8e8;border:1px solid #f0dca8;border-radius:9px;padding:12px 14px;font-size:13px;line-height:1.7;color:#5a4a20;white-space:pre-wrap}
+  .ref-box.show{display:block}
+  .ref-box b{color:var(--navy)}
+  .ref-note{display:block;margin-top:9px;padding-top:8px;border-top:1px dashed #e3cf9a;color:#8a6d1f;font-size:12.5px}
+
+  /* ===== 流程引导页 ===== */
+  .gstack-flow{background:#f4f8fb;border:1px solid #d3e3f0;border-radius:12px;padding:18px;margin-bottom:16px}
+  .gs-nodes{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+  .gs{background:var(--navy);color:#fff;border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;text-align:center;line-height:1.3}
+  .gs i{display:block;font-style:normal;font-size:11px;opacity:.85;font-weight:500;margin-top:2px}
+  .gs.arrow{background:transparent;color:var(--gold);padding:0;font-size:16px;font-weight:900}
+  .gstack-tip{background:#fff8e8;border:1px solid #f0dca8;border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.7;color:#5a4a20}
+  .gstack-tip b{color:var(--navy)}
+  .gstack-tip code{background:#f5eccd;padding:2px 5px;border-radius:4px;color:var(--navy)}
+  .install-box{background:#f4f8fb;border:1px solid #d3e3f0;border-radius:12px;padding:18px;margin-bottom:16px}
+  .install-box>b{color:var(--navy);font-size:14px;margin-bottom:8px;display:block}
+  .gen-box.small{max-height:none;font-size:12px}
+
+  /* 七项信息块表 */
+  .blk-tbl{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 4px}
+  .blk-tbl th{background:var(--navy);color:#fff;padding:9px 11px;text-align:left;font-weight:600}
+  .blk-tbl td{padding:9px 11px;border-bottom:1px solid #eef2f6;line-height:1.55;vertical-align:top}
+  .blk-tbl tr:hover td{background:#f9fbfd}
+  .blk-tbl td b{color:var(--navy)}
+
+  .btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2c05;border:none;padding:13px 26px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;transition:filter .2s;letter-spacing:1px}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+  .btn.small{padding:8px 16px;font-size:13px;border-radius:9px}
+  .center{text-align:center}
+  .foot{margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .gen-card{margin-top:6px}
+  .gen-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .gen-tab{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:700;cursor:pointer;background:#eef2f6;color:var(--muted)}
+  .gen-tab.on{background:var(--navy);color:#fff}
+  .gen-box{background:#0f1e2e;border-radius:12px;padding:16px;font-family:"Cascadia Mono","Consolas",monospace;font-size:12.5px;line-height:1.7;color:#d7e4f0;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto}
+  .gen-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .copied{color:#1e8449;font-weight:700;font-size:13px;display:none}
+  .tip{color:var(--muted);font-size:13px;line-height:1.7;margin-top:16px;text-align:center;font-style:italic}
+
+  /* ===== 页脚导航 ===== */
+  .pagenav{margin-top:28px;padding-top:16px;border-top:1px solid #e6edf3;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px}
+  .pagenav a{color:var(--navy);text-decoration:none;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:1px}
+  .pagenav a:hover{color:var(--gold)}
+  .pagenav .pn-mid{color:var(--muted);font-weight:500}
+  @media(max-width:640px){.card{padding:26px 20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+
+  <!-- STAGE 0: 欢迎 -->
+  <div class="stage on" id="s0">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验二</span></div>
+    <h1>实验二 · 诉求智能分类系统 · 启动提示词向导</h1>
+    <p class="sub">
+      你的任务：把实验一《解决方案框架》里场景 A 的结论，翻译成一段能给 Agent 开跑的启动提示词。<br>
+      跟着向导一步步填——每步都有提示和参考答案，最后点「生成」，自动拼装成完整提示词。<br>
+      <span style="color:var(--muted);font-size:13px">📌 能力定位：本实验只解决"这是什么"——输入一条客户诉求，输出业务类别和不确定性判断。在实验五 · 综合系统 Agent（进阶） 里，分类是<b>可选辅助能力</b>，不是每条请求的强制第一步；本实验的重点是把它做小、做清楚、做可验证。</span>
+    </p>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="go('s0a')">开始 → 先看八环节流水线</button>
+    </div>
+    <div class="pagenav">
+      <a href="lab1-echo-delta-game.html">← 上一页：实验一 · 需求调研与解决方案框架</a>
+      <span class="pn-mid">实验二 · 诉求智能分类系统</span>
+      <a href="../index.html">返回站点</a>
+    </div>
+  </div>
+
+  <!-- STAGE 0A: 八环节流水线 -->
+  <div class="stage" id="s0a">
+    <div class="brand"><span class="dot"></span><span>实验二 · 工作流</span></div>
+    <h1>先认识 gstack 八环节</h1>
+    <p class="sub"><b>gstack</b> 是 Garry Tan（YC CEO）开源的 AI 开发工作流框架，以 skill 形式安装在 opencode 中，用 <code>/命令</code> 调用。它把一次完整的 AI 开发迭代组织成<b>八个环节的流水线</b>，上一环的产出是下一环的输入，一环都不能跳：</p>
+    <div class="gstack-flow">
+      <div class="gs-nodes">
+        <span class="gs">office-hours<br><i>要不要做</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">spec<br><i>死磕边界</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">autoplan<br><i>决策拍板</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">build 施工<br><i>做出来</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">review<br><i>找隐患</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">qa<br><i>测体验</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">ship<br><i>收尾</i></span>
+        <span class="gs arrow">→</span>
+        <span class="gs">retro<br><i>复盘</i></span>
+      </div>
+    </div>
+    <div class="install-box">
+      <b>🔑 你在每个环节的把关点（人的判断不可替代）</b>
+      <table class="blk-tbl" style="margin-top:6px">
+        <thead><tr><th>环节</th><th>Agent 会做什么</th><th>你的 checkpoint</th></tr></thead>
+        <tbody>
+          <tr><td><b>office-hours</b></td><td>追问需求细节，尤其数据、口径、兜底</td><td>回答它关于数据/口径的问题；确认"值得做"</td></tr>
+          <tr><td><b>spec</b></td><td>死磕边界：失败模式、No-Go、数据模型、验收口径</td><td>审查 No-Go 是否具体；验收门槛数字照抄，不许被"优化"</td></tr>
+          <tr><td><b>autoplan</b></td><td>暴露两可决策，等你拍板</td><td><b>真的拍板</b>：转人工阈值、兜底策略、要不要做验证面板</td></tr>
+          <tr><td><b>build 施工</b></td><td>按 SPEC 实现，每模块冒烟；交付入口 <code>src/handler.py</code> 的 <code>handle_request</code></td><td>抽查代码没偏离 No-Go；确认测试集来自数据包、不是 Agent 自己编的</td></tr>
+          <tr><td><b>review</b></td><td>两遍检查（致命 + 信息），P0-P3 分级</td><td>确认 P0/P1 修复；API key 没硬编码</td></tr>
+          <tr><td><b>qa</b></td><td>真实跑核心流程 + 边界输入（空文本 / 超长 / 口语 / 对抗样本）</td><td>五类都测；准确率达标的数字记进 qa-report</td></tr>
+          <tr><td><b>ship</b></td><td>版本号 + CHANGELOG + README + commit</td><td>确认 .env 未入库</td></tr>
+          <tr><td><b>retro</b></td><td>复盘四点：做得好 / 摩擦 / 未覆盖测试 / 改进行动项</td><td>摩擦写具体；有可执行的行动项</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gstack-tip">
+      <b>本实验的关键升级：</b>你不一步步教 Agent 写代码，而是把<b>启动提示词</b>一次交给它，让它按这八环节自己跑，你在每个 checkpoint 把关。八环节的纪律靠下面生成的「驱动指令」焊进它的执行里。
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s0')">← 返回</button>
+      <button class="btn" onclick="go('s0i')">下一步：安装 gstack →</button>
+    </div>
+  </div>
+
+  <!-- STAGE 0I: 安装 gstack -->
+  <div class="stage" id="s0i">
+    <div class="brand"><span class="dot"></span><span>实验二 · 安装 gstack</span></div>
+    <h1>安装 gstack（动手前先装上）</h1>
+    <p class="sub"><b>gstack</b> 以 <b>skill 形式装在 opencode 里</b>，用 <code>/office-hours</code> 这类命令调用；<b>没装好，后面这一步根本调不出来</b>。推荐让 Agent 帮你装。</p>
+
+    <div class="install-box">
+      <b>路线 A：让 Agent 自己装（推荐）</b>
+      <div class="gen-box" id="installPromptA">请帮我安装 gstack（Garry Tan 开源的 AI 开发工作流框架）：
+1. 网络配置：pip 使用清华镜像源，先执行 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+2. 网络配置：GitHub 访问走代理 https://ghfast.top（克隆仓库时 URL 前缀加 https://ghfast.top/）
+3. 克隆 https://github.com/garrytan/gstack.git 到用户主目录
+4. 运行它的 setup 脚本，host 选 opencode
+5. 装完后验证一下 /office-hours /spec /autoplan /review /qa /ship /retro 这些技能
+   都出现在 ~/.config/opencode/skills/ 下
+6. 告诉我安装结果</div>
+      <div class="gen-actions" style="margin-top:8px">
+        <button class="btn small" onclick="copyText('installPromptA')">📋 复制安装指令</button>
+      </div>
+      <b style="display:block;margin-top:14px">路线 B：手动安装</b>
+      <div class="gen-box" id="installCmdB">git clone https://ghfast.top/https://github.com/garrytan/gstack.git ~/gstack
+cd ~/gstack && ./setup --host opencode</div>
+      <div class="gen-actions" style="margin-top:8px">
+        <button class="btn small" onclick="copyText('installCmdB')">📋 复制安装指令</button>
+      </div>
+      
+    </div>
+
+    <div class="gstack-tip">
+      <b>装完自检：</b><br>
+      1. 在 opencode 里输入 <code>/office-hours</code>，能加载出技能就算成功；<br>
+      2. <code>~/.config/opencode/skills/</code> 下应能看到 <code>office-hours</code>／<code>spec</code>／<code>autoplan</code>／<code>review</code>／<code>qa</code>／<code>ship</code>／<code>retro</code>；<br>
+      3. 装不上或看不到就找讲师——课上可以用数据包 <code>离线兜底包/</code> 走通链路，不卡在这里。
+    </div>
+
+    <div class="gstack-tip" style="margin-top:12px">
+      <b>一句底线：</b>安装命令属于<b>课前准备</b>，不要把安装命令写进启动提示词。
+    </div>
+
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s0a')">← 返回</button>
+      <button class="btn" onclick="go('s0b')">下一步：七项信息块 →</button>
+    </div>
+  </div>
+
+  <!-- STAGE 0B: 七项信息块 -->
+  <div class="stage" id="s0b">
+    <div class="brand"><span class="dot"></span><span>实验二 · 启动提示词怎么组装</span></div>
+    <h1>七项信息块：缺一项，Agent 就会自己脑补</h1>
+    <p class="sub">数据包 <code>脚手架/启动提示词-模板.md</code> 把一份好的启动信息拆成 <b>7 项信息块</b>，一项都不许留白。每一步都给出确定的内容，不是留白让 Agent 猜。</p>
+    <table class="blk-tbl">
+      <thead><tr><th>#</th><th>要包含的信息</th><th>在本向导里</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>背景</b></td><td>步骤 1：你是谁、在给谁做、谁拍板</td></tr>
+        <tr><td>2</td><td><b>要做什么</b></td><td>步骤 2：一句可验收的话（边界一句话：本次不做什么）</td></tr>
+        <tr><td>3</td><td><b>技术选型</b></td><td>步骤 3：选什么、为什么不用更复杂的（含理由）</td></tr>
+        <tr><td>4</td><td><b>数据现状</b></td><td>步骤 4：无历史标注 → 零样本</td></tr>
+        <tr><td>5</td><td><b>测试集</b></td><td>步骤 5：只写文件名、数量、字段；正文一个字都不抄</td></tr>
+        <tr><td>6</td><td><b>验收口径</b></td><td>步骤 6：三组门槛数字写死</td></tr>
+        <tr><td>7</td><td><b>约束</b></td><td>步骤 7：红线一句话 ＋ 边界一句话</td></tr>
+      </tbody>
+    </table>
+    <div class="gstack-tip" style="margin-top:14px">
+      <b>⚠️ 最容易翻车的两条：</b>第 4 项——不写"无历史标注数据"，Agent 可能默认去搭传统机器学习（需要上千条标注），那是死路；第 6 项——不写"转人工不算错"，Agent 会把转人工的样本算成错，跟"拿不准转人工"的设计自相矛盾。
+    </div>
+    <div class="gstack-tip" style="margin-top:12px">
+      <b>🔒 样本纪律（岭湾口径）：</b>测试样本<b>外部给定</b>，正文<b>一个字都不要抄进提示词</b>——只写文件名、数量与字段。样本标签属于验收信息，抄进去等于把考卷提前给 Agent；抄写过程本身就是改写风险。
+    </div>
+    <div class="gstack-tip" style="margin-top:12px">
+      <b>🚧 不写进提示词的东西：</b>完整 No-Go 清单、<code>AGENTS.md</code> 硬约束摘抄、验收命令、逐环节落盘位置长链属于<b>手册与 spec 环节</b>，由 spec 负责产出、由手册负责自查。提示词里只留"边界一句话：本次不做什么"。
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s0i')">← 返回</button>
+      <button class="btn" onclick="go('s0c')">下一步：数据包与验收 →</button>
+    </div>
+  </div>
+
+  <!-- STAGE 0C: 数据包与验收 -->
+  <div class="stage" id="s0c">
+    <div class="brand"><span class="dot"></span><span>实验二 · 数据包与验收</span></div>
+    <h1>先确认数据包与验收命令</h1>
+    <p class="sub">施工全程只用数据包内的材料（<code>岭湾项目包/</code>），不额外索取外部数据。动手前确认下面三样东西就位。</p>
+
+    <div class="gstack-tip" style="margin-bottom:16px">
+      <b>⚠️ 本页的所有命令与清单，都不要写进启动提示词。</b>这些属于<b>手册与 spec 环节</b>：验收命令由手册和 qa 环节执行，No-Go 清单与硬约束由 spec 环节产出。启动提示词里只写要求与口径，不抄工具命令。
+    </div>
+
+    <div class="install-box">
+      <b>📁 外部给定的口径与样本（原位使用，不复制、不改写、不重造）</b>
+      <table class="blk-tbl" style="margin-top:6px">
+        <thead><tr><th>文件</th><th>数量</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><code>分类口径/诉求分类体系.md</code></td><td>五类定义与边界</td><td>分类场景的唯一分类口径，提示词、实现、验收三方共用</td></tr>
+          <tr><td><code>评测集/classify_cases.csv</code></td><td>25 条（5 类 × 5）</td><td>分类验收样本，字段 id,text,label</td></tr>
+          <tr><td><code>评测集/development_tasks.json</code></td><td>4 条</td><td>开发任务，覆盖四类结果</td></tr>
+          <tr><td><code>脚手架/</code></td><td>AGENTS.md 十一条 / SPEC模板.md / SKELETON.md / 启动提示词-模板.md</td><td>项目级硬约束与产出模板（约束写在数据包里，不抄进提示词）</td></tr>
+          <tr><td><code>离线兜底包/</code></td><td>stub_tools.py / run_offline_demo.py</td><td>无网络也能跑通链路的离线桩</td></tr>
+          <tr><td><code>验收/evaluate.py</code></td><td>验收工具</td><td>按验收口径打分</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="install-box">
+      <b>⚙️ 验收命令（由手册与 qa 环节执行，不写进启动提示词）</b>
+      <div class="gen-box" id="cmdPreview">python 验收\evaluate.py --task all --impl stub
+python 验收\evaluate.py --task all --impl src
+python 验收\evaluate.py --task all --impl api</div>
+      <div class="gen-actions" style="margin-top:8px">
+        <button class="btn small" onclick="copyText('cmdPreview')">📋 复制验收命令</button>
+      </div>
+      <div class="gstack-tip" style="margin-top:12px">
+        <b>判据：</b><code>--impl stub</code> 必须先跑通（离线桩是"尺子准不准"的基线，不是你的成绩）；<code>--impl src</code> 是本次交付物的成绩（交付入口 <code>src/handler.py</code> 的 <code>handle_request</code>）；<code>--impl api</code> 用来对照"在线模型直连"与你的实现差在哪。三条跑完，把两个数字记进 <code>qa-report.md</code>。<br>
+        <b>提示词里写什么：</b>只写验收口径的数字（自信区准确率 ≥85%、转人工比例 ≤30%、转人工不算错），命令本身不写。
+      </div>
+    </div>
+
+    <div class="gstack-tip">
+      <b>课前检查点：</b>opencode 已启动；gstack 已按 <code>脚手架/</code> 的说明装好（<code>/office-hours</code> 能加载出技能即成功）；模型服务连通、<code>DEEPSEEK_API_KEY</code> 已设置（<b>只确认"已设置"，不回显、不入库</b>）；本实验目录 <code>实验二-诉求分类/</code> 已建好。
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="go('s0b')">← 返回</button>
+      <button class="btn" onclick="go('s1')">现在去写你的启动提示词 →</button>
+    </div>
+  </div>
+
+  <!-- STAGE 1-7: 步骤 -->
+  <div class="stage" id="s1">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验二</span></div>
+    <div class="prog"><i id="bar"></i></div>
+    <div class="qmeta" id="qmeta"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qhelp" id="qhelp"></div>
+    <div id="input"></div>
+    <div class="ref-toggle" id="refBlock">
+      <button onclick="toggleRef()">👁 看看这一步的参考答案</button>
+      <div class="ref-box" id="refContent"></div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" id="backBtn" onclick="back()">← 上一步</button>
+      <button class="btn" id="nextBtn" onclick="next()">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- STAGE 8: 生成 -->
+  <div class="stage" id="s8">
+    <div class="brand"><span class="dot"></span><span>FDE 转型实战特训 · 岭湾实验站 · 实验二</span></div>
+    <h1 style="font-size:22px">✅ 你的启动提示词</h1>
+    <p class="sub">先切换到「参考提示词」对照检查一遍，确认没有遗漏关键信息，再复制。参考提示词正文为 7 个短块 ＋ 末尾一句流程要求。</p>
+    <div class="gen-card">
+      <div class="gen-tabs">
+        <span class="gen-tab on" data-t="prompt" onclick="switchTab(this)">我的提示词</span>
+        <span class="gen-tab" data-t="ref" onclick="switchTab(this)">参考提示词</span>
+      </div>
+      <div class="gen-box" id="genOut"></div>
+      <div class="gen-actions">
+        <button class="btn" onclick="copyGen()">📋 复制提示词</button>
+        <span class="copied" id="copied">已复制 ✓</span>
+      </div>
+    </div>
+    <div class="tip">这就是你的启动提示词。复制后，回到前面「驱动指令版」页，把这段粘进 `/office-hours` 一起交给 Agent，它就会按八环节开跑。</div>
+    <div class="foot">
+      <button class="btn ghost" onclick="backToSteps()">← 修改</button>
+      <button class="btn" onclick="go('s0')">重新开始</button>
+    </div>
+    <div class="pagenav">
+      <a href="lab1-echo-delta-game.html">← 上一页：实验一 · 需求调研与解决方案框架</a>
+      <span class="pn-mid">实验二 · 诉求智能分类系统</span>
+      <a href="lab3-prompt-wizard.html">下一页：实验三 · 供电业务知识问答 →</a>
+    </div>
+  </div>
+
+  <!-- STAGE 9: 驱动指令版 -->
+  <div class="stage" id="s9">
+    <div class="brand"><span class="dot"></span><span>实验二 · 驱动指令</span></div>
+    <h1>驱动指令版：怎么让 Agent 按流程跑</h1>
+    <p class="sub">光有启动提示词不够——Agent 默认只理解"你要什么"，不理解"你要它按什么纪律走"。需要一段<b>驱动指令</b>（数据包 <code>脚手架/启动提示词-模板.md</code> 第三节的 5 条，每条一行），把八环节的流程纪律焊进它的执行里。你写好启动提示词后，把两者合起来交给 Agent：</p>
+    <div class="gen-box" id="driverPreview">/office-hours
+
+我是一名 FDE 团队（Delta 角色），需要启动岭湾电力客户服务平台场景 A 的施工。
+
+【在这里粘贴你写好的启动提示词，包括 7 个短块：背景 / 要做什么 / 技术选型 /
+数据现状 / 测试集 / 验收口径 / 约束】
+
+1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
+2. 每个环节都要产出对应文件并落盘当前目录，在回复中列出文件名与位置。
+3. 走完一环、进入下一环之前先停下来向我汇报，等我确认后再继续（禁止一口气跑完）。
+4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
+5. 现在从 office-hours 开始。</div>
+    <div class="gen-actions" style="margin-top:8px">
+      <button class="btn small" onclick="copyText('driverPreview')">📋 复制驱动指令</button>
+    </div>
+    <div class="gstack-tip" style="margin-top:12px">
+      <b>重点看驱动 3、4：</b>"一环一停"和"拍板点列选项等你选"——这两条决定了你后面还有没有把关的机会。没有它们，Agent 可能一口气跑完八环，你失去所有中途纠偏的机会。
+    </div>
+    <div class="center" style="margin-top:18px">
+      <button class="btn" onclick="go('s8')">回看我的提示词 →</button>
+    </div>
+    <div class="pagenav">
+      <a href="lab1-echo-delta-game.html">← 上一页：实验一 · 需求调研与解决方案框架</a>
+      <span class="pn-mid">实验二 · 诉求智能分类系统</span>
+      <a href="lab3-prompt-wizard.html">下一页：实验三 · 供电业务知识问答 →</a>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ==========================================================================
+// 权威来源：02_实验手册/lab2-classifier/references/参考-启动提示词.md
+// 本向导内嵌的"参考提示词正文"与 5 条驱动指令 = 该文件提示词正文，逐字一致（7 个短块 ＋ 末尾一句流程要求）。
+// ==========================================================================
+
+// ===== 提示词正文：可整段复制的固定部分（逐字采用权威文件） =====
+const P_LEAD = `请以 FDE 团队的 Delta 角色，为岭湾电力客户服务平台（岭湾项目）启动场景 A 的施工。`;
+
+const P_BLOCK_1 = `【背景】实验一已作为 Echo 完成需求诊断，方案框架中场景 A 定为零样本文本分类
+（客户诉求 → 专业条线类别），属快赢场景，本次由 Delta 施工。
+客户方决策人周主任、坐席班长小林、数字化部陈工，合规由省公司数字化与网络安全部把关。`;
+
+const P_BLOCK_2 = `【要做什么】客户诉求五分类系统：一条客户诉求全文进来，输出类别（业务办理／电费与计量／
+故障报修与停电／投诉举报与用电安全／其他）＋ confidence ＋ reason ＋ needs_human_review。
+拿不准走转人工、不硬归"其他"；只做五分类，不做全业务细分派单（完整 No-Go 交给 spec 环节产出）。`;
+
+const P_BLOCK_3 = `【技术选型】一次大模型调用做零样本分类，配一条确定性兜底规则；不用 RAG/Agent
+（分类一次调用即可定类别）。技术栈：Python ＋ DeepSeek ＋ 最小验证面板。`;
+
+const P_BLOCK_4 = `【数据现状】无历史标注数据 → 必须走零样本分类，不能用传统机器学习
+（TF-IDF ＋ 分类器需要上千条标注，这条路走不通）。`;
+
+const P_BLOCK_5 = `【测试集】样本外部给定、原样使用，严禁重造、改写、删减；正文不粘贴进本提示词。
+1. 分类样本：评测集/classify_cases.csv，25 条（5 类 × 5），字段 id,text,label
+2. 开发任务：评测集/development_tasks.json，4 条`;
+
+const P_BLOCK_6 = `【验收口径】自信区准确率 ≥85%（≥21/25）；转人工比例 ≤30%；转人工不算错。`;
+
+const P_BLOCK_7 = `【约束】数据不出内网，不把客户诉求原文发到外部服务；API key 走环境变量。`;
+
+const P_FLOW = `请按 gstack 八环节（office-hours → spec → autoplan → 施工 → review → qa → ship → retro）执行，
+每一环产出文件，走完一环停下来等我确认，需要拍板的地方列出选项和利弊问我。`;
+
+// ===== 七项信息块（1:1 对应提示词正文的 7 个块） =====
+// 7 个块的块标题都写在权威文件正文里：各步参考答案（ref）与 fixed 常量都自带【块名】，
+// 因此 label 一律留空，拼装时只把块体按序接起来——保证"我的提示词/参考提示词"结构与权威一致。
+const BLOCKS = [
+  { n:1, label:"", custom:true },
+  { n:2, label:"", custom:true },
+  { n:3, label:"", custom:false, fixed:P_BLOCK_3 },
+  { n:4, label:"", custom:false, fixed:P_BLOCK_4 },
+  { n:5, label:"", custom:false, fixed:P_BLOCK_5 },
+  { n:6, label:"", custom:true },
+  { n:7, label:"", custom:true }
+];
+
+// ===== 5 条驱动指令（逐字采用权威文件） =====
+const DRIVERS = `1. 依次走完 8 个环节：office-hours → spec → autoplan → 施工 → review → qa → ship → retro，不跳步、不简化。
+2. 每个环节都要产出对应文件并落盘当前目录，在回复中列出文件名与位置。
+3. 走完一环、进入下一环之前先停下来向我汇报，等我确认后再继续（禁止一口气跑完）。
+4. 拍板点（验收口径／门槛／兜底）列出选项与利弊并给出建议，最终由我拍板；拍板结论写回 SPEC。
+5. 现在从 office-hours 开始。`;
+
+// ===== 7 步定义（场景 A：客户诉求智能分类） =====
+const STEPS = [
+  {
+    q:"背景：你是谁，在给谁做？",
+    help:"第一步，让 Agent 知道项目上下文。想清楚：我是谁、在为哪个平台做、上一轮交付了什么、客户方谁拍板、谁是一线代表、合规谁把关？写好后问自己：如果换个人读，他能看懂我在给谁做吗？",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">你的回答（思考后填写）</label>
+      <textarea id="v1" rows="5" placeholder="在这里写下项目背景……（我是谁 / 平台叫什么 / 上一轮做了什么 / 客户方各角色 / 合规谁把关）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：从实验一《解决方案框架》和《岭湾电力-需求原始记录》里找项目背景、决策人、一线代表、数据归口与合规把关方。背景块只写四句话，不要铺开写。</label>`; },
+    ref:P_BLOCK_1,
+    note:"只说清「谁在做、给谁做、谁把关」，不要把职责库、样本原文、落盘位置抄进来。",
+    get(){ return document.getElementById('v1').value; }
+  },
+  {
+    q:"要做什么：一句话说清这个子场景 ＋ 边界一句话",
+    help:"这一步训练你把「客户需求」压缩成「一句可验收的施工指令」的能力。别写「做一个智能客服系统」这种空话——要具体到「一条诉求进来，输出什么、拿不准怎么办」。最后补一句边界：本次不做什么即可，完整 No-Go 交给 spec 环节。",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">你的回答（一句话 ＋ 边界一句话，思考后填写）</label>
+      <textarea id="v2" rows="3" placeholder="用一句话说清：要交付什么，帮谁解决什么问题；再补一句：本次不做什么（不用列一长串 No-Go）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：边界只需一句"只做五分类，不做全业务细分派单"，剩下的 No-Go 由 spec 环节产出，不写进启动提示词。</label>`; },
+    ref:P_BLOCK_2,
+    note:"边界在提示词里说一句（「只做五分类，不做全业务细分派单」），完整 No-Go 交给 spec 环节产出。",
+    get(){ return document.getElementById('v2').value; }
+  },
+  {
+    q:"技术选型：用什么技术，为什么？",
+    help:"这一步是本向导最考功力的一步——不是选对了就行，是要说清「为什么不用更复杂的」。想三个问题：1. 这个任务需要查知识库/文档吗？（需要→RAG）2. 需要自己做决策、调工具、多步流转吗？（需要→Agent）3. 有历史标注数据能训练或微调吗？（没有→别碰微调）。写的时候问自己：我能不能说清为什么不上 RAG、不上 Agent？",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">技术选型（含理由，思考后填写）</label>
+      <textarea id="v4" rows="5" placeholder="基于上面的判断写下：选什么技术？为什么用它、不用 RAG / Agent / 微调？（提示：想清楚一次调用够不够、需不需要多步决策、有没有标注数据）"></textarea>`; },
+    ref:P_BLOCK_3,
+    note:"只写「选什么 ＋ 为什么不用更复杂的 ＋ 技术栈」两句半，不展开三条论证清单。",
+    get(){ return document.getElementById('v4').value; }
+  },
+  {
+    q:"数据现状：有没有训练数据？",
+    help:"这一步训练你对「数据约束」的判断力——数据现状决定了技术路线，也决定验收口径能不能固定。想两个问题：1. 我们有历史标注数据吗？2. 这对技术路线意味着什么？想清楚再写——不写「没数据」，Agent 可能去搭传统机器学习；这一步是 Agent 走死路的头号陷阱。",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">数据现状描述（思考后填写）</label>
+      <textarea id="v5" rows="4" placeholder="我们有没有历史标注数据？这对技术路线意味着什么？（提示：没有 → 必须走零样本，不能用传统机器学习）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：这一步是 Agent 走死路的头号陷阱——不写清楚"没有历史标注数据"，它可能去搭传统机器学习（TF-IDF ＋ 分类器需要上千条标注）。</label>`; },
+    ref:P_BLOCK_4,
+    note:"数据现状只写「无历史标注 → 必须走零样本」这一条判断，且写成「必须走、不能用」，不给 Agent 留反悔空间。",
+    get(){ return document.getElementById('v5').value; }
+  },
+  {
+    q:"测试集：样本在哪、多少条、什么字段？",
+    help:"这一步训练你的「样本纪律」。想三个问题：1. 测试样本从哪来、多少条、什么字段？2. 样本正文要不要抄进提示词？3. 越界会怎样？标准答案只有一句：样本外部给定、原样使用，只写文件名与数量，正文一个字都不抄。",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">测试集描述（思考后填写，只写文件名与数量）</label>
+      <textarea id="v6s" rows="4" placeholder="样本从哪来、多少条、什么字段？正文要不要粘贴进提示词？（提示：只写文件名、数量与字段，正文不粘）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：抄样本正文等于把考卷提前给 Agent，抄写过程本身就是改写风险。样本标签属于验收信息，只写文件名与数量。</label>`; },
+    ref:P_BLOCK_5,
+    note:"这一块只写文件名、数量、字段：样本正文一个字都不抄（样本内容留在数据包里，由验收工具直接读取）。",
+    get(){ return document.getElementById('v6s').value; }
+  },
+  {
+    q:"验收口径：做出来怎么算成功？",
+    help:"这一步训练你「把验收标准说死」的能力。想想：准确率达标怎么算？模型拿不准的样本怎么办——算错，还是转人工？如果转人工不算错，会不会和「兜底」设计冲突？想清楚再写，别让 Agent 自己发明一套验收。",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">验收口径描述（思考后填写）</label>
+      <textarea id="v7" rows="4" placeholder="分类怎么算达标？模型拿不准的样本算错吗，还是转人工？（关键是「转人工算不算错」）"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：三条数字写死——自信区准确率 ≥85%（≥21/25）；转人工比例 ≤30%；转人工不算错、不硬归「其他」。演示级验收声明与验收命令属于手册与 spec 环节，不写进提示词。</label>`; },
+    ref:P_BLOCK_6,
+    note:"提示词里只写三组门槛数字；验收命令（python 验收/evaluate.py …）与演示级验收声明属于手册与 qa 环节，见前面「数据包与验收」页。",
+    get(){ return document.getElementById('v7').value; }
+  },
+  {
+    q:"约束：有什么红线？边界一句话是什么？",
+    help:"最后一步，训练你「给 Agent 划边界」的能力。想两个问题：1. 有什么绝对不能做的（数据、密钥）？2. 本次明确不做什么（边界一句话）？红线写到能落地就行，一长串 No-Go 交给 spec 环节。",
+    render(ctr){ ctr.innerHTML = `
+      <label class="lbl">约束与边界（思考后填写，红线 ＋ 边界一句话）</label>
+      <textarea id="v8" rows="5" placeholder="红线：数据能不能出内网？API key 怎么处理？边界一句话：本次不做什么（完整 No-Go 交给 spec 环节产出）……"></textarea>
+      <label class="lbl" style="margin-top:10px">🧭 提示：提示词里的约束就写"数据不出内网、API key 走环境变量"这类能落地的一句话红线；N1–N8 那样的完整 No-Go 清单属于 spec 环节的产出，不抄进提示词。</label>`; },
+    ref:P_BLOCK_7,
+    note:"提示词只留边界一句话；完整 No-Go 由 spec 环节产出。",
+    get(){ return document.getElementById('v8').value; }
+  }
+];
+
+let idx=0;
+const values = {};
+
+function go(id){
+  const target = document.getElementById(id);
+  if(!target) return;  // 目标页不存在时不做静默跳转（避免整页被清空）
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('on'));
+  target.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='s1'){ idx=0; renderStep(); }
+  if(id==='s8'){ renderGen(); }
+}
+
+// 从生成页回到填写流程：不重置 idx，直接回到学员刚才停的那一步
+function backToSteps(){
+  go('s1');
+  renderStep();
+}
+
+function renderStep(){
+  const st = STEPS[idx];
+  document.getElementById('qmeta').textContent = `步骤 ${idx+1} / 7`;
+  document.getElementById('qtext').textContent = st.q;
+  document.getElementById('qhelp').textContent = st.help;
+  document.getElementById('bar').style.width = `${idx/7*100}%`;
+  document.getElementById('backBtn').style.visibility = idx===0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').textContent = idx===6 ? '生成启动提示词 →' : '下一步 →';
+  st.render(document.getElementById('input'));
+
+  // 每步可选"看参考答案"
+  const refBlock = document.getElementById('refBlock');
+  const refContent = document.getElementById('refContent');
+  if(st.ref){
+    refBlock.style.display = '';
+    refContent.textContent = st.note ? st.ref + `\n\n${st.note}` : st.ref;
+    refContent.classList.remove('show');  // 切换步骤时重置为收起，避免残留展开
+  } else {
+    refBlock.style.display = 'none';
+  }
+}
+
+function toggleRef(){
+  document.getElementById('refContent').classList.toggle('show');
+}
+
+function next(){
+  // 保存当前值
+  const st = STEPS[idx];
+  values[idx] = st.get();
+  if(idx < 6){ idx++; renderStep(); }
+  else{ go('s8'); }
+}
+function back(){
+  if(idx>0){ idx--; renderStep(); }
+  else{ go('s0c'); }  // 第一步的上一步 → 回数据包准备页
+}
+
+// 块标题（用于"我的提示词"补块名；各步参考答案里已自带，故不叠加）
+const BLOCK_LABELS = ["【背景】","【要做什么】","【技术选型】","【数据现状】","【测试集】","【验收口径】","【约束】"];
+
+// 拼装提示词正文：7 个短块按序拼接 ＋ 末尾一句流程要求
+function assemble(getBlock){
+  const out = [`${P_LEAD}\n`];
+  BLOCKS.forEach(b=>{
+    const body = b.custom ? getBlock(b) : b.fixed;
+    out.push(`${b.label}${body}\n`);
+  });
+  out.push(P_FLOW);
+  return out.join(`\n`);
+}
+
+// 参考提示词：7 个块逐字采用权威文件（块名已在块体内）
+function buildRefPrompt(){
+  return assemble(b=> STEPS[b.n-1].ref);
+}
+
+// 我的提示词：块的顺序与块名同参考提示词，内容用学员填写的原话
+function buildPrompt(){
+  return assemble(b=>{
+    const v = values[b.n-1] !== undefined ? values[b.n-1] : STEPS[b.n-1].get();
+    return `${BLOCK_LABELS[b.n-1]}${v}`;
+  });
+}
+
+function renderGen(){
+  document.getElementById('genOut').textContent = buildPrompt();
+}
+
+function switchTab(el){
+  document.querySelectorAll('.gen-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const t = el.dataset.t;
+  document.getElementById('genOut').textContent = t==='ref' ? buildRefPrompt() : buildPrompt();
+}
+
+function copyGen(){
+  const out = document.getElementById('genOut').textContent;
+  navigator.clipboard.writeText(out).then(()=>{
+    const c = document.getElementById('copied');
+    c.style.display='inline';
+    setTimeout(()=> c.style.display='none', 2000);
+  }).catch(()=> fallbackCopy(out, document.getElementById('copied')));
+}
+
+function copyText(id){
+  const out = document.getElementById(id).textContent;
+  const btn = event.target;
+  const old = btn.textContent;
+  navigator.clipboard.writeText(out).then(()=>{
+    btn.textContent = '已复制 ✓';
+    setTimeout(()=> btn.textContent = old, 1500);
+  }).catch(()=> fallbackCopy(out, null, btn, old));
+}
+
+// 复制退化方案：clipboard 不可用时（非 https / 无权限）改用临时选区 + execCommand
+function fallbackCopy(text, mark, btn, oldLabel){
+  let ok = false;
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','readonly');
+    ta.style.position='fixed';
+    ta.style.top='-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+  }catch(e){ ok = false; }
+  if(btn){
+    btn.textContent = ok ? '已复制 ✓' : '复制失败，请手动选中';
+    setTimeout(()=> btn.textContent = oldLabel, 1500);
+  } else if(mark){
+    mark.textContent = ok ? '已复制 ✓' : '复制失败，请手动选中';
+    mark.style.display='inline';
+    setTimeout(()=> mark.style.display='none', 2000);
+  }
+}
+</script>
+</body>
+</html>
