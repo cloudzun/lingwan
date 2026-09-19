@@ -242,6 +242,7 @@ def page(title, body, toc, prev, next_, active_key, extra_head="", ch_prefix="",
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html_mod.escape(title)} · {BRAND} {SITE}</title>
+<link rel="icon" type="image/svg+xml" href="{root_prefix}assets/favicon.svg">
 <style>{THEME}</style>
 {extra_head}
 </head><body>
